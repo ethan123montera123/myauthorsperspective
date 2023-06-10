@@ -10,6 +10,9 @@
     "rootDir": ".",
     "baseUrl": ".",
     "outDir": "./dist",
+    "paths": {
+      "@*": ["src/*"]
+    },
 
     "declaration": true,
     "removeComments": true,

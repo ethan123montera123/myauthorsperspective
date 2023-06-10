@@ -1,7 +1,4 @@
-export enum Environment {
-  DEVELOPMENT = "development",
-  PRODUCTION = "production",
-}
+import { Environment } from "@common/constants";
 
 const app = Object.freeze({
   port: parseInt(process.env["PORT"] || "3000", 10),

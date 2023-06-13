@@ -11,5 +11,21 @@
   #__next {
     height: 100%;
   }
+
+  #selectedCategory {
+    @apply font-bold;
+  }
+
+  #selectedCategory::after {
+    content: "";
+    @apply absolute bg-black left-2 bottom-4 h-[1.75px];
+    width: calc(100% - 1rem);
+  }
+}
+
+@layer utilities {
+  .drop-shadow-bold {
+    text-shadow: 0 0 0.1px black;
+  }
 }
 

@@ -3,8 +3,20 @@ import { ChevronsUp } from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-export default function LayoutServices({ children }) {
+export default function LayoutServices({ children, router }) {
+  const CURRENT_PATH = useRouter().pathname;
+
+  const isSelected = (category) => {
+    // if the category name is found in the URL path
+    if (CURRENT_PATH.indexOf(category) != -1) {
+      return "selectedCategory";
+    } else {
+      return "";
+    }
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -23,17 +35,30 @@ export default function LayoutServices({ children }) {
         <div className="flex gap-4 font-medium">
           <Link
             href="/services"
-            className="uppercase hover:font-bold py-4 px-2"
+            className="uppercase py-4 px-2 relative"
+            id={isSelected("services")}
           >
             Services
           </Link>
-          <Link href="/about" className="uppercase hover:font-bold py-4 px-2">
+          <Link
+            href="/about"
+            className="uppercase py-4 px-2"
+            id={isSelected("about")}
+          >
             About
           </Link>
-          <Link href="/contact" className="uppercase hover:font-bold py-4 px-2">
+          <Link
+            href="/contact"
+            className="uppercase py-4 px-2"
+            id={isSelected("contact")}
+          >
             Contact
           </Link>
-          <Link href="/cart" className="uppercase hover:font-bold py-4 px-2">
+          <Link
+            href="/cart"
+            className="uppercase py-4 px-2"
+            id={isSelected("cart")}
+          >
             Cart (0)
           </Link>
         </div>

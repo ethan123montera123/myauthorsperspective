@@ -4,7 +4,7 @@
   "scripts": {
     "lint": "eslint --ext .ts . --fix",
     "build": "tsc",
-    "buid:watch": "tsc --watch",
+    "build:watch": "tsc --watch",
     "serve": "yarn build && cd ../ && firebase emulators:start",
     "shell": "yarn build && firebase functions:shell",
     "start": "yarn shell",

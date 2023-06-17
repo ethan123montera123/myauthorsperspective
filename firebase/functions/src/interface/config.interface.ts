@@ -6,10 +6,11 @@ export interface Config {
 export interface StripeConfig {
   secretKey: string;
   webhookSecret: string;
+  apiVersion: string;
 }
 
 export interface FirebaseConfig {
   collectionPaths: Record<Collections, string>;
 }
 
-export type Collections = "services" | "customers";
+export type Collections = "services" | "users";

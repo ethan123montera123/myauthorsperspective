@@ -1,5 +1,0 @@
-{
-  "functions": {
-    "predeploy": "yarn --prefix functions run build"
-  }
-}

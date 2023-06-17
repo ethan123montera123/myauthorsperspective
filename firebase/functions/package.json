@@ -1,12 +1,41 @@
 {
-  "name": "firebase/functions",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "firebase-functions",
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "packageManager": "yarn@1.22.19",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=7.0.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "prepare": "yarn build",
+    "clean": "rimraf dist",
+    "build": "yarn clean && tsc",
+    "build:watch": "yarn clean && tsc --watch",
+    "lint": "eslint --ext .ts --fix",
+    "format": "prettier --write **/*.ts",
+    "lint:format": "yarn lint && yarn format"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.9.0",
+    "firebase-functions": "^4.4.1",
+    "rimraf": "^5.0.1",
+    "stripe": "^12.9.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.3.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.11",
+    "@typescript-eslint/parser": "^5.59.11",
+    "dotenv": "^16.3.0",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  }
 }
+

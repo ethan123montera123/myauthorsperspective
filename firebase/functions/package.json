@@ -4,16 +4,14 @@
   "license": "UNLICENSED",
   "private": true,
   "packageManager": "yarn@1.22.19",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
   },
   "scripts": {
-    "prepare": "yarn build",
-    "clean": "rimraf dist",
-    "build": "yarn clean && tsc",
-    "build:watch": "yarn clean && tsc --watch",
+    "build": "tsc",
+    "dev": "tsc --watch",
     "lint": "eslint --ext .ts --fix",
     "format": "prettier --write **/*.ts",
     "lint:format": "yarn lint && yarn format"
@@ -37,3 +35,4 @@
     "typescript": "^5.1.3"
   }
 }
+

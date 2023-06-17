@@ -5,7 +5,7 @@
     "lint": "eslint --ext .ts . --fix",
     "build": "tsc",
     "buid:watch": "tsc --watch",
-    "serve": "yarn build && firebase emulators:start --only functions",
+    "serve": "yarn build && cd ../ && firebase emulators:start",
     "shell": "yarn build && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",

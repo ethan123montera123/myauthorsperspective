@@ -13,15 +13,6 @@ const config: Config = {
       services: "services",
       customers: "customers",
     },
-    options: {
-      sync: {
-        customers: {
-          create: true,
-          update: true,
-          delete: true,
-        },
-      },
-    },
   },
 };
 

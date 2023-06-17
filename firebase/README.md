@@ -45,6 +45,28 @@ This extension also uses the following third-party services:
 
 ## Cloud Functions and Usage
 
+- **events-users-createStripeAccount**: Creates a stripe account once a user document is created on `users`
+  collections, usually done in unison with `auth` creation.
+
+```js
+const app = initializeApp();
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const usersRef = collection(db, "users");
+
+// Create an account
+const credentials = await createUserWithEmailAndPassword(auth, email, password);
+
+// From the created account, create a user document with additional context these are required.
+await setDoc(doc(usersRef, credentials.uid), {
+  firstName,
+  lastName,
+  email,
+  phone,
+});
+```
+
 ## Access Required
 
 The extension will operate with the following IAM roles:

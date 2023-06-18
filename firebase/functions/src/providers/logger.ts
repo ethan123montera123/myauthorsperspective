@@ -1,14 +1,9 @@
-import { logger } from "firebase-functions";
+import { logger as firebaseLogger } from "firebase-functions";
 
 /**
- * Logger class for logging.
+ * Logger object for logging.
  */
-class Logger {
-  /**
-   * @param context - Sets the calling context of the logger.
-   */
-  constructor(private readonly context: string) {}
-
+const logger = {
   /**
    * Log an info level message to `stdout` of the Cloud Logging entry.
    *
@@ -16,12 +11,11 @@ class Logger {
    * @param context - Additional context regarding the entry.
    */
   log(message: string, context?: Record<string, any>): void {
-    return logger.log(message, {
+    return firebaseLogger.log(["[ℹ]", message].join(" "), {
       context,
-      caller: this.context,
       timestamp: new Date().toISOString(),
     });
-  }
+  },
 
   /**
    * Log a warning level message to `stdout` of the Cloud Logging entry.
@@ -30,12 +24,11 @@ class Logger {
    * @param context - Additional context regarding the entry.
    */
   warn(message: string, context?: Record<string, any>): void {
-    return logger.warn(message, {
+    return firebaseLogger.warn(["[⚠]", message].join(" "), {
       context,
-      caller: this.context,
       timestamp: new Date().toISOString(),
     });
-  }
+  },
 
   /**
    * Log an error level message to the `stderr` of the Cloud Logging entry.
@@ -45,13 +38,12 @@ class Logger {
    * @param context - Additional context regarding the error entry.
    */
   error(message: string, cause?: Error, context?: Record<string, any>): void {
-    return logger.error(message, {
+    return firebaseLogger.error(["[❗]", message].join(" "), {
       context,
       cause,
-      caller: this.context,
       timestamp: new Date().toISOString(),
     });
-  }
-}
+  },
+};
 
-export default Logger;
+export default logger;

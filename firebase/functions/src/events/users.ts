@@ -1,9 +1,7 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
-import { Logger, config, stripe } from "../providers";
+import { config, logger, stripe } from "../providers";
 
 const { users: usersCollection } = config.firebase.collectionPaths;
-
-const logger = new Logger(usersCollection);
 
 export const createStripeAccount = onDocumentCreated(
   `${usersCollection}/{uid}`,
@@ -13,7 +11,7 @@ export const createStripeAccount = onDocumentCreated(
 
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
-      return;
+      return null;
     }
 
     try {

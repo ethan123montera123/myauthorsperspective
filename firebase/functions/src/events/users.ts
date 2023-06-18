@@ -1,36 +1,37 @@
-import { onDocumentCreated } from "firebase-functions/v2/firestore";
-import { Logger, config, stripe } from "../providers";
+import {
+  onDocumentCreated,
+  onDocumentDeleted,
+  onDocumentUpdated,
+} from "firebase-functions/v2/firestore";
+import { config, logger, stripe } from "../providers";
 
-const { users: usersCollection } = config.firebase.collectionPaths;
-
-const logger = new Logger(usersCollection);
+const { users } = config.firebase.collectionPaths;
 
 export const createStripeAccount = onDocumentCreated(
-  `${usersCollection}/{uid}`,
-  async function (event) {
-    const snapshot = event.data;
-    const uid = event.params.uid;
-
+  `${users}/{uid}`,
+  async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
-      return;
+      return null;
     }
 
+    const data = snapshot.data();
+
     try {
-      const data = snapshot.data();
+      logger.log("Creating stripe account...", { user: uid });
 
       const { id: stripeId } = await stripe.customers.create({
-        metadata: { firebaseUID: uid },
-        email: data.email,
         name: data.firstName + " " + data.lastName,
+        email: data.email,
         phone: data.phone,
+        metadata: { firebaseUID: uid },
       });
 
       await snapshot.ref.set({ stripeId }, { merge: true });
 
       logger.log("Stripe account successfully created.", {
         user: uid,
-        stripeId,
+        stripe: stripeId,
       });
 
       return { ...data, stripeId };
@@ -38,6 +39,65 @@ export const createStripeAccount = onDocumentCreated(
       logger.error("Stripe account creation failed.", error as Error, {
         user: uid,
       });
+    }
+
+    return null;
+  }
+);
+
+export const syncAccountUpdateToStripe = onDocumentUpdated(
+  `${users}/{uid}`,
+  async function ({ data: snapshot, params: { uid } }) {
+    if (!snapshot) {
+      logger.warn("Snapshot did not contain any data.", { user: uid });
+      return null;
+    }
+
+    const { stripeId, ...data } = snapshot.after.data();
+    const account = { user: uid, stripe: stripeId };
+
+    try {
+      logger.log("Syncing updates to stripe account...", account);
+
+      await stripe.customers.update(stripeId, {
+        name: data.firstName + " " + data.lastName,
+        email: data.email,
+        phone: data.phone,
+      });
+
+      logger.log("Stripe account successfully synced with updates.", account);
+
+      return snapshot.after.data();
+    } catch (error: unknown) {
+      logger.error(
+        "Stripe account update syncing failed.",
+        error as Error,
+        account
+      );
+    }
+
+    return null;
+  }
+);
+
+export const syncAccountDeleteToStripe = onDocumentDeleted(
+  `${users}/{uid}`,
+  async function ({ data: snapshot, params: { uid } }) {
+    if (!snapshot) {
+      logger.warn("Snapshot did not contain any data.", { user: uid });
+      return null;
+    }
+
+    const account = { user: uid, stripe: snapshot.data().stripeId };
+
+    try {
+      logger.log("Deleting stripe account...", account);
+      await stripe.customers.del(account.stripe);
+
+      logger.log("Stripe account deleted successfully.", account);
+      return account;
+    } catch (error: unknown) {
+      logger.error("Stripe account deletion failed.", error as Error, account);
     }
 
     return null;

@@ -1,14 +1,11 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { config, logger, stripe } from "../providers";
 
-const { users: usersCollection } = config.firebase.collectionPaths;
+const { users } = config.firebase.collectionPaths;
 
 export const createStripeAccount = onDocumentCreated(
-  `${usersCollection}/{uid}`,
-  async function (event) {
-    const snapshot = event.data;
-    const uid = event.params.uid;
-
+  `${users}/{uid}`,
+  async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
       return null;
@@ -16,6 +13,8 @@ export const createStripeAccount = onDocumentCreated(
 
     try {
       const data = snapshot.data();
+
+      logger.log("Creating stripe account...", { user: uid });
 
       const { id: stripeId } = await stripe.customers.create({
         metadata: { firebaseUID: uid },

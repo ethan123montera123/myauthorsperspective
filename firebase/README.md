@@ -45,6 +45,8 @@ This extension also uses the following third-party services:
 
 ## Cloud Functions and Usage
 
+### User Events
+
 - **events-users-createStripeAccount**: Creates a stripe account once a user document is created on `users`
   collections, usually done in unison with `auth` creation.
 
@@ -59,12 +61,51 @@ const usersRef = collection(db, "users");
 const credentials = await createUserWithEmailAndPassword(auth, email, password);
 
 // From the created account, create a user document with additional context these are required.
+// Triggers the `createStripeAccount` event.
 await setDoc(doc(usersRef, credentials.uid), {
   firstName,
   lastName,
   email,
   phone,
 });
+```
+
+- **events-users-syncAccountUpdateToStripe**: Updates stripe account with updated details from the
+  corresponding `user` document on the `users` collection.
+
+```js
+const app = initializeApp();
+const db = getFirestore(app);
+
+// Get the reference to a document with a given `uid` from the `users` collection.
+const userRef = doc(db, "users", uid);
+
+// Triggers the `syncAccountUpdateToStripe` and updates the account information in stripe.
+await updateDoc(userRef, {
+  firstName,
+  lastName,
+  email,
+  phone,
+});
+```
+
+- **events-users-syncAccountDeleteToStripe**: Deletes corresponding stripe account of a deleted `user`
+  document from the `users` collection.
+
+```js
+const app = initializeApp();
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// NOTE: Since users are usually created in unison with auth. You should also delete the corresponding auth account.
+const credentials = await signInWithEmailAndPassword(email, password);
+await credentials.user.delete();
+
+// Get the reference to the user's document from the `users` collection.
+const userRef = doc(db, "users", credentials.user.uid);
+
+// Triggers the `syncAccountDeleteToStripe` and deletes the correspong stripe account.
+await deleteDoc(userRef);
 ```
 
 ## Access Required

@@ -11,23 +11,23 @@ export const createStripeAccount = onDocumentCreated(
       return null;
     }
 
-    try {
-      const data = snapshot.data();
+    const data = snapshot.data();
 
+    try {
       logger.log("Creating stripe account...", { user: uid });
 
       const { id: stripeId } = await stripe.customers.create({
-        metadata: { firebaseUID: uid },
-        email: data.email,
         name: data.firstName + " " + data.lastName,
+        email: data.email,
         phone: data.phone,
+        metadata: { firebaseUID: uid },
       });
 
       await snapshot.ref.set({ stripeId }, { merge: true });
 
       logger.log("Stripe account successfully created.", {
         user: uid,
-        stripeId,
+        stripe: stripeId,
       });
 
       return { ...data, stripeId };

@@ -1,5 +1,6 @@
 import {
   onDocumentCreated,
+  onDocumentDeleted,
   onDocumentUpdated,
 } from "firebase-functions/v2/firestore";
 import { config, logger, stripe } from "../providers";
@@ -73,6 +74,30 @@ export const syncAccountUpdateToStripe = onDocumentUpdated(
         error as Error,
         account
       );
+    }
+
+    return null;
+  }
+);
+
+export const syncAccountDeleteToStripe = onDocumentDeleted(
+  `${users}/{uid}`,
+  async function ({ data: snapshot, params: { uid } }) {
+    if (!snapshot) {
+      logger.warn("Snapshot did not contain any data.", { user: uid });
+      return null;
+    }
+
+    const account = { user: uid, stripe: snapshot.data().stripeId };
+
+    try {
+      logger.log("Deleting stripe account...", account);
+      await stripe.customers.del(account.stripe);
+
+      logger.log("Stripe account deleted successfully.", account);
+      return account;
+    } catch (error: unknown) {
+      logger.error("Stripe account deletion failed.", error as Error, account);
     }
 
     return null;

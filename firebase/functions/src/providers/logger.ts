@@ -7,10 +7,11 @@ const logger = {
   /**
    * Log an info level message to `stdout` of the Cloud Logging entry.
    *
-   * @param message - Message to be printed.
-   * @param context - Additional context regarding the entry.
+   * @param {string} message - Message to be printed.
+   * @param {Record<string, unknown>} context - Additional context regarding the entry.
+   * @return {void}
    */
-  log(message: string, context?: Record<string, any>): void {
+  log(message: string, context?: Record<string, unknown>): void {
     return firebaseLogger.log(["[ℹ]", message].join(" "), {
       context,
       timestamp: new Date().toISOString(),
@@ -20,10 +21,11 @@ const logger = {
   /**
    * Log a warning level message to `stdout` of the Cloud Logging entry.
    *
-   * @param message - Message to be printed.
-   * @param context - Additional context regarding the entry.
+   * @param {string} message - Message to be printed.
+   * @param {Record<string, unknown>} context - Additional context regarding the entry.
+   * @return {void}
    */
-  warn(message: string, context?: Record<string, any>): void {
+  warn(message: string, context?: Record<string, unknown>): void {
     return firebaseLogger.warn(["[⚠]", message].join(" "), {
       context,
       timestamp: new Date().toISOString(),
@@ -33,11 +35,16 @@ const logger = {
   /**
    * Log an error level message to the `stderr` of the Cloud Logging entry.
    *
-   * @param message - Message to be printed.
-   * @param cause - The error that was triggered.
-   * @param context - Additional context regarding the error entry.
+   * @param {string} message - Message to be printed.
+   * @param {Error} cause - The error that was triggered.
+   * @param {Record<string, unknown>} context - Additional context regarding the error entry.
+   * @return {void}
    */
-  error(message: string, cause?: Error, context?: Record<string, any>): void {
+  error(
+    message: string,
+    cause?: Error,
+    context?: Record<string, unknown>
+  ): void {
     return firebaseLogger.error(["[❗]", message].join(" "), {
       context,
       cause,

@@ -18,5 +18,11 @@
   "env": {
     "node": true
   },
-  "ignorePatterns": ["dist/**/*"]
+  "ignorePatterns": ["dist/**/*"],
+  "rules": {
+    "import/no-unresolved": [
+      "error",
+      { "ignore": ["^firebase-functions/.+", "^firebase-admin/.+"] }
+    ]
+  }
 }

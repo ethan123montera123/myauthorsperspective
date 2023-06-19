@@ -4,12 +4,12 @@
   "scripts": {
     "lint": "eslint --ext .ts . --fix",
     "format": "prettier --write ./**/*.{ts,js}",
-    "lint:format": "yarn lint && yarn format",
+    "lint:format": "npm run lint && npm run format",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "serve": "yarn build && cd ../ && firebase emulators:start",
-    "shell": "yarn build && firebase functions:shell",
-    "start": "yarn shell",
+    "serve": "npm run build && cd ../ && firebase emulators:start",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },

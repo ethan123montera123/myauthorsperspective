@@ -4,7 +4,6 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
-import { parseThrowablesToObject } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
 
 /**
@@ -12,28 +11,28 @@ import { auth, collections, db } from "@/services/firebase";
  *
  * @param {string} email - The user's email address.
  * @param {string} password - The user's password.
- * @return {ObjectWithError<import("firebase/auth").User>} An object containing the authenticated user
- * information and an error object.
+ * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the authenticated user's
+ * credentials.
  * @example
  * ```js
- * const { data, error } = await signInWithCredentials("john@smith.com", "Abcd1234!");
- * if(!error) // handle data
- * else       // handle error
+ * try {
+ *  const credentials = await signInWithCredentials(user);
+ *  // handle data
+ * } catch (error) {
+ *  // handle error
+ * }
  * ```
  */
 export async function signInWithCredentials(email, password) {
-  return parseThrowablesToObject(async () => {
-    const { user } = await signInWithEmailAndPassword(auth, email, password);
-    return user;
-  });
+  return await signInWithEmailAndPassword(auth, email, password);
 }
 
 /**
  * Signs up a user.
  *
- * @param {import("../../common/types").UserSignUpDto} user An object containing the user's information.
- * @return {ObjectWithError<import("firebase/auth").User>} An object containing the authenticated user
- * information and an error object.
+ * @param {import("../../common/types").UserSignUpDto} user - An object containing the user's information.
+ * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the signed up user's
+ * auth credentials.
  * @example
  * ```js
  * const user = {
@@ -44,28 +43,29 @@ export async function signInWithCredentials(email, password) {
  *  password: "Abcd1234!"
  * };
  *
- * const { data, error } = await signUpWithCredentials(user);
- * if(!error) // handle data
- * else       // handle error
+ * try {
+ *  const credentials = await signUpWithCredentials(user);
+ *  // handle data
+ * } catch (error) {
+ *  // handle error
+ * }
  * ```
  */
 export async function signUpWithCredentials(user) {
-  return parseThrowablesToObject(async () => {
-    const { password, ...dto } = user;
+  const { password, ...dto } = user;
 
-    const { user: createdUser } = await createUserWithEmailAndPassword(
-      auth,
-      dto.email,
-      password
-    );
+  const { user: createdUser } = await createUserWithEmailAndPassword(
+    auth,
+    dto.email,
+    password
+  );
 
-    await setDoc(doc(db, collections.USERS, createdUser.uid), {
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      email: dto.email,
-      phone: dto.phone,
-    });
-
-    return createdUser;
+  await setDoc(doc(db, collections.USERS, createdUser.uid), {
+    firstName: dto.firstName,
+    lastName: dto.lastName,
+    email: dto.email,
+    phone: dto.phone,
   });
+
+  return createdUser;
 }

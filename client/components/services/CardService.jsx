@@ -10,7 +10,7 @@ export default function CardService({ url, imgUrl, title, priceUsd }) {
       href={url}
       className="CardService flex flex-col gap-1 w-full shadow hover:shadow-lg transition-shadow rounded overflow-hidden"
     >
-      <div className="w-full h-[250px]">
+      <div className="w-full h-[155px] md:h-[250px]">
         <Image
           src={imgUrl}
           alt={title}

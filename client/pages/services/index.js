@@ -126,15 +126,15 @@ export default function Services() {
           },
           {
             url: "/services/search-engine-optimization",
-            imgUrl: "/images/services/search-engine-optimization.webp",
-            title: "Search Engine Optimization",
-            priceUsd: 4000,
+            imgUrl: "/images/services/author-blog-site.webp",
+            title: "Author's Blog Site",
+            priceUsd: 700,
           },
           {
             url: "/services/search-engine-optimization",
-            imgUrl: "/images/services/search-engine-optimization.webp",
-            title: "Search Engine Optimization",
-            priceUsd: 4000,
+            imgUrl: "/images/services/social-media-management-program.webp",
+            title: "Social Media Management Program",
+            priceUsd: 1800,
           },
         ]}
       />

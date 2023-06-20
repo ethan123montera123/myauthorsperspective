@@ -8,8 +8,8 @@
  * @property {string} phone
  * @property {string} password
  *
- * @typedef {Omit<UserSignUpDto, "password"> & { stripeId: string; }} UserAccount
+ * @typedef {Omit<UserSignUpDto, "password"> & { stripeId?: string | undefined; }} UserAccount
  *
- * @typedef {Pick<UserAccount, "email" | "phone">} UserAccountUpdateDto
+ * @typedef {Partial<Pick<UserAccount, "email" | "phone">>} UserAccountUpdateDto
  */
 export {};

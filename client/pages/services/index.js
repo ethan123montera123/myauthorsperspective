@@ -1,5 +1,6 @@
 import Head from "next/head";
-import Breadcrumb from "@/components/breadcrumb";
+import Breadcrumb from "@/components/Breadcrumb";
+import OtherServices from "@/components/services/OtherServices";
 
 export default function Services() {
   return (
@@ -115,6 +116,28 @@ export default function Services() {
       dolor neque, sed feugiat neque vulputate lobortis. Sed cursus odio risus,
       vitae pharetra neque ultricies sit amet. Nunc vitae magna pulvinar nibh
       iaculis auctor vitae quis felis. Donec id dapibus purus, at sodales odio.
+      <OtherServices
+        servicesData={[
+          {
+            url: "/services/search-engine-optimization",
+            imgUrl: "/images/services/search-engine-optimization.webp",
+            title: "Search Engine Optimization",
+            priceUsd: 4000,
+          },
+          {
+            url: "/services/search-engine-optimization",
+            imgUrl: "/images/services/search-engine-optimization.webp",
+            title: "Search Engine Optimization",
+            priceUsd: 4000,
+          },
+          {
+            url: "/services/search-engine-optimization",
+            imgUrl: "/images/services/search-engine-optimization.webp",
+            title: "Search Engine Optimization",
+            priceUsd: 4000,
+          },
+        ]}
+      />
     </>
   );
 }

@@ -9,12 +9,12 @@ export default function Breadcrumb({ orderedPathNames }) {
         const { name, url } = path;
         if (index !== orderedPathNames.length - 1) {
           return (
-            <>
+            <span key={name}>
               <Link className="uppercase no-underline" key={name} href={url}>
                 {name}
               </Link>{" "}
               /{" "}
-            </>
+            </span>
           );
         } else {
           return (
@@ -34,5 +34,10 @@ export default function Breadcrumb({ orderedPathNames }) {
 
 Breadcrumb.propTypes = {
   // example: [{name, url}, {name, url}, ...]
-  orderdPathNames: propTypes.array.isRequired,
+  orderdPathNames: propTypes.arrayOf(
+    propTypes.shape({
+      name: propTypes.string.isRequired,
+      url: propTypes.string.isRequired,
+    })
+  ).isRequired,
 };

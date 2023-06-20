@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Breadcrumb from "@/components/breadcrumb";
 
 export default function Services() {
   return (
@@ -6,7 +7,12 @@ export default function Services() {
       <Head>
         <title>Our Services</title>
       </Head>
-      <div>Hello</div>
+      <Breadcrumb
+        orderedPathNames={[
+          { name: "Home", url: "/" },
+          { name: "Services", url: "/services" },
+        ]}
+      />
     </>
   );
 }

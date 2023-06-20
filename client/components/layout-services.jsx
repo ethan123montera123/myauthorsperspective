@@ -63,8 +63,8 @@ export default function LayoutServices({ children, router }) {
           </Link>
         </div>
       </header>
-      <main>{children}</main>
-      <footer className="mt-auto bg-neutral-700 text-white flex justify-center py-2 uppercase">
+      <main className="mx-32 my-8">{children}</main>
+      <footer className="text-xs md:text-base mt-auto bg-neutral-700 text-white flex justify-center py-2 uppercase">
         <div
           aria-label="Scroll To Top"
           onClick={scrollToTop}

@@ -121,7 +121,7 @@ export default function LayoutServices({ children, router }) {
         </div>
       </header>
       {generateMainContainer()}
-      <footer className="text-xs md:text-base mt-auto bg-neutral-700 text-white flex justify-center py-2 uppercase">
+      <footer className="text-xs md:text-base mt-8 bg-neutral-700 text-white flex justify-center py-2 uppercase">
         <div
           aria-label="Scroll To Top"
           onClick={scrollToTop}

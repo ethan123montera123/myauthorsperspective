@@ -1,7 +1,8 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-import { verifyAuthLogon } from "@/services/common";
+import { pick, stripUndefined, verifyAuthLogon } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
+import { updateEmail } from "firebase/auth";
 
 /**
  * Signs out the currently logged in user.
@@ -39,10 +40,14 @@ export async function getAuthAccount() {
 /**
  * Update the account details of the currently authenticated user.
  *
- * @param {import("../common/types").UserAccountUpdateDto} details The new details of the user's
+ * @param {import("../common/types").UserAccountUpdateDto} details - The new details of the user's
  * account.
  * @returns {Promise<import("../common/types").UserAccount>} A promise containing the
  * authenticated user's updated account profile.
+ * @remarks
+ * Note: This is a sensitive operation, thus it is necessary to reauthenticate the user
+ * credentials before using this method.
+ *
  * @example
  * ```js
  * const payload = {
@@ -51,6 +56,8 @@ export async function getAuthAccount() {
  * };
  *
  * try {
+ *  // This is necessary for security
+ *  await reauthenticateWithCredentials(password);
  *  const account = await updateAuthAccount(payload);
  *  // handle data
  * } catch (error) {
@@ -60,13 +67,11 @@ export async function getAuthAccount() {
  */
 export async function updateAuthAccount(details) {
   verifyAuthLogon(auth);
-
-  if (!details.email) delete details["email"];
-  if (!details.phone) delete details["phone"];
+  details = stripUndefined(pick(details, "email", "phone"));
 
   const actions = [];
   if (details.email) {
-    actions.push(auth.updateCurrentUser({ email: details.email }));
+    actions.push(updateEmail(auth.currentUser, details.email));
   }
 
   const account = doc(db, collections.USERS, auth.currentUser.uid);

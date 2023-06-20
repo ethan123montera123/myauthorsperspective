@@ -1,9 +1,12 @@
 import {
+  EmailAuthProvider,
   createUserWithEmailAndPassword,
+  reauthenticateWithCredential,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
+import { pick, verifyAuthLogon } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
 
 /**
@@ -28,7 +31,37 @@ export async function signInWithCredentials(email, password) {
 }
 
 /**
- * Signs up a user.
+ * Reauthenticate the currently logged in user with their password.
+ *
+ * @param {string} password - The user's password.
+ * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the signed up user's
+ * auth credentials.
+ * @remarks
+ * Use before sensitive operations such as `updateAuthAccount`, and `changePassword`.
+ * @example
+ * ```js
+ * try {
+ *  const credentials = await reauthenticateWithCredentials(password);
+ *  await updateAuthAccount({ email, phone });
+ *  // handle data
+ * } catch (error) {
+ *  // handle error
+ * }
+ * ```
+ */
+export async function reauthenticateWithCredentials(password) {
+  verifyAuthLogon(auth);
+
+  const credential = EmailAuthProvider.credential(
+    auth.currentUser.email,
+    password
+  );
+
+  return reauthenticateWithCredential(auth.currentUser, credential);
+}
+
+/**
+ * Signs up a user with email and password.
  *
  * @param {import("../../common/types").UserSignUpDto} user - An object containing the user's information.
  * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the signed up user's
@@ -60,12 +93,8 @@ export async function signUpWithCredentials(user) {
     password
   );
 
-  await setDoc(doc(db, collections.USERS, createdUser.uid), {
-    firstName: dto.firstName,
-    lastName: dto.lastName,
-    email: dto.email,
-    phone: dto.phone,
-  });
+  const payload = pick(user, "firstName", "lastName", "email", "password");
+  await setDoc(doc(db, collections.USERS, createdUser.uid), payload);
 
   return createdUser;
 }

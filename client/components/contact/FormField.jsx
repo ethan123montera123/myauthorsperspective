@@ -25,6 +25,7 @@ export default function FormField({
         onChange={(e) => {
           setFn(e.target.value);
         }}
+        required={required}
       />
     </div>
   );
@@ -32,7 +33,7 @@ export default function FormField({
 
 FormField.propTypes = {
   value: propTypes.string.isRequired,
-  handleChange: propTypes.func.isRequired,
+  setFn: propTypes.func.isRequired,
   label: propTypes.string.isRequired,
   type: propTypes.string.isRequired,
   name: propTypes.string.isRequired,

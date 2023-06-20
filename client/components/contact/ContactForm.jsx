@@ -21,7 +21,7 @@ export default function ContactForm() {
             name="fName"
             id="fName"
             placeholder="Juan"
-            required
+            required="true"
           />
           <FormField
             value={lName}
@@ -31,7 +31,7 @@ export default function ContactForm() {
             name="lName"
             id="lName"
             placeholder="de La Cruz"
-            required
+            required="true"
           />
         </div>
         <FormField
@@ -42,7 +42,7 @@ export default function ContactForm() {
           name="email"
           id="email"
           placeholder="email@domain.com"
-          required
+          required="true"
         />
         <FormField
           value={subject}
@@ -52,7 +52,7 @@ export default function ContactForm() {
           name="subject"
           id="subject"
           placeholder="email@domain.com"
-          required
+          required="true"
         />
         <div className="flex flex-col mb-4">
           <label htmlFor="message" className="uppercase font-medium">
@@ -65,9 +65,9 @@ export default function ContactForm() {
               setMessage(e.target.value);
             }}
             placeholder="An inquiry, suggestion, or anything that's on your mind!"
-            required
             rows="9"
             style={{ resize: "none" }}
+            required
           ></textarea>
         </div>
         <button className="justify-self-end mt-3 w-1/4 bg-black hover:bg-[#04b2bd] text-white uppercase py-3 rounded font-semibold tracking-wider">

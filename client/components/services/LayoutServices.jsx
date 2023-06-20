@@ -76,7 +76,7 @@ export default function LayoutServices({ children }) {
 
   return (
     <>
-      <header className="relative w-full flex justify-between flex-row items-center pl-4 pr-6 lg:pl-8 lg:pr-6 py-1 shadow-[0_0_12px_rgba(0,0,0,0.33)]">
+      <header className="relative w-full flex justify-between flex-row items-center pl-4 pr-8 lg:pl-8 py-1 shadow-[0_0_12px_rgba(0,0,0,0.33)]">
         <Link href="/" aria-label="Homepage">
           <Image
             src="/images/logo.png"

@@ -1,8 +1,8 @@
+import { updateEmail } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-import { pick, stripUndefined, verifyAuthLogon } from "@/services/common";
+import { pick, verifyAuthLogon } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
-import { updateEmail } from "firebase/auth";
 
 /**
  * Signs out the currently logged in user.
@@ -16,40 +16,44 @@ export async function signOut() {
 /**
  * Gets the account profile of the currently authenticated user.
  *
- * @returns {Promise<import("../common/types").UserAccount>} A promise object containing the
+ * @returns {Promise<import("../common/@types").UserAccount>} A promise object containing the
  * authenticated user's account profile.
  * @example
- * ```js
  * try {
  *  const account = await getAuthAccount();
  *  // handle data
  * } catch (error) {
  *  // handle error
  * }
- * ```
  */
 export async function getAuthAccount() {
   verifyAuthLogon(auth);
 
   const account = doc(db, collections.USERS, auth.currentUser.uid);
   const snapshot = await getDoc(account);
+  const data = snapshot.data();
 
-  return snapshot.data();
+  return {
+    firstName: data.email,
+    lastName: data.email,
+    email: data.email,
+    phone: data.phone,
+    stripeId: data.stripeId,
+  };
 }
 
 /**
  * Update the account details of the currently authenticated user.
  *
- * @param {import("../common/types").UserAccountUpdateDto} details - The new details of the user's
+ * @param {import("../common/@types").UserAccountUpdateDto} details - The new details of the user's
  * account.
- * @returns {Promise<import("../common/types").UserAccount>} A promise containing the
+ * @returns {Promise<import("../common/@types").UserAccount>} A promise containing the
  * authenticated user's updated account profile.
  * @remarks
  * Note: This is a sensitive operation, thus it is necessary to reauthenticate the user
  * credentials before using this method.
  *
  * @example
- * ```js
  * const payload = {
  *   email: "abcd@abcd.com",
  *   phone: "091234567890"
@@ -63,22 +67,28 @@ export async function getAuthAccount() {
  * } catch (error) {
  *  // handle error
  * }
- * ```
  */
 export async function updateAuthAccount(details) {
   verifyAuthLogon(auth);
-  details = stripUndefined(pick(details, "email", "phone"));
+  const pickedDetails = pick(details, "email", "phone");
 
   const actions = [];
-  if (details.email) {
-    actions.push(updateEmail(auth.currentUser, details.email));
+  if (pickedDetails.email) {
+    actions.push(updateEmail(auth.currentUser, pickedDetails.email));
   }
 
   const account = doc(db, collections.USERS, auth.currentUser.uid);
-  actions.push(setDoc(account, details, { merge: true }));
+  actions.push(setDoc(account, pickedDetails, { merge: true }));
 
   await Promise.allSettled(actions);
   const newSnapshot = await getDoc(account);
+  const data = newSnapshot.data();
 
-  return newSnapshot.data();
+  return {
+    firstName: data.email,
+    lastName: data.email,
+    email: data.email,
+    phone: data.phone,
+    stripeId: data.stripeId,
+  };
 }

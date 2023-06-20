@@ -3,8 +3,9 @@ import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 
 /**
+ * @private
+ *
  * @type {import("firebase/app").FirebaseOptions}
- * @internal
  * @readonly
  */
 const config = Object.freeze({

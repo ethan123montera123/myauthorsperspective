@@ -3,6 +3,8 @@ import { FirebaseError } from "firebase/app";
 /**
  * Checks if there is currently an authenticated user logged in.
  *
+ * @private
+ *
  * @param {import("firebase/auth").Auth} auth
  * @throws {FirebaseError} Throws no user logon error if there is no authenticated user.
  * @return {void}

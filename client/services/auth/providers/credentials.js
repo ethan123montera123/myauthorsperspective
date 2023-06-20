@@ -17,14 +17,12 @@ import { auth, collections, db } from "@/services/firebase";
  * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the authenticated user's
  * credentials.
  * @example
- * ```js
  * try {
  *  const credentials = await signInWithCredentials(user);
  *  // handle data
  * } catch (error) {
  *  // handle error
  * }
- * ```
  */
 export async function signInWithCredentials(email, password) {
   return await signInWithEmailAndPassword(auth, email, password);
@@ -39,7 +37,6 @@ export async function signInWithCredentials(email, password) {
  * @remarks
  * Use before sensitive operations such as `updateAuthAccount`, and `changePassword`.
  * @example
- * ```js
  * try {
  *  const credentials = await reauthenticateWithCredentials(password);
  *  await updateAuthAccount({ email, phone });
@@ -47,7 +44,6 @@ export async function signInWithCredentials(email, password) {
  * } catch (error) {
  *  // handle error
  * }
- * ```
  */
 export async function reauthenticateWithCredentials(password) {
   verifyAuthLogon(auth);
@@ -63,11 +59,10 @@ export async function reauthenticateWithCredentials(password) {
 /**
  * Signs up a user with email and password.
  *
- * @param {import("../../common/types").UserSignUpDto} user - An object containing the user's information.
+ * @param {import("../../common/@types").UserSignUpDto} user - An object containing the user's information.
  * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the signed up user's
  * auth credentials.
  * @example
- * ```js
  * const user = {
  *  firstName: "John"
  *  lastName: "Smith"
@@ -82,19 +77,18 @@ export async function reauthenticateWithCredentials(password) {
  * } catch (error) {
  *  // handle error
  * }
- * ```
  */
 export async function signUpWithCredentials(user) {
   const { password, ...dto } = user;
 
-  const { user: createdUser } = await createUserWithEmailAndPassword(
+  const credential = await createUserWithEmailAndPassword(
     auth,
     dto.email,
     password
   );
 
   const payload = pick(user, "firstName", "lastName", "email", "password");
-  await setDoc(doc(db, collections.USERS, createdUser.uid), payload);
+  await setDoc(doc(db, collections.USERS, credential.user.uid), payload);
 
-  return createdUser;
+  return credential;
 }

@@ -12,7 +12,6 @@ import { updatePassword } from "firebase/auth";
  * credentials before using this method.
  *
  * @example
- * ```js
  * try {
  *  // This is necessary for security
  *  await reauthenticateWithCredentials(password);
@@ -21,7 +20,6 @@ import { updatePassword } from "firebase/auth";
  * } catch (error) {
  *  // handle error
  * }
- * ```
  */
 export async function changePassword(password) {
   verifyAuthLogon(auth);

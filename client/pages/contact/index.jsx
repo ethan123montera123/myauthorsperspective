@@ -16,8 +16,8 @@ export default function Contact() {
           height="3000"
           width="2000"
         />
-        <h1 className="flex flex-col items-center">
-          <div className="text-5xl font-bold h-14">
+        <h1 className="flex flex-col items-center px-6 md:px-20">
+          <div className="text-2xl md:text-4xl lg:text-5xl font-bold">
             We&apos;d love to hear from you! ✒️
           </div>
         </h1>

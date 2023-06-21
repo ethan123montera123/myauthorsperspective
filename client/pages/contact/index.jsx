@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 
 import ContactForm from "@/components/contact/ContactForm";
 import BackgroundImage from "@/components/ui/BackgroundImage";
@@ -15,6 +14,7 @@ export default function Contact() {
           src="/images/contact/background.jpg"
           height="3000"
           width="2000"
+          className="brightness-150"
         />
         <h1 className="flex flex-col items-center px-6 md:px-20">
           <div className="text-2xl md:text-4xl lg:text-5xl font-bold">

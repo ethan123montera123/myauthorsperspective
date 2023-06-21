@@ -8,6 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
 
 import { pick, verifyAuthLogon } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
+import { FirebaseError } from "firebase/app";
 
 /**
  * Signs in a user with an email and password.
@@ -81,14 +82,23 @@ export async function reauthenticateWithCredentials(password) {
 export async function signUpWithCredentials(user) {
   const { password, ...dto } = user;
 
+  // TODO: Add email verification
   const credential = await createUserWithEmailAndPassword(
     auth,
     dto.email,
     password
   );
 
-  const payload = pick(user, "firstName", "lastName", "email", "password");
-  await setDoc(doc(db, collections.USERS, credential.user.uid), payload);
+  try {
+    const payload = pick(user, "firstName", "lastName", "email", "phone");
+    const docRef = doc(db, collections.USERS, credential.user.uid);
+    await setDoc(docRef, payload);
+  } catch (err) {
+    // Roll back if a validation error occurs in setting document
+    await credential.user.delete();
+    throw new FirebaseError(err.code, err.message, err.customData);
+  }
 
+  // TODO: Send Email Verification
   return credential;
 }

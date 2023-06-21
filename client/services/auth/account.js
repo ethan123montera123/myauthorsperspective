@@ -1,7 +1,7 @@
 import { updateEmail } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-import { pick, verifyAuthLogon } from "@/services/common";
+import { pick, stripEmpty, verifyAuthLogon } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
 
 /**
@@ -34,8 +34,8 @@ export async function getAuthAccount() {
   const data = snapshot.data();
 
   return {
-    firstName: data.email,
-    lastName: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName,
     email: data.email,
     phone: data.phone,
     stripeId: data.stripeId,
@@ -70,23 +70,26 @@ export async function getAuthAccount() {
  */
 export async function updateAuthAccount(details) {
   verifyAuthLogon(auth);
-  const pickedDetails = pick(details, "email", "phone");
-
-  const actions = [];
-  if (pickedDetails.email) {
-    actions.push(updateEmail(auth.currentUser, pickedDetails.email));
-  }
+  const sanitizedDetails = stripEmpty(pick(details, "email", "phone"));
 
   const account = doc(db, collections.USERS, auth.currentUser.uid);
-  actions.push(setDoc(account, pickedDetails, { merge: true }));
+  // Check if the picked details have any properties
+  console.log(sanitizedDetails);
+  if (Object.entries(sanitizedDetails).length > 0) {
+    await setDoc(account, sanitizedDetails, { merge: true });
 
-  await Promise.allSettled(actions);
-  const newSnapshot = await getDoc(account);
-  const data = newSnapshot.data();
+    if (sanitizedDetails.email) {
+      // TODO: Add email verification
+      await updateEmail(auth.currentUser, sanitizedDetails.email);
+    }
+  }
+
+  const snapshot = await getDoc(account);
+  const data = snapshot.data();
 
   return {
-    firstName: data.email,
-    lastName: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName,
     email: data.email,
     phone: data.phone,
     stripeId: data.stripeId,

@@ -26,3 +26,5 @@ export async function changePassword(password) {
 
   await updatePassword(auth.currentUser, password);
 }
+
+// TODO: Reset Password

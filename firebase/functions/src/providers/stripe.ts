@@ -1,7 +1,6 @@
 import Stripe from "stripe";
-import config from "./config";
+import { stripe as stripeConfig } from "./config";
 
-const { secretKey, apiVersion } = config.stripe;
-const stripe = new Stripe(secretKey, { apiVersion });
+const { secretKey, apiVersion } = stripeConfig;
 
-export default stripe;
+export const stripe = new Stripe(secretKey, { apiVersion });

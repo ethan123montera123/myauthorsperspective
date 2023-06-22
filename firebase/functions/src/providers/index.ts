@@ -1,3 +1,3 @@
-export { default as config } from "./config";
-export { default as logger } from "./logger";
-export { default as stripe } from "./stripe";
+export * as config from "./config";
+export * as logger from "./logger";
+export * from "./stripe";

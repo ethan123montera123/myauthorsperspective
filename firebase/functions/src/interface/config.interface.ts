@@ -1,8 +1,3 @@
-export interface Config {
-  stripe: StripeConfig;
-  firebase: FirebaseConfig;
-}
-
 export interface StripeConfig {
   secretKey: string;
   webhookSecret: string;

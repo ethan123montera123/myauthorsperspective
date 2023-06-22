@@ -1,14 +1,20 @@
 import propTypes from "prop-types";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function SectionService({ position, title, url, inclusions }) {
-  const backgroundColor = Boolean(position % 2 == 0)
-    ? "bg-white"
-    : "bg-neutral-300";
+export default function SectionService({
+  position,
+  title,
+  url,
+  imgSrc,
+  inclusions,
+}) {
+  const positionIsOdd = Boolean(position % 2 == 1);
 
-  const buttonBg = Boolean(position % 2 == 0) ? "bg-neutral-300" : "bg-black";
-
-  const buttonColor = Boolean(position % 2 == 0) ? "text-black" : "text-white";
+  const backgroundColor = positionIsOdd ? "bg-white" : "bg-neutral-300";
+  const buttonBg = positionIsOdd ? "bg-neutral-300" : "bg-black";
+  const buttonColor = positionIsOdd ? "text-black" : "text-white";
+  const imagePosition = positionIsOdd ? "order-last" : "order-first";
 
   const inclusionListItems = (() =>
     inclusions.map((e) => <li key={e}>{e}</li>))();
@@ -26,16 +32,18 @@ export default function SectionService({ position, title, url, inclusions }) {
           <div>
             <ul className="ml-16 list-disc">{inclusionListItems}</ul>
           </div>
-          <button
-            className={`${buttonBg} ${buttonColor} mt-6 rounded-[2rem] py-3 px-8 uppercase text-white hover:bg-[#04b2bd]`}
-          >
-            Book Now
-          </button>
+          <Link href={url}>
+            <button
+              className={`${buttonBg} ${buttonColor} mt-6 rounded-[2rem] py-3 px-8 uppercase text-white hover:bg-[#04b2bd]`}
+            >
+              Book Now
+            </button>
+          </Link>
         </div>
       </div>
-      <div>
+      <div className={imagePosition}>
         <Image
-          src="/images/services/social-media-management-program.webp"
+          src={imgSrc}
           alt="Social Media Management Program"
           width={900}
           height={600}
@@ -48,6 +56,7 @@ export default function SectionService({ position, title, url, inclusions }) {
 SectionService.propTypes = {
   position: propTypes.number.isRequired,
   title: propTypes.string.isRequired,
-  inclusions: propTypes.arrayOf(propTypes.string).isRequired,
   url: propTypes.string.isRequired,
+  imgSrc: propTypes.string.isRequired,
+  inclusions: propTypes.arrayOf(propTypes.string).isRequired,
 };

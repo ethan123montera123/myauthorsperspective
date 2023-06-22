@@ -17,8 +17,8 @@ export default function Services() {
         className="brightness-100"
         fixed={false}
       />
-      <section className="mb-[300px]">
-        <h1 className="mt-10 lg:mt-20 text-center lg:text-left text-3xl md:text-5xl lg:text-7xl uppercase tracking-wider font-bold text-white text-stroke-3 drop-shadow-lg">
+      <section className="mb-24 xl:mb-[300px]">
+        <h1 className="mt-10 lg:mt-20 text-center xl:text-left text-3xl md:text-5xl lg:text-7xl uppercase tracking-wider font-bold text-white text-stroke-3 drop-shadow-lg">
           <div className="mb-5">Author&apos;s</div>
           <div className="mb-5">Perspective</div>
           <div className="mb-5">Literary Agency</div>

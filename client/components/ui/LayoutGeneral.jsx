@@ -28,7 +28,7 @@ export default function LayoutGeneral({ children }) {
   const generateMainContainer = () => {
     if (isShowingLinks === false) {
       return (
-        <main className="mx-8 mt-6 mb-12 lg:mx-32 lg:mt-8 lg:mb-16">
+        <main className="mx-2 mt-6 mb-12 lg:mx-32 lg:mt-8 lg:mb-16">
           {children}
         </main>
       );

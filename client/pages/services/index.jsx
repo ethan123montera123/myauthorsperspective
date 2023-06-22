@@ -1,5 +1,6 @@
 import Head from "next/head";
 import BackgroundImage from "@/components/ui/BackgroundImage";
+import SectionService from "@/components/services/SectionService";
 
 export default function Services() {
   return (
@@ -14,13 +15,29 @@ export default function Services() {
         className="brightness-100"
         fixed={false}
       />
-      <h1 className="text-4xl">
-        Author&apos;s
-        <br />
-        Perspective
-        <br />
-        Literary Agency
-      </h1>
+      <section className="mb-[300px]">
+        <h1 className="mt-10 lg:mt-20 text-center lg:text-left text-3xl md:text-5xl lg:text-7xl uppercase tracking-wider font-bold text-white text-stroke-3">
+          <div className="mb-5">Author&apos;s</div>
+          <div className="mb-5">Perspective</div>
+          <div className="mb-5">Literary Agency</div>
+        </h1>
+      </section>
+      <SectionService
+        position={1}
+        title="Social Media Management Program"
+        url="/services/social-media-management-program"
+        inclusions={[
+          "Social Media Strategy",
+          "Content Creation",
+          "Account Management",
+          "Paid Social Advertising",
+          "Influencer Marketing",
+          "Analytics and Reporting",
+          "Social Listening",
+          "Community Management",
+          "Training and Consultation",
+        ]}
+      />
     </>
   );
 }

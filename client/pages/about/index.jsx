@@ -19,11 +19,9 @@ export default function About() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 items-center w-full text-center md:text-left">
           <div className="lg:col-span-3">
             <h1 className="uppercase leading-10 tracking-wide text-white text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-bold drop-shadow-2xl">
-              Literary
-              <br />
-              Marketing
-              <br />
-              Agency
+              <div className="mb-5">Literary</div>
+              <div className="mb-5">Marketing</div>
+              <div className="mb-5">Agency</div>
             </h1>
             <div className="text-white mt-4 text-sm md:text-xl">
               <div className="uppercase">More Information</div>

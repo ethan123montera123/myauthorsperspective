@@ -39,7 +39,7 @@ export default function LayoutGeneral({ children }) {
           <main className="mx-8 mt-6 mb-12 lg:mx-32 lg:mt-8 lg:mb-16">
             {children}
           </main>
-          <div className="absolute w-full top-[88px] pb-6 flex flex-col bg-white z-10 items-center text-xl shadow-xl">
+          <div className="absolute w-full top-[112px] pb-6 flex flex-col bg-white z-10 items-center text-xl shadow-xl">
             <Link
               href="/services"
               className="uppercase py-4 px-2 relative"
@@ -76,7 +76,11 @@ export default function LayoutGeneral({ children }) {
 
   return (
     <>
-      <header className="relative w-full flex justify-between flex-row items-center pl-4 pr-8 lg:pl-8 py-1">
+      <header
+        className={`${
+          isShowingLinks ? "bg-white" : ""
+        } relative w-full flex justify-between flex-row items-center pl-4 pr-8 lg:pl-8 py-1 z-10`}
+      >
         <Link href="/" aria-label="Homepage">
           <Image
             src="/images/logo.png"

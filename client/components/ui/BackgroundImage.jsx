@@ -15,7 +15,7 @@ export default function BackgroundImage({
       height={height}
       alt="Background"
       className={`${
-        fixed ? "fixed" : "static"
+        fixed ? "fixed" : "absolute"
       } top-0 left-0 -z-10 h-full object-cover ${className}`}
     />
   );
@@ -26,4 +26,5 @@ BackgroundImage.propTypes = {
   width: propTypes.string.isRequired,
   height: propTypes.string.isRequired,
   className: propTypes.string,
+  fixed: propTypes.bool,
 };

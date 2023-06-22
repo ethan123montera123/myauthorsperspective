@@ -1,14 +1,22 @@
 import propTypes from "prop-types";
 import Image from "next/image";
 
-export default function BackgroundImage({ src, width, height, className }) {
+export default function BackgroundImage({
+  src,
+  width,
+  height,
+  className,
+  fixed = true,
+}) {
   return (
     <Image
       src={src}
       width={width}
       height={height}
       alt="Background"
-      className={`fixed top-0 left-0 -z-10 h-full object-cover ${className}`}
+      className={`${
+        fixed ? "fixed" : "static"
+      } top-0 left-0 -z-10 h-full object-cover ${className}`}
     />
   );
 }

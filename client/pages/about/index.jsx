@@ -27,7 +27,7 @@ export default function About() {
             </h1>
             <div className="text-white mt-4 text-sm md:text-xl">
               <div className="uppercase">More Information</div>
-              <div className="uppercase">info@apliteraryagency.com</div>
+              <div className="lowercase">info@apliteraryagency.com</div>
               <div className="uppercase">+1 (201) 208 - 2048</div>
             </div>
           </div>

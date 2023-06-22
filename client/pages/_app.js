@@ -6,10 +6,18 @@ import LayoutGeneral from "@/components/ui/LayoutGeneral";
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
+function isServicesUrl(urlPath) {
+  if (typeof urlPath !== "string") {
+    return false; // If `urlPath` is not a string, return false
+  }
+
+  return /^\/services\/.*/.test(urlPath);
+}
+
 export default function App({ Component, pageProps, router }) {
   const path = router.pathname;
 
-  if (path.startsWith("/services")) {
+  if (isServicesUrl(path)) {
     return (
       <div className={`flex flex-col h-full ${inter.className}`}>
         <LayoutServices>

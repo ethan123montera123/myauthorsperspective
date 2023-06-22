@@ -17,36 +17,41 @@ export default function SectionService({
   const imagePosition = positionIsOdd ? "order-last" : "order-first";
 
   const inclusionListItems = (() =>
-    inclusions.map((e) => <li key={e}>{e}</li>))();
+    inclusions.map((e) => (
+      <li className="uppercase" key={e}>
+        {e}
+      </li>
+    )))();
 
   return (
     <section
-      className={`${backgroundColor} relative -left-2 lg:-left-32 w-[100lvw] lg:w-[calc(100lvw-1.04rem)] gap-0 lg:gap-16 grid grid-cols-2 px-32 py-16`}
+      className={`${backgroundColor} relative -left-2 lg:-left-32 w-[100lvw] lg:w-[calc(100lvw-1.15rem)] gap-0 lg:gap-16 grid grid-cols-2 px-32 py-16`}
     >
       <div>
         <div className="font-bold uppercase text-4xl tracking-wide mb-4">
           {title}
         </div>
         <div>
-          <div className="uppercase mb-4">Inclusion:</div>
+          <div className="uppercase mb-4 text-xl font-bold">Inclusion:</div>
           <div>
             <ul className="ml-16 list-disc">{inclusionListItems}</ul>
           </div>
           <Link href={url}>
             <button
-              className={`${buttonBg} ${buttonColor} mt-6 rounded-[2rem] py-3 px-8 uppercase text-white hover:bg-[#04b2bd]`}
+              className={`${buttonBg} ${buttonColor} font-bold mt-6 rounded-[2rem] py-3 px-8 uppercase text-white hover:bg-[#04b2bd]`}
             >
               Book Now
             </button>
           </Link>
         </div>
       </div>
-      <div className={imagePosition}>
+      <div className={`${imagePosition} h-full w-full`}>
         <Image
           src={imgSrc}
           alt="Social Media Management Program"
           width={900}
           height={600}
+          className="h-[425px] object-cover w-full"
         />
       </div>
     </section>

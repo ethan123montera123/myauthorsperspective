@@ -10,7 +10,7 @@ export default function OtherServices({ servicesData }) {
         {servicesData.map((service) => (
           <CardService
             url={service.url}
-            imgUrl={service.imgUrl}
+            imgSrc={service.imgSrc}
             title={service.title}
             priceUsd={service.priceUsd}
             key={service.title}
@@ -25,7 +25,7 @@ OtherServices.propTypes = {
   servicesData: propTypes.arrayOf(
     propTypes.shape({
       url: propTypes.string.isRequired,
-      imgUrl: propTypes.string.isRequired,
+      imgSrc: propTypes.string.isRequired,
       title: propTypes.string.isRequired,
       priceUsd: propTypes.number.isRequired,
     })

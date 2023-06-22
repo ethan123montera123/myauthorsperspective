@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import currencyHelper from "@/helpers/currency.helper";
 
-export default function CardService({ url, imgUrl, title, priceUsd }) {
+export default function CardService({ url, imgSrc, title, priceUsd }) {
   return (
     <Link
       href={url}
@@ -12,7 +12,7 @@ export default function CardService({ url, imgUrl, title, priceUsd }) {
     >
       <div className="w-full h-[155px] md:h-[250px]">
         <Image
-          src={imgUrl}
+          src={imgSrc}
           alt={title}
           width={675}
           height={900}
@@ -31,7 +31,7 @@ export default function CardService({ url, imgUrl, title, priceUsd }) {
 
 CardService.propTypes = {
   url: propTypes.string.isRequired,
-  imgUrl: propTypes.string.isRequired,
+  imgSrc: propTypes.string.isRequired,
   title: propTypes.string.isRequired,
   priceUsd: propTypes.number.isRequired,
 };

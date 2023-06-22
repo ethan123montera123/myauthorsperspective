@@ -120,19 +120,19 @@ export default function Services() {
         servicesData={[
           {
             url: "/services/search-engine-optimization",
-            imgUrl: "/images/services/search-engine-optimization.webp",
+            imgSrc: "/images/services/search-engine-optimization.webp",
             title: "Search Engine Optimization",
             priceUsd: 4000,
           },
           {
             url: "/services/author-blog-site",
-            imgUrl: "/images/services/author-blog-site.webp",
+            imgSrc: "/images/services/author-blog-site.webp",
             title: "Author's Blog Site",
             priceUsd: 700,
           },
           {
             url: "/services/social-media-management-program",
-            imgUrl: "/images/services/social-media-management-program.webp",
+            imgSrc: "/images/services/social-media-management-program.webp",
             title: "Social Media Management Program",
             priceUsd: 1800,
           },

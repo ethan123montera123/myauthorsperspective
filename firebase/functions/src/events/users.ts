@@ -1,13 +1,9 @@
-import {
-  onDocumentCreated,
-  onDocumentDeleted,
-  onDocumentUpdated,
-} from "firebase-functions/v2/firestore";
+import { firestore } from "firebase-functions/v2";
 import { config, logger, stripe } from "../providers";
 
 const { users } = config.firebase.collectionPaths;
 
-export const createStripeAccount = onDocumentCreated(
+export const createStripeAccount = firestore.onDocumentCreated(
   `${users}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
@@ -36,7 +32,7 @@ export const createStripeAccount = onDocumentCreated(
 
       return { ...data, stripeId };
     } catch (error: unknown) {
-      logger.error("Stripe account creation failed.", error as Error, {
+      logger.error("Stripe account creation failed.", error, {
         user: uid,
       });
     }
@@ -45,7 +41,7 @@ export const createStripeAccount = onDocumentCreated(
   }
 );
 
-export const syncAccountUpdateToStripe = onDocumentUpdated(
+export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
   `${users}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
@@ -69,18 +65,14 @@ export const syncAccountUpdateToStripe = onDocumentUpdated(
 
       return snapshot.after.data();
     } catch (error: unknown) {
-      logger.error(
-        "Stripe account update syncing failed.",
-        error as Error,
-        account
-      );
+      logger.error("Stripe account update syncing failed.", error, account);
     }
 
     return null;
   }
 );
 
-export const syncAccountDeleteToStripe = onDocumentDeleted(
+export const syncAccountDeleteToStripe = firestore.onDocumentDeleted(
   `${users}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
@@ -97,7 +89,7 @@ export const syncAccountDeleteToStripe = onDocumentDeleted(
       logger.log("Stripe account deleted successfully.", account);
       return account;
     } catch (error: unknown) {
-      logger.error("Stripe account deletion failed.", error as Error, account);
+      logger.error("Stripe account deletion failed.", error, account);
     }
 
     return null;

@@ -36,13 +36,13 @@ const logger = {
    * Log an error level message to the `stderr` of the Cloud Logging entry.
    *
    * @param {string} message - Message to be printed.
-   * @param {Error} cause - The error that was triggered.
+   * @param {unknown} cause - The error that was triggered.
    * @param {Record<string, unknown>} context - Additional context regarding the error entry.
    * @return {void}
    */
   error(
     message: string,
-    cause?: Error,
+    cause?: unknown,
     context?: Record<string, unknown>
   ): void {
     return firebaseLogger.error(["[❗]", message].join(" "), {

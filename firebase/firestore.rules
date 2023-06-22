@@ -48,7 +48,7 @@ service cloud.firestore {
       );
     }
 
-    match /products/{doc=**} {
+    match /services/{doc=**} {
       allow read;
     }
   }

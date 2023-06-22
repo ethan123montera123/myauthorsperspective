@@ -1,6 +1,7 @@
 import Head from "next/head";
 import BackgroundImage from "@/components/ui/BackgroundImage";
 import SectionService from "@/components/services/SectionService";
+import SectionPaymentOptions from "@/components/services/SectionPaymentOptions";
 
 import services from "@/helpers/services.model";
 
@@ -11,7 +12,7 @@ export default function Services() {
         <title>Our Services</title>
       </Head>
       <BackgroundImage
-        src="/images/services/g.jpg"
+        src="/images/services/background.jpg"
         height="3000"
         width="2000"
         className="brightness-100"
@@ -34,6 +35,7 @@ export default function Services() {
           inclusions={s.inclusions}
         />
       ))}
+      <SectionPaymentOptions />
     </>
   );
 }

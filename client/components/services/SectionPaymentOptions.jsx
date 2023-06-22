@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function SectionPaymentOptions() {
   return (
     <section
-      className={`bg-[#C5C900] text-center md:text-left relative -left-2 lg:-left-32 w-[100lvw] lg:w-[calc(100lvw-1.03rem)] py-8 px-4 md:p-14 lg:px-32`}
+      className={`bg-[#C5C900] text-center md:text-left relative -left-2 lg:-left-32 w-[100lvw] lg:w-[calc(100lvw-1.03rem)] py-8 px-4 md:pt-16 md:px-16 md:pb-24 lg:px-32`}
     >
       <h3 className="uppercase flex gap-2 md:gap-4 mb-8 items-center justify-center font-bold text-lg md:justify-start md:text-3xl">
         <Wallet color="black" size={48} />

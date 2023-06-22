@@ -14,7 +14,7 @@ export default function SectionService({
   const backgroundColor = positionIsOdd ? "bg-white" : "bg-neutral-300";
   const buttonBg = positionIsOdd ? "bg-neutral-300" : "bg-black";
   const buttonColor = positionIsOdd ? "text-black" : "text-white";
-  const imagePosition = positionIsOdd ? "order-last" : "order-first";
+  const imagePosition = positionIsOdd ? "lg:order-last" : "lg:order-first";
 
   const inclusionListItems = (() =>
     inclusions.map((e) => (
@@ -47,7 +47,9 @@ export default function SectionService({
           </Link>
         </div>
       </div>
-      <div className={`lg:${imagePosition} h-full w-full flex items-center`}>
+      <div
+        className={`order-none ${imagePosition} h-full w-full flex items-center`}
+      >
         <Image
           src={imgSrc}
           alt="Social Media Management Program"

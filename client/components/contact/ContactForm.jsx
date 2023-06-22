@@ -10,7 +10,7 @@ export default function ContactForm() {
   const [message, setMessage] = useState("");
 
   return (
-    <div className="ContactForm min-w-[80%] mt-4 lg:mt-12 bg-neutral-200 p-4 md:p-10 md:px-14 lg:px-24 md:w-3/4 rounded-lg mb-10 text-xs md:text-base">
+    <div className="ContactForm min-w-[80%] mt-4 lg:mt-12 bg-neutral-200 p-4 md:p-10 md:px-14 lg:px-24 md:w-3/4 rounded-lg mb-16 text-xs md:text-base">
       <form method="POST" action="#" className="grid">
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-8">
           <FormField

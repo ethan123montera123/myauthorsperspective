@@ -32,5 +32,9 @@
     text-shadow: -1.5px -1.5px 0 black, 1.5px -1.5px 0 black,
       -1.5px 1.5px 0 black, 1.5px 1.5px 0 black;
   }
+
+  .card-gradient-overlay {
+    background: linear-gradient(0deg, #242424 -20%, #71717100 100%);
+  }
 }
 

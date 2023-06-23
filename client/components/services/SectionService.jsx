@@ -9,7 +9,7 @@ export default function SectionService({
   imgSrc,
   inclusions,
 }) {
-  const positionIsOdd = Boolean(position % 2 == 1);
+  const positionIsOdd = Boolean(position % 2 === 1);
 
   const backgroundColor = positionIsOdd ? "bg-white" : "bg-neutral-300";
   const buttonBg = positionIsOdd ? "bg-neutral-300" : "bg-black";
@@ -40,7 +40,7 @@ export default function SectionService({
           </div>
           <Link href={url}>
             <button
-              className={`${buttonBg} ${buttonColor} text-sm md:text-base font-bold mt-6 rounded-[2rem] py-3 px-8 uppercase text-white hover:bg-[#04b2bd]`}
+              className={`${buttonBg} ${buttonColor} text-sm md:text-base font-bold mt-6 rounded-[2rem] py-3 px-8 uppercase hover:bg-[#04b2bd]`}
             >
               Book Now
             </button>

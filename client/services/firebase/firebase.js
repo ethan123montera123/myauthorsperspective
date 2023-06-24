@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 
 /**
  * @private
@@ -20,8 +21,17 @@ const config = Object.freeze({
 export const app = initializeApp(config);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const functions = getFunctions(app);
 
 if (process.env.NEXT_PUBLIC_NODE_ENV?.toLowerCase() !== "production") {
-  connectAuthEmulator(auth, "http://127.0.0.1:9099");
-  connectFirestoreEmulator(db, "127.0.0.1", 8080);
+  const HOST = "127.0.0.1";
+  const ports = Object.freeze({
+    AUTH: 9099,
+    FIRESTORE: 8080,
+    FUNCTIONS: 5001,
+  });
+
+  connectAuthEmulator(auth, `http://${HOST}:${ports.AUTH}`);
+  connectFirestoreEmulator(db, HOST, ports.FIRESTORE);
+  connectFunctionsEmulator(functions, HOST, ports.FUNCTIONS);
 }

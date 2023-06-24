@@ -3,3 +3,7 @@ export interface Service {
   unitPrice: number;
   inclusions: string[];
 }
+
+export interface ServiceOrder extends Service {
+  quantity: number;
+}

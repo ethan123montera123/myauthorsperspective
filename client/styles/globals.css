@@ -42,7 +42,7 @@
   }
 
   .background-dim {
-    @apply fixed top-0 left-0 h-screen w-screen bg-black z-30 opacity-10;
+    @apply fixed top-0 left-0 h-screen w-screen bg-black opacity-10;
   }
 }
 

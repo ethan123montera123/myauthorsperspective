@@ -1,14 +1,24 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { UserSquare, Lock, Facebook } from "lucide-react";
 import propTypes from "prop-types";
 
 export default function Login({ handleSwapAuth }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  // the <input> field references
+  const usernameRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const handleChange = (e, setFn) => {
     setFn(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form Inputs:");
+    console.log("username -", usernameRef.current.value);
+    console.log("password -", passwordRef.current.value);
   };
 
   return (
@@ -18,12 +28,7 @@ export default function Login({ handleSwapAuth }) {
         <h1 className="Login uppercase mb-12 text-3xl font-bold tracking-wide">
           Log In
         </h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-          className="flex flex-col"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="relative">
             <label
               className="text-xs font-semibold text-neutral-700"
@@ -39,6 +44,7 @@ export default function Login({ handleSwapAuth }) {
               id="username"
               placeholder="Type your username"
               required
+              ref={usernameRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <UserSquare
@@ -63,6 +69,7 @@ export default function Login({ handleSwapAuth }) {
               placeholder="Type your password"
               type="password"
               required
+              ref={passwordRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <Lock

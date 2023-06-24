@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { UserSquare, Lock, Facebook, AtSign } from "lucide-react";
 import propTypes from "prop-types";
 
@@ -8,8 +8,23 @@ export default function SignUp({ handleSwapAuth }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const usernameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
   const handleChange = (e, setFn) => {
     setFn(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form Inputs:");
+
+    /* need to handle input validation here */
+
+    console.log("username -", usernameRef.current.value);
+    console.log("email -", emailRef.current.value);
+    console.log("password -", passwordRef.current.value);
   };
 
   return (
@@ -19,12 +34,7 @@ export default function SignUp({ handleSwapAuth }) {
         <h1 className="Login uppercase mb-12 text-3xl font-bold tracking-wide">
           Sign Up
         </h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-          className="flex flex-col"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="relative">
             <label
               className="text-xs font-semibold text-neutral-700"
@@ -44,6 +54,7 @@ export default function SignUp({ handleSwapAuth }) {
               minLength="6"
               maxLength="20"
               required
+              ref={usernameRef}
             ></input>
             <div className="absolute left-1 bottom-3">
               <UserSquare
@@ -68,6 +79,7 @@ export default function SignUp({ handleSwapAuth }) {
               type="email"
               title="The email address to be used for your email notifications."
               required
+              ref={emailRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <AtSign
@@ -95,6 +107,7 @@ export default function SignUp({ handleSwapAuth }) {
               minLength="8"
               maxLength="20"
               required
+              ref={passwordRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <Lock

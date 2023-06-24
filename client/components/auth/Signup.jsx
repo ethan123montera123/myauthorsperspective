@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { UserSquare, Lock, Facebook, AtSign } from "lucide-react";
 import propTypes from "prop-types";
 
@@ -8,10 +8,6 @@ export default function SignUp({ handleSwapAuth }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const usernameRef = useRef(null);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-
   const handleChange = (e, setFn) => {
     setFn(e.target.value);
   };
@@ -19,12 +15,9 @@ export default function SignUp({ handleSwapAuth }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Inputs:");
-
-    /* need to handle input validation here */
-
-    console.log("username -", usernameRef.current.value);
-    console.log("email -", emailRef.current.value);
-    console.log("password -", passwordRef.current.value);
+    console.log("username -", username);
+    console.log("email -", email);
+    console.log("password -", password);
   };
 
   return (
@@ -54,7 +47,6 @@ export default function SignUp({ handleSwapAuth }) {
               minLength="6"
               maxLength="20"
               required
-              ref={usernameRef}
             ></input>
             <div className="absolute left-1 bottom-3">
               <UserSquare
@@ -79,7 +71,6 @@ export default function SignUp({ handleSwapAuth }) {
               type="email"
               title="The email address to be used for your email notifications."
               required
-              ref={emailRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <AtSign
@@ -107,7 +98,6 @@ export default function SignUp({ handleSwapAuth }) {
               minLength="8"
               maxLength="20"
               required
-              ref={passwordRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <Lock

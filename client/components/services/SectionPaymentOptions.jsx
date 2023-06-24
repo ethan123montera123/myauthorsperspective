@@ -10,34 +10,34 @@ export default function SectionPaymentOptions() {
         <Wallet color="black" size={48} />
         Payment Options
       </h3>
-      <div className="grid justify-items-center justify-center grid-cols-1 md:grid-cols-4 items-center gap-8 md:gap-14">
+      <div className="grid pb-8 lg:pb-0 justify-items-center justify-center grid-cols-1 md:grid-cols-4 items-center gap-8 md:gap-14">
         <Image
           src="/images/services/mastercard_logo.png"
           width={1280}
           height={768}
           alt="Mastercard"
-          className="w-[60%] md:w-full"
+          className="w-[40%] md:w-full"
         />
         <Image
           src="/images/services/american-express_logo.png"
           width={3000}
           height={1884}
           alt="American Express"
-          className="w-[60%] md:w-full"
+          className="w-[40%] md:w-full"
         />
         <Image
           src="/images/services/paypal_logo.png"
           width={2560}
           height={678}
           alt="Paypal"
-          className="w-[60%] md:w-full"
+          className="w-[40%] md:w-full"
         />
         <Image
           src="/images/services/visa_logo.png"
           width={3840}
           height={2160}
           alt="Visa"
-          className="w-[60%] md:w-full"
+          className="w-[40%] md:w-full"
         />
       </div>
     </section>

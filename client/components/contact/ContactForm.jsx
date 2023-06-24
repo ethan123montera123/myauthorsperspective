@@ -9,9 +9,19 @@ export default function ContactForm() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form Inputs:");
+    console.log("fName -", fName);
+    console.log("lName -", lName);
+    console.log("email -", email);
+    console.log("subject -", subject);
+    console.log("message -", message);
+  };
+
   return (
     <div className="ContactForm min-w-[80%] mt-4 lg:mt-12 bg-neutral-200 p-4 md:p-10 md:px-14 lg:px-24 md:w-3/4 rounded-lg mb-16 text-xs md:text-base">
-      <form method="POST" action="#" className="grid">
+      <form onSubmit={handleSubmit} method="POST" action="#" className="grid">
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-8">
           <FormField
             value={fName}

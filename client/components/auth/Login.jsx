@@ -1,14 +1,11 @@
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { UserSquare, Lock, Facebook } from "lucide-react";
 import propTypes from "prop-types";
 
 export default function Login({ handleSwapAuth }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // the <input> field references
-  const usernameRef = useRef(null);
-  const passwordRef = useRef(null);
 
   const handleChange = (e, setFn) => {
     setFn(e.target.value);
@@ -17,8 +14,8 @@ export default function Login({ handleSwapAuth }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Inputs:");
-    console.log("username -", usernameRef.current.value);
-    console.log("password -", passwordRef.current.value);
+    console.log("username -", username);
+    console.log("password -", password);
   };
 
   return (
@@ -44,7 +41,6 @@ export default function Login({ handleSwapAuth }) {
               id="username"
               placeholder="Type your username"
               required
-              ref={usernameRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <UserSquare
@@ -69,7 +65,6 @@ export default function Login({ handleSwapAuth }) {
               placeholder="Type your password"
               type="password"
               required
-              ref={passwordRef}
             ></input>
             <div className="absolute left-1 bottom-3 ">
               <Lock

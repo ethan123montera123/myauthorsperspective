@@ -1,17 +1,21 @@
 import dotenv from "dotenv";
-import { FirebaseConfig, StripeConfig } from "../interface";
+import { CorsConfig, FirebaseConfig, StripeConfig } from "../interface";
 
 const { parsed: env } = dotenv.config();
 
 export const stripe = {
-  secretKey: env?.STRIPE_API_KEY || "",
-  webhookSecret: env?.STRIPE_WEBHOOK_SECRET || "",
-  apiVersion: "2022-11-15",
+  SECRET_KEY: env?.STRIPE_API_KEY || "",
+  WEBHOOK_SECRET: env?.STRIPE_WEBHOOK_SECRET || "",
+  API_VERSION: "2022-11-15",
 } as const satisfies StripeConfig;
 
 export const firebase = {
-  collectionPaths: {
-    services: "services",
-    users: "users",
+  collections: {
+    SERVICES: "services",
+    USERS: "users",
   },
 } as const satisfies FirebaseConfig;
+
+export const cors = {
+  ORIGIN: env?.CORS_ORIGIN || "http://localhost:3000",
+} as const satisfies CorsConfig;

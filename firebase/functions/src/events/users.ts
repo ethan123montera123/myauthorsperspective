@@ -1,10 +1,10 @@
 import { firestore } from "firebase-functions/v2";
 import { config, logger, stripe } from "../providers";
 
-const { users } = config.firebase.collectionPaths;
+const { USERS } = config.firebase.collections;
 
 export const createStripeAccount = firestore.onDocumentCreated(
-  `${users}/{uid}`,
+  `${USERS}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
@@ -42,7 +42,7 @@ export const createStripeAccount = firestore.onDocumentCreated(
 );
 
 export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
-  `${users}/{uid}`,
+  `${USERS}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
@@ -73,7 +73,7 @@ export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
 );
 
 export const syncAccountDeleteToStripe = firestore.onDocumentDeleted(
-  `${users}/{uid}`,
+  `${USERS}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });

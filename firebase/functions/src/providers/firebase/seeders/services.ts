@@ -1,7 +1,7 @@
 import { Service } from "../../../interface";
 import { config } from "../../../providers";
 
-export const collection = config.firebase.collectionPaths.services;
+export const collection = config.firebase.collections.SERVICES;
 
 export const data = [
   {

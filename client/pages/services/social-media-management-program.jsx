@@ -12,6 +12,10 @@ export default function Services() {
         orderedPathNames={[
           { name: "Home", url: "/" },
           { name: "Services", url: "/services" },
+          {
+            name: "Social Media Management Program",
+            url: "/services/social-media-management-program",
+          },
         ]}
       />
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce nisi mi,

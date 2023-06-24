@@ -28,10 +28,14 @@ export function pick(obj, ...keys) {
  * @returns {Partial<T>} The stripped object.
  */
 export function stripEmptyAndUnchanged(obj, ref) {
-  const entries = Object.entries(obj).filter(
-    ([k, v]) =>
-      typeof v !== "undefined" && v !== null && v !== "" && ref[k] !== v
-  );
+  const entries = Object.entries(obj).filter(([k, v]) => {
+    const isUndefined = typeof v === "undefined";
+    const isNull = v === null;
+    const isEmpty = v === "";
+    const isUnchanged = ref[k] === v;
+
+    return !(isUndefined || isNull || isEmpty || isUnchanged);
+  });
 
   return Object.fromEntries(entries);
 }

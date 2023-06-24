@@ -3,7 +3,8 @@ import BackgroundImage from "@/components/ui/BackgroundImage";
 import SectionService from "@/components/services/SectionService";
 import SectionPaymentOptions from "@/components/services/SectionPaymentOptions";
 
-import services from "@/helpers/services.helper";
+import serviceHelper from "@/helpers/services.helper";
+const { services } = serviceHelper;
 
 export default function Services() {
   return (

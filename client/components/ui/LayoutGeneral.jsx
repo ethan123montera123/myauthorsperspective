@@ -17,8 +17,6 @@ export default function LayoutGeneral({ children }) {
   };
 
   const isSelected = (category) => {
-    console.log(CURRENT_PATH);
-
     if (category === "/" && CURRENT_PATH.length === 1) {
       return "selectedCategory";
     } else if (category !== "/" && CURRENT_PATH.indexOf(category) != -1) {

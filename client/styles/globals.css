@@ -36,5 +36,9 @@
   .card-gradient-overlay {
     background: linear-gradient(0deg, #242424 -20%, #71717100 100%);
   }
+
+  .card-gradient-overlay-hover {
+    background: linear-gradient(0deg, #1b1b1b 0%, #71717100 120%);
+  }
 }
 

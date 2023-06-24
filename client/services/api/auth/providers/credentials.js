@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app";
 import {
   EmailAuthProvider,
   createUserWithEmailAndPassword,
@@ -7,62 +8,69 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 
 import { auth, collections, db } from "@/services/firebase";
-import { pick, verifyAuthLogon } from "@/services/utils";
-import { FirebaseError } from "firebase/app";
+import {
+  parseThrowablesToObject,
+  pick,
+  verifyAuthLogon,
+} from "@/services/utils";
 
 /**
  * Signs in a user with an email and password.
  *
- * @param {string} email - The user's email address.
- * @param {string} password - The user's password.
- * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the authenticated user's
- * credentials.
+ * @param   {string}  email     The user's email address.
+ * @param   {string}  password  The user's password.
+ * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential>>}
+ * A promise containing the user's credentials, and a possible error.
  * @example
- * try {
- *  const credentials = await signInWithCredentials(user);
- *  // handle data
- * } catch (error) {
- *  // handle error
- * }
+ * const { data: credentials, error } = await signInWithCredentials(user);
+ * if(error) // handle error
+ *
+ * // handle credentials
  */
 export async function signInWithCredentials(email, password) {
-  return await signInWithEmailAndPassword(auth, email, password);
+  return parseThrowablesToObject(() => {
+    return signInWithEmailAndPassword(auth, email, password);
+  });
 }
 
 /**
  * Reauthenticate the currently logged in user with their password.
  *
- * @param {string} password - The user's password.
- * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the signed up user's
- * auth credentials.
+ * @param   {string}  password  The user's password.
+ * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential>>}
+ * A promise containing the user's reauthenticated credentials, and a possible error.
+ *
  * @remarks
- * Use before sensitive operations such as `updateAuthAccount`, and `changePassword`.
+ * Use before sensitive operations such as `updateAuthAccount`, and `changePassword`,
+ * if the user has been logged in for too long.
+ *
  * @example
- * try {
- *  const credentials = await reauthenticateWithCredentials(password);
- *  await updateAuthAccount({ email, phone });
- *  // handle data
- * } catch (error) {
- *  // handle error
- * }
+ * const { error: reauthError } = await reauthenticateWithCredentials(password);
+ * if(reauthError) // handle reauthentication error
+ *
+ * const { error: updateError } = await updateAuthAccount({ email, phone });
+ * if(updateError) // handle update error
  */
 export async function reauthenticateWithCredentials(password) {
-  verifyAuthLogon(auth);
+  return parseThrowablesToObject(() => {
+    verifyAuthLogon(auth);
 
-  const credential = EmailAuthProvider.credential(
-    auth.currentUser.email,
-    password
-  );
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      password
+    );
 
-  return reauthenticateWithCredential(auth.currentUser, credential);
+    return reauthenticateWithCredential(auth.currentUser, credential);
+  });
 }
 
 /**
  * Signs up a user with email and password.
  *
- * @param {import("../../@types").UserSignUpDto} user - An object containing the user's information.
- * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the signed up user's
- * auth credentials.
+ * @param   {import("../../@types").UserSignUpDto}  user  An object containing the user's information.
+ * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential>>}
+ * A promise containing the user's credentials, and a possible error.
+ *
  * @example
  * const user = {
  *  firstName: "John"
@@ -72,33 +80,33 @@ export async function reauthenticateWithCredentials(password) {
  *  password: "Abcd1234!"
  * };
  *
- * try {
- *  const credentials = await signUpWithCredentials(user);
- *  // handle data
- * } catch (error) {
- *  // handle error
- * }
+ * const { data: credentials, error } = await signUpWithCredentials(user);
+ * if(error) // handle error
+ *
+ * // handle credentials
  */
 export async function signUpWithCredentials(user) {
-  const { password, ...dto } = user;
+  return parseThrowablesToObject(async () => {
+    const { password, ...dto } = user;
 
-  // TODO: Add email verification
-  const credential = await createUserWithEmailAndPassword(
-    auth,
-    dto.email,
-    password
-  );
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      dto.email,
+      password
+    );
 
-  try {
-    const payload = pick(user, "firstName", "lastName", "email", "phone");
-    const docRef = doc(db, collections.USERS, credential.user.uid);
-    await setDoc(docRef, payload);
-  } catch (err) {
-    // Roll back if a validation error occurs in setting document
-    await credential.user.delete();
-    throw new FirebaseError(err.code, err.message, err.customData);
-  }
+    try {
+      const payload = pick(user, "firstName", "lastName", "email", "phone");
+      const docRef = doc(db, collections.USERS, credential.user.uid);
+      await setDoc(docRef, payload);
+    } catch (err) {
+      // Roll back created auth account
+      // if a validation error occurs in setting document
+      await credential.user.delete();
+      throw new FirebaseError(err.code, err.message, err.customData);
+    }
 
-  // TODO: Send Email Verification
-  return credential;
+    // TODO: Send Email Verification
+    return credential;
+  });
 }

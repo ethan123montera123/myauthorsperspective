@@ -17,17 +17,20 @@ export function pick(obj, ...keys) {
 
 /**
  * Strip properties from object that have values
- * that are `null`, `undefined`, and `""`.
+ * that are `null`, `undefined`, `""`, and have not
+ * change from a `ref` object.
  *
  * @private
  *
  * @template {Record<string | number | symbol, any>} T
  * @param {T} obj - The object to be stripped from.
+ * @param {Record<string | number | symbol, any>} ref - The object to reference from.
  * @returns {Partial<T>} The stripped object.
  */
-export function stripEmpty(obj) {
+export function stripEmptyAndUnchanged(obj, ref) {
   const entries = Object.entries(obj).filter(
-    ([_k, v]) => typeof v !== "undefined" || v !== null || v !== ""
+    ([k, v]) =>
+      typeof v !== "undefined" && v !== null && v !== "" && ref[k] !== v
   );
 
   return Object.fromEntries(entries);

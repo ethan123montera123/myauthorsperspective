@@ -1,6 +1,7 @@
 import { httpsCallable } from "firebase/functions";
 
 import { callables, functions } from "@/services/firebase";
+import { parseThrowablesToObject } from "@/services/utils";
 
 /**
  * Creates a transaction payment intent for a list of services offered.
@@ -23,16 +24,19 @@ import { callables, functions } from "@/services/firebase";
  *  }
  * ]
  *
- * const { secret } = await createTransaction(services);
+ * const { data, error } = await createTransaction(services);
+ * if(error) // handle error
  *
  * // Using \@stripe/react-stripe-js
- * <Elements options={{ clientSecret: secret }} stripe={stripePromise}>
+ * <Elements options={{ clientSecret: data.secret }} stripe={stripePromise}>
  *  // Elements for payment here...
  * </Elements>
  */
 export async function createServiceTransaction(services) {
-  const fn = httpsCallable(functions, callables.createPaymentIntent);
-  const { data } = await fn(services);
+  return parseThrowablesToObject(async () => {
+    const fn = httpsCallable(functions, callables.createPaymentIntent);
+    const { data } = await fn(services);
 
-  return data;
+    return data;
+  });
 }

@@ -1,6 +1,6 @@
 import { httpsCallable } from "firebase/functions";
 
-import { functions } from "@/services/firebase";
+import { callables, functions } from "@/services/firebase";
 
 /**
  * Creates a transaction payment intent for a list of services offered.
@@ -31,12 +31,8 @@ import { functions } from "@/services/firebase";
  * </Elements>
  */
 export async function createServiceTransaction(services) {
-  const createPaymentIntent = httpsCallable(
-    functions,
-    "api-stripe-createPaymentIntent"
-  );
-
-  const { data } = await createPaymentIntent(services);
+  const fn = httpsCallable(functions, callables.createPaymentIntent);
+  const { data } = await fn(services);
 
   return data;
 }

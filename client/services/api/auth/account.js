@@ -1,8 +1,8 @@
 import { updateEmail } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-import { pick, stripEmpty, verifyAuthLogon } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
+import { pick, stripEmpty, verifyAuthLogon } from "@/services/utils";
 
 /**
  * Signs out the currently logged in user.

@@ -1,5 +1,6 @@
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../firebase";
+
+import { functions } from "@/services/firebase";
 
 /**
  * Creates a transaction payment intent for a list of services offered.

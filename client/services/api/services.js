@@ -1,5 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
-import { collections, db } from "../firebase";
+
+import { collections, db } from "@/services/firebase";
 
 /**
  * Gets the offered services from the database.

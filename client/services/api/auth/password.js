@@ -1,6 +1,7 @@
-import { verifyAuthLogon } from "@/services/common";
-import { auth } from "@/services/firebase";
 import { updatePassword } from "firebase/auth";
+
+import { auth } from "@/services/firebase";
+import { verifyAuthLogon } from "@/services/utils";
 
 /**
  * Change the password of the currently authenticated user.

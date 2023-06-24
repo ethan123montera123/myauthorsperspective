@@ -6,8 +6,8 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
-import { pick, verifyAuthLogon } from "@/services/common";
 import { auth, collections, db } from "@/services/firebase";
+import { pick, verifyAuthLogon } from "@/services/utils";
 import { FirebaseError } from "firebase/app";
 
 /**

@@ -4,7 +4,7 @@ import { functions } from "../firebase";
 /**
  * Creates a transaction payment intent for a list of services offered.
  *
- * @param   {import("@/services/common/@types").ServiceOrder[]} services - The services that are
+ * @param   {import("./@types").ServiceOrder[]} services - The services that are
  * being bought for the current transaction.
  * @returns {Promise<{ secret: string; }>} The object containing the client secret to
  * be used to complete the payment.

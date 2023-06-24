@@ -16,7 +16,7 @@ export async function signOut() {
 /**
  * Gets the account profile of the currently authenticated user.
  *
- * @returns {Promise<import("@/services/common/@types").UserAccount>} A promise object containing the
+ * @returns {Promise<import("../@types").UserAccount>} A promise object containing the
  * authenticated user's account profile.
  * @example
  * try {
@@ -47,7 +47,7 @@ export async function getAuthAccount() {
  *
  * @param {import("../common/@types").UserAccountUpdateDto} details - The new details of the user's
  * account.
- * @returns {Promise<import("../common/@types").UserAccount>} A promise containing the
+ * @returns {Promise<import("../@types").UserAccount>} A promise containing the
  * authenticated user's updated account profile.
  * @remarks
  * Note: This is a sensitive operation, thus it is necessary to reauthenticate the user

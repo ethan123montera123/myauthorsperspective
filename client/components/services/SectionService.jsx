@@ -9,7 +9,7 @@ export default function SectionService({
   imgSrc,
   inclusions,
 }) {
-  const positionIsOdd = Boolean(position % 2 == 1);
+  const positionIsOdd = Boolean(position % 2 === 1);
 
   const backgroundColor = positionIsOdd ? "bg-white" : "bg-neutral-300";
   const buttonBg = positionIsOdd ? "bg-neutral-300" : "bg-black";
@@ -25,7 +25,7 @@ export default function SectionService({
 
   return (
     <section
-      className={`${backgroundColor} text-center md:text-left grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 relative -left-2 lg:-left-32 w-[100lvw] lg:w-[calc(100lvw-1.03rem)] gap-6 lg:gap-16 py-8 px-4 md:p-16 lg:px-32 lg:py-16`}
+      className={`${backgroundColor} text-center md:text-left grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 relative gap-6 lg:gap-16 py-8 px-4 md:p-16 lg:px-32 lg:py-16`}
     >
       <div>
         <div className="font-bold uppercase text-xl md:text-4xl tracking-wide mb-2 md:mb-4">
@@ -40,7 +40,7 @@ export default function SectionService({
           </div>
           <Link href={url}>
             <button
-              className={`${buttonBg} ${buttonColor} text-sm md:text-base font-bold mt-6 rounded-[2rem] py-3 px-8 uppercase text-white hover:bg-[#04b2bd]`}
+              className={`${buttonBg} ${buttonColor} text-sm md:text-base font-bold mt-6 rounded-[2rem] py-3 px-8 uppercase hover:bg-[#04b2bd]`}
             >
               Book Now
             </button>

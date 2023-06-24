@@ -16,7 +16,7 @@ export default function About() {
           width="2000"
           className="brightness-[0.8]"
         />
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 items-center w-full text-center md:text-left">
+        <div className="grid px-10 md:px-16 xl:px-32 md:grid-cols-2 lg:grid-cols-5 items-center w-full text-center md:text-left">
           <div className="lg:col-span-3">
             <h1 className="uppercase leading-10 tracking-wide text-white text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-bold drop-shadow-2xl">
               <div className="mb-5">Literary</div>
@@ -29,7 +29,7 @@ export default function About() {
               <div className="uppercase">+1 (201) 208 - 2048</div>
             </div>
           </div>
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 flex justify-center">
             <Image
               src="/images/logo.png"
               width="500"

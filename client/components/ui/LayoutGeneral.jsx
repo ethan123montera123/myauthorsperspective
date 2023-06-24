@@ -17,8 +17,10 @@ export default function LayoutGeneral({ children }) {
   };
 
   const isSelected = (category) => {
-    // if the category name is found in the URL path
-    if (CURRENT_PATH.indexOf(category) != -1) {
+    if (category === "/" && CURRENT_PATH.length === 1) {
+      return "selectedCategory";
+    } else if (category !== "/" && CURRENT_PATH.indexOf(category) != -1) {
+      // if the category name is found in the URL path
       return "selectedCategory";
     } else {
       return "";
@@ -27,13 +29,20 @@ export default function LayoutGeneral({ children }) {
 
   const generateMainContainer = () => {
     if (isShowingLinks === false) {
-      return <main className="mx-2 mt-6 lg:mx-32 lg:mt-8 ">{children}</main>;
+      return <main className="mt-6 lg:mt-8">{children}</main>;
     } else {
       // returns a customized view of the links for mobile devices
       return (
         <>
-          <main className="mx-8 mt-6 mb-12 lg:mx-32 lg:mt-8 ">{children}</main>
-          <div className="absolute w-full top-[112px] pb-6 flex flex-col bg-white z-10 items-center text-xl shadow-xl">
+          <main className="mt-6 mb-12 lg:mt-8">{children}</main>
+          <div className="absolute w-full top-[112px] pb-6 flex flex-col bg-white z-50 items-center text-xl shadow-xl">
+            <Link
+              href="/"
+              className="uppercase py-4 px-2 relative"
+              id={isSelected("/")}
+            >
+              Home
+            </Link>
             <Link
               href="/services"
               className="uppercase py-4 px-2 relative"
@@ -91,6 +100,13 @@ export default function LayoutGeneral({ children }) {
           )}
         </button>
         <div className={`hidden lg:flex gap-4 font-medium`}>
+          <Link
+            href="/"
+            className="uppercase py-4 px-2 relative"
+            id={isSelected("/")}
+          >
+            Home
+          </Link>
           <Link
             href="/services"
             className="uppercase py-4 px-2 relative"

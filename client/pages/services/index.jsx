@@ -3,7 +3,8 @@ import BackgroundImage from "@/components/ui/BackgroundImage";
 import SectionService from "@/components/services/SectionService";
 import SectionPaymentOptions from "@/components/services/SectionPaymentOptions";
 
-import services from "@/helpers/services.model";
+import serviceHelper from "@/helpers/services.helper";
+const { services } = serviceHelper;
 
 export default function Services() {
   return (
@@ -19,7 +20,7 @@ export default function Services() {
         fixed={false}
       />
       <section className="mb-24 xl:mb-[300px]">
-        <h1 className="mt-10 lg:mt-20 text-center xl:text-left text-3xl md:text-5xl lg:text-7xl uppercase tracking-wider font-bold text-white text-stroke-3 drop-shadow-lg">
+        <h1 className="px-0 md:px-32 mt-10 lg:mt-20 text-center xl:text-left text-3xl md:text-5xl lg:text-7xl uppercase tracking-wider font-bold text-white text-stroke-3 drop-shadow-lg">
           <div className="mb-5">Author&apos;s</div>
           <div className="mb-5">Perspective</div>
           <div className="mb-5">Literary Agency</div>

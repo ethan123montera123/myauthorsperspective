@@ -3,36 +3,39 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
 
-export default function SocialMediaManagementProgram() {
+export default function AuthorEcommerceSite() {
   return (
     <>
       <Head>
-        <title>Social Media Management Program</title>
+        <title>Author&apos;s E-commerce Website</title>
       </Head>
       <Breadcrumb
         orderedPathNames={[
           { name: "Home", url: "/" },
           { name: "Services", url: "/services" },
           {
-            name: "Social Media Management Program",
-            url: "/services/social-media-management-program",
+            name: "Author's E-commerce Website",
+            url: "/services/author-ecommerce-site",
           },
         ]}
       />
       <ServiceDetails
-        title="Social Media Management Program"
-        imgSrc="/images/services/social-media-management-program.webp"
+        title="Author's E-commerce Website"
+        imgSrc="/images/services/author-ecommerce-site.webp"
         priceUsd={1800}
         inclusions={[
-          "Social Media Strategy",
-          "Content Creation",
-          "Account Management",
-          "Paid Social Advertising",
-          "Influencer Marketing",
+          "Product Listing",
+          "Shopping Cart",
+          "Payment Getaway",
+          "Order Management",
+          "Inventory Management",
+          "Customer Database",
           "Analytics and Reporting",
-          "Social Listening",
-          "Community Management",
-          "Training and Consultation",
+          "Content Management System",
+          "Search Engine Optimization",
+          "Responsive Design",
+          "Security Features",
+          "Customer Support",
         ]}
       />
       <OtherServices

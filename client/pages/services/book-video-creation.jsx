@@ -3,36 +3,37 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
 
-export default function SocialMediaManagementProgram() {
+export default function BookVideoCreation() {
   return (
     <>
       <Head>
-        <title>Social Media Management Program</title>
+        <title>Book Video Creation</title>
       </Head>
       <Breadcrumb
         orderedPathNames={[
           { name: "Home", url: "/" },
           { name: "Services", url: "/services" },
           {
-            name: "Social Media Management Program",
-            url: "/services/social-media-management-program",
+            name: "Book Video Creation",
+            url: "/services/book-video-creation",
           },
         ]}
       />
       <ServiceDetails
-        title="Social Media Management Program"
-        imgSrc="/images/services/social-media-management-program.webp"
-        priceUsd={1800}
+        title="Book Video Creation"
+        imgSrc="/images/services/book-video-creation.webp"
+        priceUsd={1000}
         inclusions={[
-          "Social Media Strategy",
-          "Content Creation",
-          "Account Management",
-          "Paid Social Advertising",
-          "Influencer Marketing",
-          "Analytics and Reporting",
-          "Social Listening",
-          "Community Management",
-          "Training and Consultation",
+          "Book Title and Author",
+          "Book Synopsis",
+          "Book Cover",
+          "Book Quotes",
+          "Author Background",
+          "Reader Demographic",
+          "Visual Aids",
+          "Music and Sound Effects",
+          "Call to Action",
+          "Credits",
         ]}
       />
       <OtherServices

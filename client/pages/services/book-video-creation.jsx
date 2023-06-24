@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Breadcrumb from "@/components/ui/Breadcrumb";
+import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
 

@@ -40,5 +40,9 @@
   .card-gradient-overlay-hover {
     background: linear-gradient(0deg, #1b1b1b 0%, #71717100 120%);
   }
+
+  .background-dim {
+    @apply fixed top-0 left-0 h-screen w-screen bg-black z-30 opacity-10;
+  }
 }
 

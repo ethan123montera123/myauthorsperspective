@@ -1,5 +1,5 @@
 import CardHoverService from "./CardHoverService";
-import services from "@/helpers/services.model";
+import services from "@/helpers/services.helper";
 
 export default function SectionHomeServices() {
   return (

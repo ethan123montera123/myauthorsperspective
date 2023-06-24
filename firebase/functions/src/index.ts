@@ -1,5 +1,6 @@
-import { initializeApp } from "firebase-admin/app";
+import { seedFirestore } from "./providers/firebase/seeders";
 
-initializeApp();
+seedFirestore();
 
+export * as api from "./api";
 export * as events from "./events";

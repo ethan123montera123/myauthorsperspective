@@ -1,11 +1,17 @@
-export interface StripeConfig {
-  secretKey: string;
-  webhookSecret: string;
-  apiVersion: string;
-}
+export type FirestoreCollections = "orders" | "services" | "users";
 
 export interface FirebaseConfig {
-  collectionPaths: Record<Collections, string>;
+  collections: Record<Uppercase<FirestoreCollections>, string>;
 }
 
-export type Collections = "services" | "users";
+export interface StripeConfig {
+  SECRET_KEY: string;
+  WEBHOOK_SECRET: string;
+  API_VERSION: string;
+  CURRENCY: string;
+  AUTOMATIC_PAYMENT_METHOD: boolean;
+}
+
+export interface CorsConfig {
+  ORIGIN: string;
+}

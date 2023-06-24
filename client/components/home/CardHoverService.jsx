@@ -31,15 +31,16 @@ export default function CardHoverService({
 
   return (
     <div
+      tabIndex={0}
       onMouseOver={() => {
         setIsHovering(true);
       }}
       onMouseLeave={() => {
         setIsHovering(false);
       }}
-      className={`${className} shadow-2xl hover:scale-[1.01] hover:shadow-xl transition-all relative h-[16rem] xl:h-[24rem] rounded-2xl overflow-hidden`}
+      className={`${className} shadow-2xl focus:scale-[1.01] hover:scale-[1.01] hover:shadow-xl transition-all relative h-[16rem] xl:h-[24rem] rounded-2xl overflow-hidden`}
     >
-      <Link href={url}>
+      <Link href={url} tabIndex="-1">
         <div className="CardHoverService h-full w-full rounded">
           <Image
             src={imgSrc}

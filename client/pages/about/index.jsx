@@ -29,7 +29,7 @@ export default function About() {
               <div className="uppercase">+1 (201) 208 - 2048</div>
             </div>
           </div>
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 flex justify-center">
             <Image
               src="/images/logo.png"
               width="500"

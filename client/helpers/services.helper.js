@@ -97,7 +97,7 @@ const getRandomServices = (number, options = { excludeUrl: undefined }) => {
     excludeUrl !== undefined &&
     services.find((s) => s.url === excludeUrl) === undefined
   ) {
-    throw Error("Error: url not found in services list");
+    throw Error("Error: url not found in services list!");
   }
 
   // catchers for bad `number` input

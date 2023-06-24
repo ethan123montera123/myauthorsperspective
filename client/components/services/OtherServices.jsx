@@ -1,7 +1,10 @@
 import propTypes from "prop-types";
 import CardService from "./CardService";
+import servicesHelper from "@/helpers/services.helper";
 
-export default function OtherServices({ servicesData }) {
+export default function OtherServices({ excludeUrl }) {
+  const servicesData = servicesHelper.getRandomServices(3, { excludeUrl });
+
   return (
     <div className="OtherServices">
       <hr className="bg-neutral-300 h-[0.1rem] my-4" />
@@ -22,12 +25,5 @@ export default function OtherServices({ servicesData }) {
 }
 
 OtherServices.propTypes = {
-  servicesData: propTypes.arrayOf(
-    propTypes.shape({
-      url: propTypes.string.isRequired,
-      imgSrc: propTypes.string.isRequired,
-      title: propTypes.string.isRequired,
-      priceUsd: propTypes.number.isRequired,
-    })
-  ).isRequired,
+  excludeUrl: propTypes.string.isRequired,
 };

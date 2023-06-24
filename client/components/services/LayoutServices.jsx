@@ -17,8 +17,10 @@ export default function LayoutServices({ children }) {
   };
 
   const isSelected = (category) => {
-    // if the category name is found in the URL path
-    if (CURRENT_PATH.indexOf(category) != -1) {
+    if (category === "/" && CURRENT_PATH.length === 1) {
+      return "selectedCategory";
+    } else if (category !== "/" && CURRENT_PATH.indexOf(category) != -1) {
+      // if the category name is found in the URL path
       return "selectedCategory";
     } else {
       return "";
@@ -40,6 +42,13 @@ export default function LayoutServices({ children }) {
             {children}
           </main>
           <div className="absolute w-full top-[88px] pb-6 flex flex-col bg-white z-10 items-center text-xl shadow-xl">
+            <Link
+              href="/"
+              className="uppercase py-4 px-2 relative"
+              id={isSelected("/")}
+            >
+              Home
+            </Link>
             <Link
               href="/services"
               className="uppercase py-4 px-2 relative"
@@ -92,7 +101,15 @@ export default function LayoutServices({ children }) {
             <Menu color="black" size="40px" />
           )}
         </button>
+
         <div className={`hidden lg:flex gap-4 font-medium`}>
+          <Link
+            href="/"
+            className="uppercase py-4 px-2 relative"
+            id={isSelected("/")}
+          >
+            Home
+          </Link>
           <Link
             href="/services"
             className="uppercase py-4 px-2 relative"

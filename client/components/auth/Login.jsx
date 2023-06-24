@@ -13,7 +13,7 @@ export default function Login() {
   return (
     <>
       <div className="background-dim"></div>
-      <section className="flex flex-col items-center bg-white p-12 rounded-lg shadow-md relative z-40">
+      <section className="flex flex-col items-center bg-white m-4 mt-0 p-5 py-8 md:p-12 rounded-lg shadow-md relative z-40">
         <h1 className="Login uppercase mb-12 text-3xl font-bold tracking-wide">
           Log - in
         </h1>

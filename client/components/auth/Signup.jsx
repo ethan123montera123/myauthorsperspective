@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { useState } from "react";
-import { UserSquare, Lock, Facebook } from "lucide-react";
+import { UserSquare, Lock, Facebook, AtSign } from "lucide-react";
 import propTypes from "prop-types";
 
-export default function Login({ handleSwapAuth }) {
+export default function SignUp({ handleSwapAuth }) {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleChange = (e, setFn) => {
@@ -16,7 +17,7 @@ export default function Login({ handleSwapAuth }) {
       <div className="background-dim"></div>
       <section className="flex flex-col items-center bg-white m-4 mt-0 p-5 py-8 md:p-12 rounded-lg shadow-md relative z-40">
         <h1 className="Login uppercase mb-12 text-3xl font-bold tracking-wide">
-          Log In
+          Sign Up
         </h1>
         <form
           onSubmit={(e) => {
@@ -37,13 +38,41 @@ export default function Login({ handleSwapAuth }) {
               value={username}
               name="username"
               id="username"
-              placeholder="Type your username"
+              type="text"
+              pattern="[a-zA-Z][a-zA-Z0-9_.-]{5,19}"
+              title="Username must start with a letter and be 6-20 characters long (letters, digits, '.', '_', and '-')."
+              minLength="6"
+              maxLength="20"
               required
             ></input>
-            <div className="absolute left-1 bottom-3 ">
+            <div className="absolute left-1 bottom-3">
               <UserSquare
                 size="22"
                 color={username.length > 0 ? "black" : "#8e8e8e"}
+              />
+            </div>
+          </div>
+          <div className="relative pt-2">
+            <label
+              className="text-xs font-semibold text-neutral-700"
+              for="email"
+            >
+              Email
+            </label>
+            <input
+              className="border-b-2 border-neutral-400 focus:border-black py-2 w-full pl-9 focus:outline-none"
+              onChange={(e) => handleChange(e, setEmail)}
+              value={email}
+              name="email"
+              id="email"
+              type="email"
+              title="The email address to be used for your email notifications."
+              required
+            ></input>
+            <div className="absolute left-1 bottom-3 ">
+              <AtSign
+                size="22"
+                color={email.length > 0 ? "black" : "#8e8e8e"}
               />
             </div>
           </div>
@@ -60,8 +89,11 @@ export default function Login({ handleSwapAuth }) {
               value={password}
               name="password"
               id="password"
-              placeholder="Type your password"
               type="password"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()-_=+]{6,20}$"
+              title="Password must be 6-20 characters long and include at least one lowercase letter, one uppercase letter, and one digit."
+              minLength="8"
+              maxLength="20"
               required
             ></input>
             <div className="absolute left-1 bottom-3 ">
@@ -71,30 +103,24 @@ export default function Login({ handleSwapAuth }) {
               />
             </div>
           </div>
-          <div className="mt-2 flex justify-between text-neutral-600">
+          <div className="mt-2 flex justify-end text-neutral-600">
             <Link
-              className="hover:text-[#2200F0] text-xs font-semibold tracking-wide"
-              href="#"
               onClick={handleSwapAuth}
-            >
-              Create an account
-            </Link>
-            <Link
               className="hover:text-[#2200F0] text-xs font-semibold tracking-wide"
               href="#"
             >
-              Reset password
+              Log in with an existing account
             </Link>
           </div>
           <button
             type="submit"
             className="mt-8 font-bold uppercase tracking-wider bg-[#00C1EB] hover:bg-[#239db9] rounded-lg px-8 py-[0.5rem]"
           >
-            Log in
+            Sign up
           </button>
         </form>
         <div className="my-4 text-xs lowercase font-bold text-neutral-600">
-          Or Log in Using
+          Or Sign up Using
         </div>
         <div className="grid grid-cols-3 gap-4">
           <button className="rounded-full p-3 bg-[#32508E] hover:bg-[#284274]">
@@ -136,6 +162,6 @@ export default function Login({ handleSwapAuth }) {
   );
 }
 
-Login.propTypes = {
+SignUp.propTypes = {
   handleSwapAuth: propTypes.func.isRequired,
 };

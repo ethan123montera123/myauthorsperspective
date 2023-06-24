@@ -16,7 +16,7 @@ export async function signOut() {
 /**
  * Gets the account profile of the currently authenticated user.
  *
- * @returns {Promise<import("../common/@types").UserAccount>} A promise object containing the
+ * @returns {Promise<import("@/services/common/@types").UserAccount>} A promise object containing the
  * authenticated user's account profile.
  * @example
  * try {

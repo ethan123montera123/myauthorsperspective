@@ -60,7 +60,7 @@ export async function reauthenticateWithCredentials(password) {
 /**
  * Signs up a user with email and password.
  *
- * @param {import("../../common/@types").UserSignUpDto} user - An object containing the user's information.
+ * @param {import("@/services/common/@types").UserSignUpDto} user - An object containing the user's information.
  * @return {Promise<import("firebase/auth").UserCredential>} A promise containing the signed up user's
  * auth credentials.
  * @example

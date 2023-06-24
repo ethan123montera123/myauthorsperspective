@@ -2,6 +2,6 @@
  * @namespace Firebase
  *
  * @typedef {"users" | "services"} Collection
- * @typedef {{ [K in Uppercase<Collection>]: Lowercase<K>}} CollectionEnum
+ * @typedef {Record<Uppercase<Collection>, string>} CollectionEnum
  */
 export {};

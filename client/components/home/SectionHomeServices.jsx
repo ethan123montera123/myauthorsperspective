@@ -3,7 +3,7 @@ import services from "@/helpers/services.model";
 
 export default function SectionHomeServices() {
   return (
-    <section className="bg-white flex flex-col items-center md:text-left relative w-[100lvw] lg:w-[calc(100lvw-1.03rem)] -left-2 lg:-left-32 py-8 px-4 md:p-8 lg:px-32 lg:py-12">
+    <section className="bg-white flex flex-col items-center md:text-left py-8 px-4 md:p-8 lg:px-32 lg:py-12">
       <h1 className="uppercase font-bold text-3xl md:text-5xl lg:text-6xl xl:text-8xl">
         Services
       </h1>

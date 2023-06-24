@@ -27,18 +27,12 @@ export default function LayoutServices({ children }) {
 
   const generateMainContainer = () => {
     if (isShowingLinks === false) {
-      return (
-        <main className="mx-8 mt-6 mb-12 lg:mx-32 lg:mt-8 lg:mb-16">
-          {children}
-        </main>
-      );
+      return <main className="mt-6 mb-12 lg:mt-8 lg:mb-16">{children}</main>;
     } else {
       // returns a customized view of the links for mobile devices
       return (
         <>
-          <main className="mx-8 mt-6 mb-12 lg:mx-32 lg:mt-8 lg:mb-16">
-            {children}
-          </main>
+          <main className="mt-6 mb-12 lg:mt-8 lg:mb-16">{children}</main>
           <div className="absolute w-full top-[88px] pb-6 flex flex-col bg-white z-10 items-center text-xl shadow-xl">
             <Link
               href="/services"

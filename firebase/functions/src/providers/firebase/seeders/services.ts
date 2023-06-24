@@ -6,9 +6,7 @@ export const collection = config.firebase.collectionPaths.services;
 export const data = [
   {
     title: "Social Media Management Program",
-    priceTiers: {
-      basic: 1800,
-    },
+    unitPrice: 1800,
     inclusions: [
       "Social Media Strategy",
       "Content Creation",
@@ -23,9 +21,7 @@ export const data = [
   },
   {
     title: "Book Video Creation",
-    priceTiers: {
-      basic: 1000,
-    },
+    unitPrice: 1000,
     inclusions: [
       "Book Title and Author",
       "Book Synopsis",
@@ -41,9 +37,7 @@ export const data = [
   },
   {
     title: "Author's E-commerce Website",
-    priceTiers: {
-      basic: 1800,
-    },
+    unitPrice: 1800,
     inclusions: [
       "Product Listing",
       "Shopping Cart",
@@ -61,9 +55,7 @@ export const data = [
   },
   {
     title: "Search Engine Optimization",
-    priceTiers: {
-      basic: 4000,
-    },
+    unitPrice: 4000,
     inclusions: [
       "Keyword Research",
       "On-page Optimization",
@@ -76,10 +68,7 @@ export const data = [
   },
   {
     title: "Author's Blog Site",
-    priceTiers: {
-      basic: 700,
-      premium: 1800,
-    },
+    unitPrice: 700,
     inclusions: [
       "Homepage",
       "About Page",

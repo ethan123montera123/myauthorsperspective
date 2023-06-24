@@ -1,5 +1,5 @@
 export interface Service {
   title: string;
-  priceTiers: Record<string, number>;
+  unitPrice: number;
   inclusions: string[];
 }

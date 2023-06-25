@@ -17,7 +17,7 @@ export default function Home() {
         src="/images/home/background.jpg"
         height="1922"
         width="2560"
-        className="brightness-100"
+        className="brightness-100 border-8 border-white rounded-3xl"
         fixed={false}
       />
       <section className="mb-24 xl:mb-[300px]">

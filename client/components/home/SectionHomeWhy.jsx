@@ -1,6 +1,6 @@
 export default function SectionHomeWhy() {
   return (
-    <section className="bg-black justify-center md:text-left relative py-16 px-4 md:px-16 lg:px-32 lg:py-32">
+    <section className="border-8 border-white rounded-t-3xl border-b-0 bg-black justify-center md:text-left relative py-16 px-4 md:px-16 lg:px-32 lg:py-32">
       <h2 className="text-center text-white uppercase font-bold text-lg md:text-2xl lg:text-4xl xl:text-5xl">
         Why Author&apos;s Perspective?
       </h2>

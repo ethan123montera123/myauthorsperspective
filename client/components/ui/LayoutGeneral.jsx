@@ -16,6 +16,8 @@ export default function LayoutGeneral({ children }) {
     setIsShowingLinks(!isShowingLinks);
   };
 
+  const headerBg = isShowingLinks ? "bg-white" : "";
+
   const isSelected = (category) => {
     if (category === "/" && CURRENT_PATH.length === 1) {
       return "selectedCategory";
@@ -26,6 +28,8 @@ export default function LayoutGeneral({ children }) {
       return "";
     }
   };
+
+  const roundedFooter = CURRENT_PATH === "/" ? true : false;
 
   const generateMainContainer = () => {
     if (isShowingLinks === false) {
@@ -80,12 +84,11 @@ export default function LayoutGeneral({ children }) {
   return (
     <>
       <header
-        className={`${
-          isShowingLinks ? "bg-white" : ""
-        } relative w-full flex justify-between flex-row items-center pl-4 pr-8 lg:pl-8 py-1 z-10`}
+        className={`${headerBg} relative w-full flex justify-between flex-row items-center pl-4 pr-8 lg:pl-8 py-1 pt-2 z-10`}
       >
         <Link href="/" aria-label="Homepage">
           <Image
+            className="mt-2"
             src="/images/logo.png"
             alt="My Author's Perspective"
             width="112"
@@ -142,7 +145,7 @@ export default function LayoutGeneral({ children }) {
         </div>
       </header>
       {generateMainContainer()}
-      <Footer />
+      <Footer rounded={roundedFooter} />
     </>
   );
 }

@@ -20,7 +20,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="ContactForm min-w-[80%] mt-4 lg:mt-12 bg-neutral-200 p-4 md:p-10 md:px-14 lg:px-24 md:w-3/4 rounded-lg mb-16 text-xs md:text-base">
+    <div className="ContactForm min-w-[80%] mt-4 lg:mt-12 bg-neutral-200 p-4 md:p-10 md:px-14 lg:px-24 md:w-3/4 rounded-3xl mb-16 text-xs md:text-base">
       <form onSubmit={handleSubmit} method="POST" action="#" className="grid">
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-8">
           <FormField
@@ -80,7 +80,7 @@ export default function ContactForm() {
             required
           ></textarea>
         </div>
-        <button className="justify-self-end mt-3 w-32 lg:w-[10rem] bg-black hover:bg-[#04b2bd] text-white uppercase py-3 rounded font-semibold tracking-wider">
+        <button className="justify-self-end mt-3 w-32 lg:w-[10rem] bg-black hover:bg-[#04b2bd] text-white uppercase py-3 rounded-[2rem] font-semibold tracking-wider">
           Send
         </button>
       </form>

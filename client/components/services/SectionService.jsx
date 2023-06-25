@@ -55,7 +55,7 @@ export default function SectionService({
           alt="Social Media Management Program"
           width={900}
           height={600}
-          className="md:h-[350px] lg:h-[425px] object-cover w-full"
+          className="md:h-[350px] lg:h-[425px] object-cover w-full rounded-3xl"
         />
       </div>
     </section>

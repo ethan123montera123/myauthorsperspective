@@ -1,5 +1,5 @@
 import { firestore } from "firebase-functions/v2";
-import { config, logger, stripe } from "../providers";
+import { config, logger, stripe } from "../common/providers";
 
 const { USERS } = config.firebase.collections;
 

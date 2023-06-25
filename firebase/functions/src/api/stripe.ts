@@ -1,7 +1,7 @@
 import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
-import { config, firebase, logger, stripe } from "../providers";
-import { orderSchema } from "../validator";
+import { config, firebase, logger, stripe } from "../common/providers";
+import { orderSchema } from "../common/validator";
 
 const { USERS, ORDERS } = config.firebase.collections;
 const usersRef = firebase.db.collection(USERS);

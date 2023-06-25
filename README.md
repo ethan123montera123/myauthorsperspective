@@ -17,9 +17,7 @@
 1. Make sure that you have `JDK v11+`.
 2. Go into the functions directory using `cd firebase/functions`.
 3. Install the required dependencies using `npm ci`.
-4. After the installation, create two separate terminals.
-5. On one terminal run `npm run build:watch` to run developer mode.
-6. On the other terminal run `npm run serve` to start the firebase emulators, and serve the project locally.
+6. Run `npm run serve` to start the firebase emulators, and serve the project locally.
 7. To be able to use the emulators in javascript, you can create the following configuration in the
    initialization of the firebase project.
 

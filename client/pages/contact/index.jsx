@@ -8,6 +8,10 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us</title>
+        <meta
+          name="description"
+          content="We'd love to hear your feedback! Use our contact form to send us an email."
+        />
       </Head>
       <div className="Contact flex flex-col items-center">
         <BackgroundImage

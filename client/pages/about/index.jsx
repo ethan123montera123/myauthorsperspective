@@ -8,6 +8,10 @@ export default function About() {
     <>
       <Head>
         <title>About Us</title>
+        <meta
+          name="description"
+          content="You can contact My Author's Perspective via email through info@apliteraryagency.com, or via our phone number +1 (201) 208 - 2048."
+        />
       </Head>
       <div className="About flex flex-col items-center">
         <BackgroundImage

@@ -31,7 +31,7 @@ export default function ContactForm() {
             name="fName"
             id="fName"
             placeholder="Juan"
-            required="true"
+            required
           />
           <FormField
             value={lName}
@@ -41,7 +41,7 @@ export default function ContactForm() {
             name="lName"
             id="lName"
             placeholder="de La Cruz"
-            required="true"
+            required
           />
         </div>
         <FormField
@@ -52,7 +52,7 @@ export default function ContactForm() {
           name="email"
           id="email"
           placeholder="email@domain.com"
-          required="true"
+          required
         />
         <FormField
           value={subject}
@@ -62,7 +62,7 @@ export default function ContactForm() {
           name="subject"
           id="subject"
           placeholder="email@domain.com"
-          required="true"
+          required
         />
         <div className="flex flex-col mb-4">
           <label htmlFor="message" className="uppercase font-medium">

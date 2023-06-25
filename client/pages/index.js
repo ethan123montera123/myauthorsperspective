@@ -8,6 +8,10 @@ export default function Home() {
     <>
       <Head>
         <title>Our Services</title>
+        <meta
+          name="description"
+          content="My Author's Perspective offers services for content writers and business owners alike. Increase your marketability with us!"
+        />
       </Head>
       <BackgroundImage
         src="/images/home/background.jpg"

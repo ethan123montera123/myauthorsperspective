@@ -8,6 +8,10 @@ export default function SearchEngineOptimization() {
     <>
       <Head>
         <title>Search Engine Optimization</title>
+        <meta
+          name="description"
+          content="Grow your business organically with My Author's Perspective's Search Engine Optimization service."
+        />
       </Head>
       <Breadcrumb
         orderedPathNames={[

@@ -8,6 +8,10 @@ export default function AuthorEcommerceSite() {
     <>
       <Head>
         <title>Author&apos;s E-commerce Website</title>
+        <meta
+          name="description"
+          content="Sell your works & generate passive income with your own e-commerce website!"
+        />
       </Head>
       <Breadcrumb
         orderedPathNames={[

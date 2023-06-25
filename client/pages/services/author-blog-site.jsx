@@ -3,11 +3,15 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
 
-export default function AuthorEcommerceSite() {
+export default function AuthorBlogSite() {
   return (
     <>
       <Head>
         <title>Author&apos;s Blog Site</title>
+        <meta
+          name="description"
+          content="Monetize your thoughts with your own Blog Site with best Search Engine Optimization (SEO) practices."
+        />
       </Head>
       <Breadcrumb
         orderedPathNames={[

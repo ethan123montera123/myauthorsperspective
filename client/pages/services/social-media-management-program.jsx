@@ -8,6 +8,10 @@ export default function SocialMediaManagementProgram() {
     <>
       <Head>
         <title>Social Media Management Program</title>
+        <meta
+          name="description"
+          content="Focus on what is important and let My Author's Perspective handle your Social Media Management needs."
+        />
       </Head>
       <Breadcrumb
         orderedPathNames={[

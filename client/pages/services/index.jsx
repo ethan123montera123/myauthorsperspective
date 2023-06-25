@@ -11,6 +11,10 @@ export default function Services() {
     <>
       <Head>
         <title>Our Services</title>
+        <meta
+          name="description"
+          content="Avail Author's Perspective services like Social Media Management, Book Video Creation, Author's E-commerce Website, Search Engine Optimization, Author's Blog Site, and checkout with your favorite method of payment!."
+        />
       </Head>
       <BackgroundImage
         src="/images/services/background.jpg"

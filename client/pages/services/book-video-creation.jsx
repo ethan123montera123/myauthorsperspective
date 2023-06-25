@@ -8,6 +8,10 @@ export default function BookVideoCreation() {
     <>
       <Head>
         <title>Book Video Creation</title>
+        <meta
+          name="description"
+          content="Let My Author's Perspective handle your book marketing needs with our Book Video Creation."
+        />
       </Head>
       <Breadcrumb
         orderedPathNames={[

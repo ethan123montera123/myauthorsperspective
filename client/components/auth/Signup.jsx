@@ -23,7 +23,7 @@ export default function SignUp({ handleSwapAuth }) {
   return (
     <>
       <div className="background-dim"></div>
-      <section className="flex flex-col items-center bg-white m-4 mt-0 p-5 py-8 md:p-12 rounded-lg shadow-md relative z-40">
+      <section className="rounded-3xl flex flex-col items-center bg-white m-4 mt-0 p-5 py-8 md:p-12 shadow-md relative z-40">
         <h1 className="Login uppercase mb-12 text-3xl font-bold tracking-wide">
           Sign Up
         </h1>
@@ -117,7 +117,7 @@ export default function SignUp({ handleSwapAuth }) {
           </div>
           <button
             type="submit"
-            className="mt-8 font-bold uppercase tracking-wider bg-[#00C1EB] hover:bg-[#239db9] rounded-lg px-8 py-[0.5rem]"
+            className="rounded-xl mt-8 font-bold uppercase tracking-wider bg-[#00C1EB] hover:bg-[#239db9] px-8 py-[0.5rem]"
           >
             Sign up
           </button>

@@ -1,5 +1,10 @@
 import dotenv from "dotenv";
-import { CorsConfig, FirebaseConfig, StripeConfig } from "../interface";
+import {
+  CorsConfig,
+  FirebaseConfig,
+  MailerConfig,
+  StripeConfig,
+} from "../interface";
 
 const { parsed: env } = dotenv.config();
 
@@ -22,3 +27,7 @@ export const firebase = {
 export const cors = {
   ORIGIN: env?.CORS_ORIGIN || "http://localhost:3000",
 } as const satisfies CorsConfig;
+
+export const mailer = {
+  API_KEY: env?.RESEND_API_KEY || "",
+} as const satisfies MailerConfig;

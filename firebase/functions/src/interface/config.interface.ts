@@ -15,3 +15,7 @@ export interface StripeConfig {
 export interface CorsConfig {
   ORIGIN: string;
 }
+
+export interface MailerConfig {
+  API_KEY: string;
+}

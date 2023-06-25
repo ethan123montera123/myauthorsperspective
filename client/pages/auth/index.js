@@ -11,10 +11,14 @@ export default function Auth() {
 
   return (
     <>
-      <meta
-        name="description"
-        content="Authenticate with your My Author's Perspective account."
-      />
+      <Head>
+        <title>Sign In</title>
+        <meta
+          name="description"
+          content="Authenticate with your My Author's Perspective account."
+        />
+      </Head>
+
       <div className="flex justify-center pb-8">
         {isShowingLogin ? (
           <Login handleSwapAuth={toggleShowLogin} />

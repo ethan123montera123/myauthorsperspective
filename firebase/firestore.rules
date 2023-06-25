@@ -1,36 +1,55 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /customers/{uid} {
-      allow read: if request.auth.uid == uid;
-
-      match /checkout_sessions/{id} {
-        allow read, write: if request.auth.uid == uid;
-      }
-      
-      match /subscriptions/{id} {
-        allow read: if request.auth.uid == uid;
-      }
-      
-      match /payments/{id} {
-        allow read: if request.auth.uid == uid;
-      }
-    }
-    
     match /users/{uid} {
-  		allow read, write: if request.auth.uid == uid;
+      function strictRequired(data, fields) {
+        return data.keys().hasOnly(fields) && data.keys().hasAll(fields);
+      }
+
+      function isAlpha(str) {
+        // Starts and ends with alphabet characters
+        // Contains dashes, spaces, periods, spaces, and alphabet characters
+        // Length of 2 to 256
+        let pattern = "^[a-zA-Z][\\w\\ \\-]{0,254}[a-zA-Z]$";
+				
+        return str is string && str.matches(pattern);
+      }
+      
+      function isEmail(email) {
+      	// Valid email pattern
+        let pattern = "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$";
+        
+        return email is string && email.matches(pattern);
+      }
+      
+      function isPhoneNumber(phone) {
+      	// Starts with a plus, open parenthesis, or a 
+        // Second character can be a + for cases such as (+63)
+        // Contains numbers, dashes, spaces, or parenthesis
+        // Ends with a number
+        // Length of 4 to 24
+        let pattern = "^[\\d\\+\\(][\\+]{0,1}[\\d\\-\\ \\(\\)]{2,22}\\d$";
+        
+        return phone is string && phone.matches(pattern);
+      }
+
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid && (
+      	strictRequired(request.resource.data, ["firstName", "lastName", "email", "phone"])
+        && isAlpha(request.resource.data.firstName)
+        && isAlpha(request.resource.data.lastName)
+        && isEmail(request.resource.data.email)
+        && isPhoneNumber(request.resource.data.phone)
+      );
+      allow update: if request.auth != null && request.auth.uid == uid && (
+      	request.resource.data.diff(resource.data).affectedKeys().hasOnly(["email", "phone"])
+        && ("email" in request.resource.data ? isEmail(request.resource.data.email) : true)
+        && ("phone" in request.resource.data ? isPhoneNumber(request.resource.data.phone) : true)
+      );
     }
 
-    match /products/{id} {
-      allow read: if true;
-
-      match /prices/{id} {
-        allow read: if true;
-      }
-
-      match /tax_rates/{id} {
-        allow read: if true;
-      }
+    match /services/{doc=**} {
+      allow read;
     }
   }
 }

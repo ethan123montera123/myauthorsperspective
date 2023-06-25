@@ -1,14 +1,10 @@
-import {
-  onDocumentCreated,
-  onDocumentDeleted,
-  onDocumentUpdated,
-} from "firebase-functions/v2/firestore";
-import { config, logger, stripe } from "../providers";
+import { firestore } from "firebase-functions/v2";
+import { config, logger, stripe } from "../common/providers";
 
-const { users } = config.firebase.collectionPaths;
+const { USERS } = config.firebase.collections;
 
-export const createStripeAccount = onDocumentCreated(
-  `${users}/{uid}`,
+export const createStripeAccount = firestore.onDocumentCreated(
+  `${USERS}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
@@ -36,7 +32,7 @@ export const createStripeAccount = onDocumentCreated(
 
       return { ...data, stripeId };
     } catch (error: unknown) {
-      logger.error("Stripe account creation failed.", error as Error, {
+      logger.error("Stripe account creation failed.", error, {
         user: uid,
       });
     }
@@ -45,8 +41,8 @@ export const createStripeAccount = onDocumentCreated(
   }
 );
 
-export const syncAccountUpdateToStripe = onDocumentUpdated(
-  `${users}/{uid}`,
+export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
+  `${USERS}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
@@ -69,19 +65,15 @@ export const syncAccountUpdateToStripe = onDocumentUpdated(
 
       return snapshot.after.data();
     } catch (error: unknown) {
-      logger.error(
-        "Stripe account update syncing failed.",
-        error as Error,
-        account
-      );
+      logger.error("Stripe account update syncing failed.", error, account);
     }
 
     return null;
   }
 );
 
-export const syncAccountDeleteToStripe = onDocumentDeleted(
-  `${users}/{uid}`,
+export const syncAccountDeleteToStripe = firestore.onDocumentDeleted(
+  `${USERS}/{uid}`,
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
@@ -97,7 +89,7 @@ export const syncAccountDeleteToStripe = onDocumentDeleted(
       logger.log("Stripe account deleted successfully.", account);
       return account;
     } catch (error: unknown) {
-      logger.error("Stripe account deletion failed.", error as Error, account);
+      logger.error("Stripe account deletion failed.", error, account);
     }
 
     return null;

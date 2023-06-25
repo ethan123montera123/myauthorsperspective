@@ -94,7 +94,11 @@ export default function LayoutServices({ children }) {
             height="80"
           />
         </Link>
-        <button className="lg:hidden" onClick={toggleShowLinks}>
+        <button
+          aria-label="Toggle Navigation Menu"
+          className="lg:hidden"
+          onClick={toggleShowLinks}
+        >
           {isShowingLinks ? (
             <X color="black" size="40px" />
           ) : (

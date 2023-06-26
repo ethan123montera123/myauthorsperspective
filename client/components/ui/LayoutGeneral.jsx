@@ -93,6 +93,7 @@ export default function LayoutGeneral({ children }) {
             alt="My Author's Perspective"
             width="112"
             height="112"
+            priority
           />
         </Link>
         <button

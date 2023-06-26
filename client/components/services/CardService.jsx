@@ -2,7 +2,7 @@ import propTypes from "prop-types";
 import Image from "next/image";
 import Link from "next/link";
 
-import currencyHelper from "@/helpers/currency.helper";
+import { formatUsd } from "@/helpers/currency.helper";
 
 export default function CardService({ url, imgSrc, title, priceUsd }) {
   return (
@@ -22,7 +22,7 @@ export default function CardService({ url, imgSrc, title, priceUsd }) {
       <div className="px-4 py-2">
         <h3 className="font-semibold uppercase text-base">{title}</h3>
         <div className="flex justify-end text-lg mt-2">
-          {currencyHelper.formatUsd(priceUsd, { showDecimals: false })}
+          {formatUsd(priceUsd, { showDecimals: false })}
         </div>
       </div>
     </Link>

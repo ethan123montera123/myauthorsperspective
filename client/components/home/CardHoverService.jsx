@@ -2,7 +2,7 @@ import propTypes from "prop-types";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import currencyHelper from "@/helpers/currency.helper";
+import { formatUsd } from "@/helpers/currency.helper";
 
 export default function CardHoverService({
   title,
@@ -20,7 +20,7 @@ export default function CardHoverService({
   const cardContent = isHovering ? (
     <div className="flex flex-col gap-6 lg:mb-5">
       <div>{title}</div>
-      <div>{currencyHelper.formatUsd(priceUsd, { showDecimals: false })}</div>
+      <div>{formatUsd(priceUsd, { showDecimals: false })}</div>
       <button className="uppercase text-black bg-neutral-400 rounded-[2rem] px-5 py-2 self-center hover:bg-[#00C1EB]">
         Book Now
       </button>

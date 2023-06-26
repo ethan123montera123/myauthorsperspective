@@ -145,7 +145,7 @@ export default function LayoutServices({ children }) {
         </div>
       </header>
       {generateMainContainer()}
-      <Footer />
+      <Footer rounded={false} />
     </>
   );
 }

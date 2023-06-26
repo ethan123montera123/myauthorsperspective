@@ -89,6 +89,12 @@ const services = [
   },
 ];
 
+/**
+ *
+ * @param {number} number the number of services to retrieve, can not exceed length of `services` array
+ * @param {object} options options.excludeUrl specifies the service URL to not include in the random choices
+ * @returns {Array} an array of the service objects
+ */
 const getRandomServices = (number, options = { excludeUrl: undefined }) => {
   const { excludeUrl } = options;
 
@@ -138,6 +144,4 @@ const getRandomServices = (number, options = { excludeUrl: undefined }) => {
   return randomServices;
 };
 
-const exports = { services, getRandomServices };
-
-export default exports;
+export { services, getRandomServices };

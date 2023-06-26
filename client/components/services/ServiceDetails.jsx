@@ -1,7 +1,7 @@
 import propTypes from "prop-types";
 import Image from "next/image";
 
-import currencyHelper from "@/helpers/currency.helper";
+import { formatUsd } from "@/helpers/currency.helper";
 
 export default function ServiceDetails({
   title,
@@ -32,7 +32,7 @@ export default function ServiceDetails({
           {title}
         </h2>
         <h3 className="tracking-widest font-bold mt-3 text-xl">
-          {currencyHelper.formatUsd(priceUsd, { showDecimals: false })}
+          {formatUsd(priceUsd, { showDecimals: false })}
         </h3>
         <div>
           <h4 className="mt-4 uppercase">Inclusions:</h4>

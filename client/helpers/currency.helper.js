@@ -1,6 +1,6 @@
 /**
  * @param {number} usd the USD value as a float or an integer
- * @returns {string} a neatly formatted string a $ prefix for displaying USD values
+ * @returns {string} a neatly formatted string with a '$' prefix for displaying USD values
  *
  * Example: 1234567.89 => '$1,234,567.89'
  */
@@ -17,6 +17,4 @@ function formatUsd(number, options = { showDecimals: true }) {
   return formatter.format(number);
 }
 
-const exports = { formatUsd };
-
-export default exports;
+export { formatUsd };

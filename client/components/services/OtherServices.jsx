@@ -1,9 +1,9 @@
 import propTypes from "prop-types";
 import CardService from "./CardService";
-import servicesHelper from "@/helpers/services.helper";
+import { getRandomServices } from "@/helpers/services.helper";
 
 export default function OtherServices({ excludeUrl }) {
-  const servicesData = servicesHelper.getRandomServices(3, { excludeUrl });
+  const servicesData = getRandomServices(3, { excludeUrl });
 
   return (
     <div className="OtherServices">

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatUsd } from "@/helpers/currency.helper";
 import PaymentMethodSelector from "@/components/cart/PaymentMethodSelector";
 import CardInformationForm from "@/components/cart/CardInformationForm";
@@ -46,6 +46,39 @@ export default function Cart() {
     setAuthorsBlogSiteServices,
     setAuthorsEcommerceWebsiteServices,
   };
+
+  useEffect(() => {
+    /* all the accessible data for the cart, logged everytime any of them change */
+    console.log("Form Data", {
+      selectedPaymentMethod,
+      fName,
+      lName,
+      cardNumber,
+      cardExpiryDate,
+      cardVerificationValue,
+      cardZipCode,
+      totalPriceUsd,
+      socialMediaManagementProgramServices,
+      searchEngineOptimizationServices,
+      bookVideoCreationServices,
+      authorsBlogSiteServices,
+      authorsEcommerceWebsiteServices,
+    });
+  }, [
+    selectedPaymentMethod,
+    fName,
+    lName,
+    cardNumber,
+    cardExpiryDate,
+    cardVerificationValue,
+    cardZipCode,
+    totalPriceUsd,
+    socialMediaManagementProgramServices,
+    searchEngineOptimizationServices,
+    bookVideoCreationServices,
+    authorsBlogSiteServices,
+    authorsEcommerceWebsiteServices,
+  ]);
 
   const [selectedService, setSelectedService] = useState(
     "Social Media Management Program"

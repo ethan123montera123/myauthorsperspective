@@ -70,7 +70,7 @@ export default function Cart() {
           content="View your cart and checkout with our payment providers."
         />
       </Head>
-      <section className="Cart w-full px-16 grid gap-8 xl:grid-cols-2">
+      <section className="Cart w-full px-16 grid gap-8 xl:grid-cols-2 mb-16">
         <div>
           <ServicesToAvail
             selectedService={selectedService}

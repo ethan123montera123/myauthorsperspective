@@ -16,13 +16,37 @@ export default function Cart() {
   const [cardZipCode, setCardZipCode] = useState("");
   const [totalPriceUsd, setTotalPriceUsd] = useState(0);
   /* services to avail */
-  const [availedServices, setAvailedServices] = useState({
-    socialMediaManagementProgramServices: [],
-    searchEngineOptimizationServices: [],
-    bookVideoCreationServices: [],
-    authorsBlogSiteServices: [],
-    authorsEcommerceWebsiteServices: [],
-  });
+  const [
+    socialMediaManagementProgramServices,
+    setSocialMediaManagementProgramServices,
+  ] = useState([]);
+  const [
+    searchEngineOptimizationServices,
+    setSearchEngineOptimizationServices,
+  ] = useState([]);
+  const [bookVideoCreationServices, setBookVideoCreationServices] = useState(
+    []
+  );
+  const [authorsBlogSiteServices, setAuthorsBlogSiteServices] = useState([]);
+  const [authorsEcommerceWebsiteServices, setAuthorsEcommerceWebsiteServices] =
+    useState([]);
+
+  const availedServices = {
+    socialMediaManagementProgramServices,
+    searchEngineOptimizationServices,
+    bookVideoCreationServices,
+    authorsBlogSiteServices,
+    authorsEcommerceWebsiteServices,
+  };
+
+  const availedServicesSetters = {
+    setSocialMediaManagementProgramServices,
+    setSearchEngineOptimizationServices,
+    setBookVideoCreationServices,
+    setAuthorsBlogSiteServices,
+    setAuthorsEcommerceWebsiteServices,
+  };
+
   const [selectedService, setSelectedService] = useState(
     "Social Media Management Program"
   );
@@ -46,11 +70,12 @@ export default function Cart() {
           content="View your cart and checkout with our payment providers."
         />
       </Head>
-      <section className="Cart w-full px-16 grid xl:grid-cols-2">
+      <section className="Cart w-full px-16 grid gap-8 xl:grid-cols-2">
         <div>
           <ServicesToAvail
             selectedService={selectedService}
             availedServices={availedServices}
+            availedServicesSetters={availedServicesSetters}
             setSelectedService={setSelectedService}
           />
         </div>

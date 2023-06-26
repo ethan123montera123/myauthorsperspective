@@ -93,7 +93,7 @@ const services = [
  *
  * @param {number} number the number of services to retrieve, can not exceed length of `services` array
  * @param {object} options options.excludeUrl specifies the service URL to not include in the random choices
- * @returns {Array} an array of the service objects
+ * @returns {[ ...services ]} an array of the service objects
  */
 const getRandomServices = (number, options = { excludeUrl: undefined }) => {
   const { excludeUrl } = options;
@@ -144,4 +144,12 @@ const getRandomServices = (number, options = { excludeUrl: undefined }) => {
   return randomServices;
 };
 
-export { services, getRandomServices };
+/**
+ * @param {serviceName} string the service name to get the inclusions array form
+ * @returns {string[]} an array of strings representing the inclusions of the `serviceName`
+ */
+const getInclusionsOfService = (serviceName) => {
+  return services.find((s) => s.title === serviceName).inclusions;
+};
+
+export { services, getRandomServices, getInclusionsOfService };

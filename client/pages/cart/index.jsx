@@ -20,8 +20,8 @@ export default function Cart() {
     socialMediaManagementProgramServices: [],
     searchEngineOptimizationServices: [],
     bookVideoCreationServices: [],
-    authorsBlogSite: [],
-    authorsEcommerceWebsite: [],
+    authorsBlogSiteServices: [],
+    authorsEcommerceWebsiteServices: [],
   });
   const [selectedService, setSelectedService] = useState(
     "Social Media Management Program"

@@ -2,7 +2,7 @@ import React from "react";
 import propTypes from "prop-types";
 
 export default function CardInformationForm({
-  setFname,
+  setFName,
   setLName,
   setCardNumber,
   setCardExpiryDate,
@@ -30,7 +30,7 @@ export default function CardInformationForm({
           value={fName}
           required
           placeholder="First Name"
-          onChange={(e) => handleChange(e, setFname)}
+          onChange={(e) => handleChange(e, setFName)}
         />
         <input
           className="text-lg font-medium uppercase text-center flex px-4 py-2 border-2 border-neutral-500 rounded-2xl active:border-black"

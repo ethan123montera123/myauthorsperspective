@@ -3,8 +3,10 @@ import { useState } from "react";
 import { formatUsd } from "@/helpers/currency.helper";
 import PaymentMethodSelector from "@/components/cart/PaymentMethodSelector";
 import CardInformationForm from "@/components/cart/CardInformationForm";
+import ServicesToAvail from "@/components/cart/ServicesToAvail";
 
 export default function Cart() {
+  /* payment method */
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Visa");
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
@@ -13,6 +15,17 @@ export default function Cart() {
   const [cardVerificationValue, setCardVerificationValue] = useState("");
   const [cardZipCode, setCardZipCode] = useState("");
   const [totalPriceUsd, setTotalPriceUsd] = useState(0);
+  /* services to avail */
+  const [availedServices, setAvailedServices] = useState({
+    socialMediaManagementProgramServices: [],
+    searchEngineOptimizationServices: [],
+    bookVideoCreationServices: [],
+    authorsBlogSite: [],
+    authorsEcommerceWebsite: [],
+  });
+  const [selectedService, setSelectedService] = useState(
+    "Social Media Management Program"
+  );
 
   const isSelectedPaymentMethod = (str) => {
     return str === selectedPaymentMethod
@@ -34,7 +47,13 @@ export default function Cart() {
         />
       </Head>
       <section className="Cart w-full px-16 grid xl:grid-cols-2">
-        <div></div>
+        <div>
+          <ServicesToAvail
+            selectedService={selectedService}
+            availedServices={availedServices}
+            setSelectedService={setSelectedService}
+          />
+        </div>
         <div className="px-8">
           <h2 className="uppercase font-semibold text-xl mb-8">
             Choose a Payment Method
@@ -48,7 +67,7 @@ export default function Cart() {
           </h2>
           <CardInformationForm
             fName={fName}
-            setFname={setFName}
+            setFName={setFName}
             lName={lName}
             setLName={setLName}
             cardNumber={cardNumber}

@@ -104,7 +104,7 @@ export default function Cart() {
         />
       </Head>
       <section className="Cart w-full md:px-16 grid gap-8 xl:grid-cols-2 mb-16">
-        <div>
+        <div className="px-2 md:px-0">
           <ServicesToAvail
             selectedService={selectedService}
             availedServices={availedServices}

@@ -77,11 +77,11 @@ export default function ServicesToAvail({
   };
 
   return (
-    <div className="bg-neutral-200 py-6 px-8 rounded-xl">
-      <h2 className="text-center uppercase font-semibold text-xl mb-8">
+    <div className="bg-neutral-200 py-6 px-4 md:px-8 rounded-xl">
+      <h2 className="text-center uppercase font-semibold text-lg md:text-xl mb-4 md:mb-8">
         Services to Avail
       </h2>
-      <div className="grid grid-cols-2 gap-y-2 gap-x-4 pb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 pb-8">
         {inclusionsData.map(({ serviceInclusions, serviceName }) => {
           const isStarred = serviceInclusions.length > 0 ? true : false;
           return (
@@ -97,7 +97,9 @@ export default function ServicesToAvail({
           );
         })}
       </div>
-      <h2 className="uppercase font-semibold text-xl mb-6">Inclusions:</h2>
+      <h2 className="uppercase font-semibold text-lg md:text-xl mb-4 md:mb-6">
+        Inclusions:
+      </h2>
       {selectedServiceData.inclusions.map((inclusionName) => (
         <InclusionCheckbox
           key={inclusionName}

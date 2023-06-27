@@ -18,7 +18,7 @@ export default function InclusionCheckbox({
       <div className="flex items-center rounded-md bg-white p-1">
         <Check color={`${isChecked ? "black" : "white"}`} size="18" />
       </div>
-      <div className="flex items-center uppercase font-medium">
+      <div className="flex items-center text-xs md:text-base uppercase font-medium">
         {inclusionName}
       </div>
     </button>

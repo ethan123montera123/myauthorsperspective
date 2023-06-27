@@ -103,7 +103,7 @@ export default function Cart() {
           content="View your cart and checkout with our payment providers."
         />
       </Head>
-      <section className="Cart w-full md:px-16 grid gap-8 xl:grid-cols-2 mb-16">
+      <section className="Cart w-full grid gap-8 xl:grid-cols-2 my-8 mb-16">
         <div className="px-2 md:px-0">
           <ServicesToAvail
             selectedService={selectedService}

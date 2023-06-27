@@ -1,28 +1,29 @@
 import "@/styles/globals.css";
-import LayoutServices from "@/components/services/LayoutServices";
+import LayoutWhiteHeader from "@/components/ui/LayoutWhiteHeader";
 import LayoutGeneral from "@/components/ui/LayoutGeneral";
 
 // fonts
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
-function isServicesUrl(urlPath) {
+function pageUsesWhiteHeader(urlPath) {
   if (typeof urlPath !== "string") {
     return false; // If `urlPath` is not a string, return false
   }
 
-  return /^\/services\/.*/.test(urlPath);
+  // matches `/services/*` or `/cart`
+  return /^\/services\/.*/.test(urlPath) || /^\/cart/.test(urlPath);
 }
 
 export default function App({ Component, pageProps, router }) {
   const path = router.pathname;
 
-  if (isServicesUrl(path)) {
+  if (pageUsesWhiteHeader(path)) {
     return (
       <div className={`flex flex-col h-full ${inter.className}`}>
-        <LayoutServices>
+        <LayoutWhiteHeader>
           <Component {...pageProps} />
-        </LayoutServices>
+        </LayoutWhiteHeader>
       </div>
     );
   } else {

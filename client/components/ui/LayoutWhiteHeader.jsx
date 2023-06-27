@@ -1,13 +1,13 @@
 // icons from https://lucide.dev/guide/packages/lucide-react
 import { Menu, X } from "lucide-react";
 
-import Footer from "../ui/Footer";
+import Footer from "./Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function LayoutServices({ children }) {
+export default function LayoutWhiteHeader({ children }) {
   const CURRENT_PATH = useRouter().pathname;
 
   const [isShowingLinks, setIsShowingLinks] = useState(false);

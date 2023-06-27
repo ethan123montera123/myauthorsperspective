@@ -2,20 +2,30 @@ import Link from "next/link";
 import { useState } from "react";
 import { UserSquare, Lock, Facebook } from "lucide-react";
 import propTypes from "prop-types";
+import { signInWithCredentials } from "@/services/api/auth";
+import { useRouter } from "next/router";
 
 export default function Login({ handleSwapAuth }) {
-  const [username, setUsername] = useState("");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleChange = (e, setFn) => {
     setFn(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Inputs:");
-    console.log("username -", username);
-    console.log("password -", password);
+
+    const { error } = await signInWithCredentials(email, password);
+    if (error) {
+      // handle errors gracefully and reflect it in UI
+      return console.log(error);
+    } else {
+      setEmail("");
+      setPassword("");
+      router.push("/");
+    }
   };
 
   return (
@@ -29,23 +39,23 @@ export default function Login({ handleSwapAuth }) {
           <div className="relative">
             <label
               className="text-xs font-semibold text-neutral-700"
-              for="username"
+              for="email"
             >
-              Username
+              Email
             </label>
             <input
               className="border-b-2 border-neutral-400 focus:border-black py-2 w-full pl-9 focus:outline-none"
-              onChange={(e) => handleChange(e, setUsername)}
-              value={username}
-              name="username"
-              id="username"
-              placeholder="Type your username"
+              onChange={(e) => handleChange(e, setEmail)}
+              value={email}
+              name="email"
+              id="email"
+              placeholder="Type your email"
               required
-            ></input>
+            />
             <div className="absolute left-1 bottom-3 ">
               <UserSquare
                 size="22"
-                color={username.length > 0 ? "black" : "#8e8e8e"}
+                color={email.length > 0 ? "black" : "#8e8e8e"}
               />
             </div>
           </div>
@@ -65,7 +75,7 @@ export default function Login({ handleSwapAuth }) {
               placeholder="Type your password"
               type="password"
               required
-            ></input>
+            />
             <div className="absolute left-1 bottom-3 ">
               <Lock
                 size="22"

@@ -1,38 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# My Author's Perspective Client
 
-## Getting Started
-
-First, run the development server:
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+npm install # install the necessary packages
+npm run dev # run the local development enviroment
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the
+result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## File Structure
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```
+client/
+├── components/
+│   └── ui/
+├── helpers/
+│   ├── currency.helper.js
+│   └── services.helper.js
+├── pages/
+│   ├── _app.js
+│   ├── _document.js
+│   └── index.js
+├── public/
+│   └── images/
+├── services/
+│   ├── api/
+│   ├── firebase/
+│   └── utils/
+├── styles/
+│   └── globals.css
+├── .env.example
+├── .prettierrc
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+└── README.md
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- all the configuration files are found in the `client` root `.` directory.
+- all assets found in the `./public/` directory are served from `/` when using
+  `href` or `src` HTML attributes.
+- to edit the different pages, check the `./pages/<PAGE_NAME>/` directories for
+  the `index.js` file.
+- `./components/` contains the React components used in the different
+  `./pages/<PAGE_NAME>/index.js` files.
+- `./helpers/` contains the model for the services domain information and also
+  small helper functions in determining what to render in the application.
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+We will use the
+[Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
+to deploy the application after linking the GitHub repository inside Vercel.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

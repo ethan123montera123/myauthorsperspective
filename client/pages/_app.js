@@ -1,6 +1,8 @@
 import "@/styles/globals.css";
 import LayoutWhiteHeader from "@/components/ui/LayoutWhiteHeader";
 import LayoutGeneral from "@/components/ui/LayoutGeneral";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // fonts
 import { Inter } from "next/font/google";
@@ -24,6 +26,7 @@ export default function App({ Component, pageProps, router }) {
         <LayoutWhiteHeader>
           <Component {...pageProps} />
         </LayoutWhiteHeader>
+        <ToastContainer />
       </div>
     );
   } else {
@@ -32,6 +35,7 @@ export default function App({ Component, pageProps, router }) {
         <LayoutGeneral>
           <Component {...pageProps} />
         </LayoutGeneral>
+        <ToastContainer />
       </div>
     );
   }

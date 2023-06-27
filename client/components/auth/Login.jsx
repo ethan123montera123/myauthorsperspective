@@ -4,6 +4,7 @@ import { UserSquare, Lock, Facebook } from "lucide-react";
 import propTypes from "prop-types";
 import { signInWithCredentials } from "@/services/api/auth";
 import { useRouter } from "next/router";
+import { notifySuccess } from "@/helpers/notification.helper.";
 
 export default function Login({ handleSwapAuth }) {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function Login({ handleSwapAuth }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    notifySuccess("Successfully logged in.");
 
     const { error } = await signInWithCredentials(email, password);
     if (error) {

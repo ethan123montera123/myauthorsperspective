@@ -103,7 +103,7 @@ export default function Cart() {
           content="View your cart and checkout with our payment providers."
         />
       </Head>
-      <section className="Cart w-full px-16 grid gap-8 xl:grid-cols-2 mb-16">
+      <section className="Cart w-full md:px-16 grid gap-8 xl:grid-cols-2 mb-16">
         <div>
           <ServicesToAvail
             selectedService={selectedService}
@@ -112,15 +112,15 @@ export default function Cart() {
             setSelectedService={setSelectedService}
           />
         </div>
-        <div className="px-8">
-          <h2 className="uppercase font-semibold text-xl mb-8">
+        <div className="px-4 lg:px-8">
+          <h2 className="uppercase text-center md:text-left font-semibold text-lg md:text-xl mb-8">
             Choose a Payment Method
           </h2>
           <PaymentMethodSelector
             handleClickPaymentMethod={handleClickPaymentMethod}
             isSelectedPaymentMethod={isSelectedPaymentMethod}
           />
-          <h2 className="uppercase font-semibold text-xl mb-4 mt-20">
+          <h2 className="uppercase text-center md:text-left font-semibold text-lg md:text-xl mb-4 mt-12 xl:mt-20">
             Card Information
           </h2>
           <CardInformationForm
@@ -138,12 +138,12 @@ export default function Cart() {
             setCardZipCode={setCardZipCode}
           />
 
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-center md:items-end">
             <div>
               <h2 className="tracking-wider uppercase font-semibold text-xl mb-2 mt-12 text-center">
                 Total: {formatUsd(totalPriceUsd)}
               </h2>
-              <button className="lg:w-[10rem] shadow hover:shadow-lg transition-shadow bg-[#04b2bd] hover:bg-[#1c7b82] text-white uppercase py-3 rounded-[2rem] font-semibold tracking-wider">
+              <button className="py-3 px-6 shadow hover:shadow-lg transition-shadow bg-[#04b2bd] hover:bg-[#1c7b82] text-white uppercase rounded-[2rem] font-semibold tracking-wider">
                 Check Out
               </button>
             </div>

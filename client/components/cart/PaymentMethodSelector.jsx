@@ -6,7 +6,7 @@ export default function PaymentMethodSelector({
   isSelectedPaymentMethod,
 }) {
   return (
-    <div className="grid gap-8 grid-cols-4 px-20 justify-items-center">
+    <div className="grid gap-8 grid-cols-4 px-2 md:px-20 justify-items-center">
       <button
         onClick={(e) => handleClickPaymentMethod(e, "Visa")}
         className={`${isSelectedPaymentMethod("Visa")}`}

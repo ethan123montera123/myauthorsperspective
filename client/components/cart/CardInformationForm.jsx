@@ -20,10 +20,10 @@ export default function CardInformationForm({
   };
 
   return (
-    <form className="px-14 grid gap-4">
+    <form className="md:px-14 grid gap-4">
       <div className="grid grid-cols-2 gap-4">
         <input
-          className="text-lg font-medium uppercase text-center flex px-4 py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
+          className="text-xs md:text-lg font-medium uppercase text-center flex px-2 py-1 md:px-4 md:py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
           type="text"
           name="fName"
           id="fName"
@@ -33,7 +33,7 @@ export default function CardInformationForm({
           onChange={(e) => handleChange(e, setFName)}
         />
         <input
-          className="text-lg font-medium uppercase text-center flex px-4 py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
+          className="text-xs md:text-lg font-medium uppercase text-center flex px-2 py-1 md:px-4 md:py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
           type="text"
           name="lName"
           id="lName"
@@ -44,7 +44,7 @@ export default function CardInformationForm({
         />
       </div>
       <input
-        className="text-lg font-medium uppercase text-center flex px-4 py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
+        className="text-xs md:text-lg font-medium uppercase text-center flex px-2 py-1 md:px-4 md:py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
         type="text"
         name="cardNumber"
         id="cardNumber"
@@ -55,7 +55,7 @@ export default function CardInformationForm({
       />
       <div className="grid grid-cols-3 gap-4">
         <input
-          className="text-lg font-medium uppercase text-center flex px-4 py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
+          className="text-xs md:text-lg font-medium uppercase text-center flex px-2 py-1 md:px-4 md:py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
           type="text"
           name="cardExpiryDate"
           id="cardExpiryDate"
@@ -65,7 +65,7 @@ export default function CardInformationForm({
           onChange={(e) => handleChange(e, setCardExpiryDate)}
         />
         <input
-          className="text-lg font-medium uppercase text-center flex px-4 py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
+          className="text-xs md:text-lg font-medium uppercase text-center flex px-2 py-1 md:px-4 md:py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
           type="text"
           name="cardVerificationValue"
           id="cardVerificationValue"
@@ -75,7 +75,7 @@ export default function CardInformationForm({
           onChange={(e) => handleChange(e, setCardVerificationValue)}
         />
         <input
-          className="text-lg font-medium uppercase text-center flex px-4 py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
+          className="text-xs md:text-lg font-medium uppercase text-center flex px-2 py-1 md:px-4 md:py-2 border-2 border-neutral-500 rounded-2xl active:border-black"
           type="text"
           name="cardZipCode"
           id="cardZipCode"

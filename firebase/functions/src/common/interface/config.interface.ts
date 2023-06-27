@@ -2,6 +2,9 @@ export type FirestoreCollections = "orders" | "services" | "users";
 
 export interface FirebaseConfig {
   collections: Record<Uppercase<FirestoreCollections>, string>;
+  options: {
+    ENFORCE_APP_CHECK: boolean;
+  };
 }
 
 export interface StripeConfig {

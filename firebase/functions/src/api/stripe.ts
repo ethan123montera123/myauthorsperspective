@@ -11,7 +11,10 @@ const PAYMENT_INTENT_CREATION_FAILED = "Payment intent creation failed.";
 const CENTS_IN_A_DOLLAR = 100;
 
 export const createPaymentIntent = https.onCall(
-  { cors: config.cors.ORIGIN },
+  {
+    cors: config.cors.ORIGIN,
+    enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
+  },
   async function ({ auth, data }) {
     if (!auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");

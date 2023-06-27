@@ -22,6 +22,9 @@ export const firebase = {
     ORDERS: "orders",
     USERS: "users",
   },
+  options: {
+    ENFORCE_APP_CHECK: env?.NODE_ENV === "production",
+  },
 } as const satisfies FirebaseConfig;
 
 export const cors = {

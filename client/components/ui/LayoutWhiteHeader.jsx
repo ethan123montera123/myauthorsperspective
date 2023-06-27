@@ -6,11 +6,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import CartHeaderLink from "../CartHeaderLink";
+import { useUser } from "@/helpers/auth.helper";
 
+/* NOTE: This component is highly dependent on LayoutGeneral, changes must be synchronized between them */
 export default function LayoutWhiteHeader({ children }) {
   const CURRENT_PATH = useRouter().pathname;
+  const { currentUser, signOutCurrentUser } = useUser();
 
   const [isShowingLinks, setIsShowingLinks] = useState(false);
+
+  const userIsAuthenticated = (() => {
+    // TODO: perform user authentication async functions here to determine to show cart link
+    return false;
+    // return currentUser !== null;
+  })();
 
   const toggleShowLinks = () => {
     setIsShowingLinks(!isShowingLinks);
@@ -65,18 +75,15 @@ export default function LayoutWhiteHeader({ children }) {
             </Link>
             <Link
               href="/contact"
-              className="uppercase py-4 px-2 relative"
+              className="uppercase py-4 px-2 relative mb-2"
               id={isSelected("contact")}
             >
               Contact
             </Link>
-            <Link
-              href="/cart"
-              className="uppercase py-4 px-2 relative"
-              id={isSelected("cart")}
-            >
-              Cart (0)
-            </Link>
+            <CartHeaderLink
+              isSelected={isSelected}
+              showCart={userIsAuthenticated}
+            />
           </div>
         </>
       );
@@ -131,18 +138,15 @@ export default function LayoutWhiteHeader({ children }) {
           </Link>
           <Link
             href="/contact"
-            className="uppercase py-4 px-2 relative"
+            className="uppercase py-4 px-2 relative mb-2"
             id={isSelected("contact")}
           >
             Contact
           </Link>
-          <Link
-            href="/cart"
-            className="uppercase py-4 px-2 relative"
-            id={isSelected("cart")}
-          >
-            Cart (0)
-          </Link>
+          <CartHeaderLink
+            isSelected={isSelected}
+            showCart={userIsAuthenticated}
+          />
         </div>
       </header>
       {generateMainContainer()}

@@ -10,7 +10,6 @@ export default function ServicesToAvail({
   selectedService,
   setSelectedService,
 }) {
-  console.log(availedServices);
   const {
     socialMediaManagementProgramServices,
     searchEngineOptimizationServices,

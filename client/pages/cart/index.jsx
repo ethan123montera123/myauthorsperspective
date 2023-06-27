@@ -49,7 +49,7 @@ export default function Cart() {
 
   useEffect(() => {
     /* all the accessible data for the cart, logged everytime any of them change */
-    console.log("Form Data", {
+    console.log("pages/cart/index.jsx => useEffect => Form Data", {
       selectedPaymentMethod,
       fName,
       lName,

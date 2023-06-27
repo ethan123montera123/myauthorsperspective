@@ -39,7 +39,7 @@ export default function LayoutGeneral({ children }) {
       return (
         <>
           <main className="mt-6 mb-12 lg:mt-8">{children}</main>
-          <div className="absolute w-full top-[112px] pb-6 flex flex-col bg-white z-50 items-center text-xl shadow-xl">
+          <div className="absolute w-full top-[118px] pb-6 flex flex-col bg-white z-50 items-center text-xl shadow-xl">
             <Link
               href="/"
               className="uppercase py-4 px-2 relative"

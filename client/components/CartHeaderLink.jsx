@@ -24,7 +24,7 @@ export default function CartHeaderLink({ isSelected, showCart = false }) {
     cartLink
   ) : (
     <Link
-      className="flex items-center cursor-default"
+      className="flex items-center cursor-default mb-2 lg:mb-0"
       href="/auth"
       tabIndex={-1}
     >

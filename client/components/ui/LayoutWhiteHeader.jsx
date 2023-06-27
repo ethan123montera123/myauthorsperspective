@@ -138,7 +138,7 @@ export default function LayoutWhiteHeader({ children }) {
           </Link>
           <Link
             href="/contact"
-            className="uppercase py-4 px-2 relative mb-2"
+            className="uppercase py-4 px-2 relative my-2"
             id={isSelected("contact")}
           >
             Contact

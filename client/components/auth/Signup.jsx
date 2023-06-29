@@ -7,11 +7,15 @@ import { notifySuccess, notifyError } from "@/helpers/notification.helper.";
 import { useRouter } from "next/router";
 import { prettyPrintFirebaseError } from "@/helpers/errors.helper";
 
-export default function SignUp({ handleSwapAuth }) {
+export default function SignUp({ setCurrentComponent }) {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleSwapAuth = () => {
+    setCurrentComponent("Login");
+  };
 
   const handleChange = (e, setFn) => {
     setFn(e.target.value);
@@ -118,12 +122,11 @@ export default function SignUp({ handleSwapAuth }) {
               name="password"
               id="password"
               type="password"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()-_=+]{6,20}$"
-              title="Password must be 6-20 characters long and include at least one lowercase letter, one uppercase letter, and one digit."
+              title="Password must be 8-20 characters long."
               minLength="8"
               maxLength="20"
               required
-            ></input>
+            />
             <div className="absolute left-1 bottom-3 ">
               <Lock
                 size="22"
@@ -191,5 +194,5 @@ export default function SignUp({ handleSwapAuth }) {
 }
 
 SignUp.propTypes = {
-  handleSwapAuth: propTypes.func.isRequired,
+  setCurrentComponent: propTypes.func.isRequired,
 };

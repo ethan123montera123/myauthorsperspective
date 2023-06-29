@@ -7,13 +7,21 @@ import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "@/helpers/notification.helper.";
 import { prettyPrintFirebaseError } from "@/helpers/errors.helper";
 
-export default function Login({ handleSwapAuth }) {
+export default function Login({ setCurrentComponent }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleChange = (e, setFn) => {
     setFn(e.target.value);
+  };
+
+  const handleSwapAuth = () => {
+    setCurrentComponent("SignUp");
+  };
+
+  const handleForgetPassword = () => {
+    setCurrentComponent("ForgetPassword");
   };
 
   const handleSubmit = async (e) => {
@@ -78,6 +86,8 @@ export default function Login({ handleSwapAuth }) {
               id="password"
               placeholder="Type your password"
               type="password"
+              minLength="8"
+              maxLength="20"
               required
             />
             <div className="absolute left-1 bottom-3 ">
@@ -96,6 +106,7 @@ export default function Login({ handleSwapAuth }) {
               Create an account
             </Link>
             <Link
+              onClick={handleForgetPassword}
               className="hover:text-[#2200F0] text-xs font-semibold tracking-wide"
               href="#"
             >

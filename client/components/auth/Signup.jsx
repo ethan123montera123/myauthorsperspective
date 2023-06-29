@@ -21,6 +21,18 @@ export default function SignUp({ setCurrentComponent }) {
     setFn(e.target.value);
   };
 
+  const handleSignUpWithFacebook = () => {
+    notifyError("Sign up with Facebook not yet implemented.");
+  };
+
+  const handleSignUpWithApple = () => {
+    notifyError("Sign up with Apple not yet implemented.");
+  };
+
+  const handleSignUpWithGoogle = () => {
+    notifyError("Sign up with Google not yet implemented.");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -154,10 +166,16 @@ export default function SignUp({ setCurrentComponent }) {
           Or Sign up Using
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <button className="rounded-full p-3 bg-[#32508E] hover:bg-[#284274]">
+          <button
+            onClick={handleSignUpWithFacebook}
+            className="rounded-full p-3 bg-[#32508E] hover:bg-[#284274]"
+          >
             <Facebook size="24" color="white" />
           </button>
-          <button className="rounded-full p-3 bg-black hover:bg-[#222222]">
+          <button
+            onClick={handleSignUpWithApple}
+            className="rounded-full p-3 bg-black hover:bg-[#222222]"
+          >
             <svg
               role="img"
               viewBox="0 0 24 26"
@@ -172,7 +190,10 @@ export default function SignUp({ setCurrentComponent }) {
               />
             </svg>
           </button>
-          <button className="rounded-full p-3 flex items-center bg-[#DD4B39] hover:bg-[#bd4232]">
+          <button
+            onClick={handleSignUpWithGoogle}
+            className="rounded-full p-3 flex items-center bg-[#DD4B39] hover:bg-[#bd4232]"
+          >
             <svg
               role="img"
               viewBox="0 0 24 24"

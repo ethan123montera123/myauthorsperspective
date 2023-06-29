@@ -24,6 +24,18 @@ export default function Login({ setCurrentComponent }) {
     setCurrentComponent("ForgetPassword");
   };
 
+  const handleSignInWithFacebook = () => {
+    notifyError("Sign in with Facebook not yet implemented.");
+  };
+
+  const handleSignInWithApple = () => {
+    notifyError("Sign in with Apple not yet implemented.");
+  };
+
+  const handleSignInWithGoogle = () => {
+    notifyError("Sign in with Google not yet implemented.");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -124,10 +136,16 @@ export default function Login({ setCurrentComponent }) {
           Or Log in Using
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <button className="rounded-full p-3 bg-[#32508E] hover:bg-[#284274]">
+          <button
+            onClick={handleSignInWithFacebook}
+            className="rounded-full p-3 bg-[#32508E] hover:bg-[#284274]"
+          >
             <Facebook size="24" color="white" />
           </button>
-          <button className="rounded-full p-3 bg-black hover:bg-[#222222]">
+          <button
+            onClick={handleSignInWithApple}
+            className="rounded-full p-3 bg-black hover:bg-[#222222]"
+          >
             <svg
               role="img"
               viewBox="0 0 24 26"
@@ -142,7 +160,10 @@ export default function Login({ setCurrentComponent }) {
               />
             </svg>
           </button>
-          <button className="rounded-full p-3 flex items-center bg-[#DD4B39] hover:bg-[#bd4232]">
+          <button
+            onClick={handleSignInWithGoogle}
+            className="rounded-full p-3 flex items-center bg-[#DD4B39] hover:bg-[#bd4232]"
+          >
             <svg
               role="img"
               viewBox="0 0 24 24"

@@ -2,8 +2,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { UserSquare, Lock, Facebook, AtSign } from "lucide-react";
 import propTypes from "prop-types";
+import { signUpWithCredentials } from "@/services/api/auth";
+import { notifySuccess, notifyError } from "@/helpers/notification.helper.";
+import { useRouter } from "next/router";
+import { prettyPrintFirebaseError } from "@/helpers/errors.helper";
 
 export default function SignUp({ handleSwapAuth }) {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,12 +17,32 @@ export default function SignUp({ handleSwapAuth }) {
     setFn(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     console.log("Form Inputs:");
     console.log("username -", username);
     console.log("email -", email);
     console.log("password -", password);
+    const accountPayload = {
+      firstName: "placeholder firstName",
+      lastName: "placeholder lastName",
+      email,
+      password,
+      phone: "000-8302",
+    };
+    const { error } = await signUpWithCredentials(accountPayload);
+    if (error) {
+      // handle errors gracefully and reflect it in UI
+      console.log(error.code, error);
+      return notifyError(prettyPrintFirebaseError(error.code));
+    }
+
+    setUsername("");
+    setEmail("");
+    setPassword("");
+    notifySuccess("Account successfully created.");
+    router.push("/");
   };
 
   return (

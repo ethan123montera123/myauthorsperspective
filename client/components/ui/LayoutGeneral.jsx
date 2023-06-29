@@ -12,6 +12,7 @@ import { getAuthAccount } from "@/services/api/auth";
 
 /* NOTE: This component is highly dependent on LayoutWhiteHeader, changes must be synchronized between them */
 export default function LayoutGeneral({ children }) {
+  const router = useRouter();
   const [user, setUser] = useState(() => auth.currentUser);
 
   useEffect(() => {
@@ -29,7 +30,11 @@ export default function LayoutGeneral({ children }) {
     });
   }, []);
 
-  const CURRENT_PATH = useRouter().pathname;
+  const CURRENT_PATH = router.pathname;
+
+  if (user !== null && CURRENT_PATH.indexOf("auth") !== -1) {
+    router.push("/");
+  }
 
   const [isShowingLinks, setIsShowingLinks] = useState(false);
 

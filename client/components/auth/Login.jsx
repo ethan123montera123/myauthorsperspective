@@ -4,7 +4,8 @@ import { UserSquare, Lock, Facebook } from "lucide-react";
 import propTypes from "prop-types";
 import { signInWithCredentials } from "@/services/api/auth";
 import { useRouter } from "next/router";
-import { notifySuccess } from "@/helpers/notification.helper.";
+import { notifySuccess, notifyError } from "@/helpers/notification.helper.";
+import { prettyPrintFirebaseError } from "@/helpers/errors.helper";
 
 export default function Login({ handleSwapAuth }) {
   const router = useRouter();
@@ -17,15 +18,16 @@ export default function Login({ handleSwapAuth }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    notifySuccess("Successfully logged in.");
 
     const { error } = await signInWithCredentials(email, password);
     if (error) {
       // handle errors gracefully and reflect it in UI
-      return console.log(error);
+      console.log(error.code, error);
+      return notifyError(prettyPrintFirebaseError(error.code));
     } else {
       setEmail("");
       setPassword("");
+      notifySuccess("Successfully logged in.");
       router.push("/");
     }
   };

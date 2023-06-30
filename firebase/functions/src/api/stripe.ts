@@ -56,6 +56,7 @@ export const createPaymentIntent = https.onCall(
 
       const orderRecord = await ordersRef.add({
         services: result.data,
+        customerId: auth.uid,
         stripePaymentId: paymentIntent.id,
       });
 

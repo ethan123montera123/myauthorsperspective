@@ -110,73 +110,73 @@ export const webhook = https.onRequest(async (req, res) => {
   logger.log("Event constructed.");
 
   try {
-    switch (event.type) {
-      case "payment_intent.succeeded":
-        logger.log("Sending email receipt upon successful payment...");
+    if (event.type === "payment_intent.succeeded") {
+      logger.log("Sending email receipt upon successful payment...");
 
-        const { id: stripePaymentId, metadata } = event.data
-          .object as Stripe.Response<Stripe.PaymentIntent>;
+      const { id: stripePaymentId, metadata } = event.data
+        .object as Stripe.Response<Stripe.PaymentIntent>;
 
-        const { firebaseOrderId } = metadata;
-        if (!firebaseOrderId) {
-          msg = "Missing firebase order ID from Stripe payment payload.";
-          context = { firebaseOrderId };
+      const { firebaseOrderId } = metadata;
+      if (!firebaseOrderId) {
+        msg = "Missing firebase order ID from Stripe payment payload.";
+        context = { firebaseOrderId };
 
-          throw new Error(msg);
-        }
+        throw new Error(msg);
+      }
 
-        const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
-        const orderData = orderSnapshot.data();
-        if (!orderData) {
-          msg = "Payment's corresponding firebase order does not exist. ";
-          context = { stripePaymentId, firebaseOrderId };
+      const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
+      const orderData = orderSnapshot.data();
+      if (!orderData) {
+        msg = "Payment's corresponding firebase order does not exist. ";
+        context = { stripePaymentId, firebaseOrderId };
 
-          throw new Error(msg);
-        }
+        throw new Error(msg);
+      }
 
-        const customerSnapshot = await usersRef.doc(orderData.customerId).get();
-        const customerData = customerSnapshot.data() as User;
-        if (!customerData) {
-          msg = "Order data has an invalid or missing customer ID.";
-          context = {
-            stripePaymentId,
-            firebaseOrderId,
-            uid: orderData.customerId,
-          };
+      const customerSnapshot = await usersRef.doc(orderData.customerId).get();
+      const customerData = customerSnapshot.data() as User;
+      if (!customerData) {
+        msg = "Order data has an invalid or missing customer ID.";
+        context = {
+          stripePaymentId,
+          firebaseOrderId,
+          uid: orderData.customerId,
+        };
 
-          throw new Error(msg);
-        }
+        throw new Error(msg);
+      }
 
-        const email = ReceiptEmail({
-          services: orderData.services,
-          orderId: orderSnapshot.id,
-          customer: {
-            ...customerData,
-            uid: customerSnapshot.id,
-          },
-        });
+      // eslint-disable-next-line new-cap
+      const email = ReceiptEmail({
+        services: orderData.services,
+        orderId: orderSnapshot.id,
+        customer: {
+          ...customerData,
+          uid: customerSnapshot.id,
+        },
+      });
 
-        await mailer.send({
-          from: config.mailer.FROM_EMAIL,
-          to: customerData.email,
-          bcc: config.mailer.BCC,
-          subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
-          html: render(email),
-        });
+      await mailer.send({
+        from: config.mailer.FROM_EMAIL,
+        to: customerData.email,
+        bcc: config.mailer.BCC,
+        subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
+        html: render(email),
+      });
 
-        logger.log("Receipt emailed successfully.");
-        break;
-      default:
-        logger.log("Triggered by an unhandled event type.", {
-          event: event.type,
-        });
-        break;
+      logger.log("Receipt emailed successfully.", {
+        stripePaymentId,
+        firebaseOrderId,
+        uid: orderData.customerId,
+      });
+    } else {
+      logger.log("Triggered by an unhandled event type.", {
+        event: event.type,
+      });
     }
 
     res.send({ msg: "Successfully processed webhook." });
   } catch (err) {
-    const msg = (err as Error).message;
-
     logger.error(msg, err, context);
     res.status(400).send({ msg });
   }

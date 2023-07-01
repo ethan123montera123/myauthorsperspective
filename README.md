@@ -50,8 +50,10 @@ connectFirestoreEmulator(db, "127.0.0.1", 8080);
 10. Run `stripe login` on the console to link your local environment to Stripe.
 11. Once logged in, register the webhook using `stripe listen --forward-to [webhook-endpoint]`. You can
     check the firebase logs for the actual endpoint of the webhook.
-12. You can test if the webhook is working by running `stripe trigger payment_intent.succeeded.` You should
-    see an activity in the terminal of step 11.
+12. Once stripe is readily listening at the webhook endpoint, they would then return a signing secret. Add
+    this secret to the `.env` file as `STRIPE_WEBHOOK_SECRET`.
+13. Afterwards, you can test if the webhook is working by running `stripe trigger payment_intent.succeeded.`
+    You should see an activity in the terminal of step 11.
 
 ## Resources
 

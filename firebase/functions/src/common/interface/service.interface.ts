@@ -13,7 +13,7 @@ export interface ServiceInclusion<T extends string> {
 
 export interface Service<T extends string = PriceTier> {
   title: string;
-  priceTier: Partial<Record<T, ServiceTierInfo>>;
+  priceTier: { default: T } & Partial<Record<T, ServiceTierInfo>>;
   inclusions: ServiceInclusion<T>[];
 }
 

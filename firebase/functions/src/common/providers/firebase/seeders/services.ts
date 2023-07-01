@@ -23,6 +23,7 @@ export const data = [
   {
     title: "Social Media Management Program",
     priceTier: {
+      default: "basic",
       basic: {
         level: 0,
         price: 1800,
@@ -43,6 +44,7 @@ export const data = [
   {
     title: "Book Video Creation",
     priceTier: {
+      default: "basic",
       basic: {
         level: 0,
         price: 1000,
@@ -64,6 +66,7 @@ export const data = [
   {
     title: "Author's E-commerce Website",
     priceTier: {
+      default: "basic",
       basic: {
         level: 0,
         price: 1800,
@@ -87,6 +90,7 @@ export const data = [
   {
     title: "Search Engine Optimization",
     priceTier: {
+      default: "basic",
       basic: {
         level: 0,
         price: 4000,
@@ -105,6 +109,7 @@ export const data = [
   {
     title: "Author's Blog Site",
     priceTier: {
+      default: "basic",
       basic: {
         level: 0,
         price: 1500,

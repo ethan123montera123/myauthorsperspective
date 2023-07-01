@@ -85,10 +85,11 @@ async function toServiceOrder({
   title,
 }: PopulatedService): Promise<ServiceOrder> {
   // Pricing is based upon the price of the highest tier based on
-  // the inclusions' tier
+  // the inclusions' tier. If there are no inclusions selected,
+  // then it defaults to the price defaults.
   const uniqueTiers = new Set(inclusions.map(({ tier }) => tier));
 
-  let info: ServiceTierInfo = { level: -1, price: 0 };
+  let info: ServiceTierInfo = priceTier[priceTier.default]!;
   for (const tier of uniqueTiers) {
     if (priceTier[tier]!.level > info.level) {
       info = priceTier[tier]!;

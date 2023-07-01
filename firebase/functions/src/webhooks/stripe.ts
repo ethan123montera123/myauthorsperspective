@@ -87,8 +87,9 @@ export const sendSuccessfulPaymentReceipts = https.onRequest(
         }
 
         await mailer.send({
-          from: "myauthorsperspective.dev@gmail.com",
+          from: config.mailer.FROM_EMAIL,
           to: customerData.email,
+          bcc: config.mailer.BCC,
           subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
           html: render(
             ReceiptEmail({

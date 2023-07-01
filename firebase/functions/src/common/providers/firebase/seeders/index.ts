@@ -5,7 +5,10 @@ import * as services from "./services";
 
 const seedData: FirebaseSeedData[] = [services];
 
-export async function seedFirestore() {
+/**
+ * Populates the Firestore with necessary data.
+ */
+export async function seedFirestore(): Promise<void> {
   const seedDataPromise = seedData.map(async ({ collection, data }) => {
     const ref = db.collection(collection);
     const documents = await ref.get();

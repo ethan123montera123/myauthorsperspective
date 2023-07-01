@@ -32,5 +32,5 @@ export const cors = {
 } as const satisfies CorsConfig;
 
 export const mailer = {
-  API_KEY: env?.RESEND_API_KEY || "",
+  API_KEY: env?.SENDGRID_API_KEY || "",
 } as const satisfies MailerConfig;

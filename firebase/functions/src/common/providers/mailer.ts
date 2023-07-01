@@ -1,4 +1,6 @@
-import { Resend } from "resend";
+import sendgrid from "@sendgrid/mail";
 import { mailer as mailerConfig } from "./config";
 
-export const mailer = new Resend(mailerConfig.API_KEY);
+sendgrid.setApiKey(mailerConfig.API_KEY);
+
+export const mailer = sendgrid;

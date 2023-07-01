@@ -1,5 +1,7 @@
+import { render } from "@react-email/components";
 import { https } from "firebase-functions/v2";
 import Stripe from "stripe";
+
 import ReceiptEmail from "../common/emails/ReceiptEmail";
 import { User } from "../common/interface";
 import { config, firebase, logger, mailer, stripe } from "../common/providers";
@@ -84,18 +86,20 @@ export const sendSuccessfulPaymentReceipts = https.onRequest(
           return;
         }
 
-        await mailer.emails.send({
-          from: "onboarding@resend.dev",
-          to: "myauthorsperspective.dev@gmail.com",
+        await mailer.send({
+          from: "myauthorsperspective.dev@gmail.com",
+          to: customerData.email,
           subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
-          react: ReceiptEmail({
-            services: orderData.services,
-            orderId: orderSnapshot.id,
-            customer: {
-              ...customerData,
-              uid: customerSnapshot.id,
-            },
-          }),
+          html: render(
+            ReceiptEmail({
+              services: orderData.services,
+              orderId: orderSnapshot.id,
+              customer: {
+                ...customerData,
+                uid: customerSnapshot.id,
+              },
+            })
+          ),
         });
 
         logger.log("Receipt emailed successfully.");

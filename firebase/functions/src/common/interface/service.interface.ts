@@ -1,9 +1,29 @@
-export interface Service {
-  title: string;
-  unitPrice: number;
-  inclusions: string[];
+export type PriceTier = "basic" | "premium";
+
+export interface ServiceTierInfo {
+  level: number;
+  price: number;
 }
 
-export interface ServiceOrder extends Service {
+export interface ServiceInclusion<T extends string> {
+  id: string;
+  tier: T;
+  name: string;
+}
+
+export interface Service<T extends string = PriceTier> {
+  title: string;
+  priceTier: Partial<Record<T, ServiceTierInfo>>;
+  inclusions: ServiceInclusion<T>[];
+}
+
+export interface PopulatedService<T extends string = PriceTier>
+  extends Service<T> {
   quantity: number;
+}
+
+export interface ServiceOrder
+  extends Pick<PopulatedService, "title" | "quantity"> {
+  unitPrice: number;
+  inclusions: ServiceInclusion<PriceTier>["name"][];
 }

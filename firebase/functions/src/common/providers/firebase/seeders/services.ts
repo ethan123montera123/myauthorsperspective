@@ -1,85 +1,130 @@
-import { Service } from "../../../interface";
+import { randomUUID } from "crypto";
+import { Service, ServiceInclusion } from "../../../interface";
 import { config } from "../../../providers";
+
+/**
+ * Apply Ids to an array values.
+ *
+ * @param arr An array to be applied with Ids.
+ * @return Array with values mapped with ids.
+ */
+function applyIds<T extends string>(
+  arr: Omit<ServiceInclusion<T>, "id">[]
+): ServiceInclusion<T>[] {
+  return arr.map((v) => ({
+    id: randomUUID() as string,
+    ...v,
+  }));
+}
 
 export const collection = config.firebase.collections.SERVICES;
 
 export const data = [
   {
     title: "Social Media Management Program",
-    unitPrice: 1800,
-    inclusions: [
-      "Social Media Strategy",
-      "Content Creation",
-      "Account Management",
-      "Paid Social Advertising",
-      "Influencer Marketing",
-      "Analytics and Reporting",
-      "Social Listening",
-      "Community Management",
-      "Training and Consultation",
-    ],
+    priceTier: {
+      basic: {
+        level: 0,
+        price: 1800,
+      },
+    },
+    inclusions: applyIds([
+      { tier: "basic", name: "Social Media Strategy" },
+      { tier: "basic", name: "Content Creation" },
+      { tier: "basic", name: "Account Management" },
+      { tier: "basic", name: "Paid Social Advertising" },
+      { tier: "basic", name: "Influencer Marketing" },
+      { tier: "basic", name: "Analytics and Reporting" },
+      { tier: "basic", name: "Social Listening" },
+      { tier: "basic", name: "Community Management" },
+      { tier: "basic", name: "Training and Consultation" },
+    ]),
   },
   {
     title: "Book Video Creation",
-    unitPrice: 1000,
-    inclusions: [
-      "Book Title and Author",
-      "Book Synopsis",
-      "Book Cover",
-      "Book Quotes",
-      "Author Background",
-      "Reader Demographic",
-      "Visual Aids",
-      "Music and Sound Effects",
-      "Call to Action",
-      "Credits",
-    ],
+    priceTier: {
+      basic: {
+        level: 0,
+        price: 1000,
+      },
+    },
+    inclusions: applyIds([
+      { tier: "basic", name: "Book Title and Author" },
+      { tier: "basic", name: "Book Synopsis" },
+      { tier: "basic", name: "Book Cover" },
+      { tier: "basic", name: "Book Quotes" },
+      { tier: "basic", name: "Author Background" },
+      { tier: "basic", name: "Reader Demographic" },
+      { tier: "basic", name: "Visual Aids" },
+      { tier: "basic", name: "Music and Sound Effects" },
+      { tier: "basic", name: "Call to Action" },
+      { tier: "basic", name: "Credits" },
+    ]),
   },
   {
     title: "Author's E-commerce Website",
-    unitPrice: 1800,
-    inclusions: [
-      "Product Listing",
-      "Shopping Cart",
-      "Payment Getaway",
-      "Order Management",
-      "Inventory Management",
-      "Customer Database",
-      "Analytics and Reporting",
-      "Content Management System (CMS)",
-      "Search Engine Optimization (SEO)",
-      "Responsive Design",
-      "Security Features",
-      "Customer Support",
-    ],
+    priceTier: {
+      basic: {
+        level: 0,
+        price: 1800,
+      },
+    },
+    inclusions: applyIds([
+      { tier: "basic", name: "Product Listing" },
+      { tier: "basic", name: "Shopping Cart" },
+      { tier: "basic", name: "Payment Getaway" },
+      { tier: "basic", name: "Order Management" },
+      { tier: "basic", name: "Inventory Management" },
+      { tier: "basic", name: "Customer Database" },
+      { tier: "basic", name: "Analytics and Reporting" },
+      { tier: "basic", name: "Content Management System (CMS)" },
+      { tier: "basic", name: "Search Engine Optimization (SEO)" },
+      { tier: "basic", name: "Responsive Design" },
+      { tier: "basic", name: "Security Features" },
+      { tier: "basic", name: "Customer Support" },
+    ]),
   },
   {
     title: "Search Engine Optimization",
-    unitPrice: 4000,
-    inclusions: [
-      "Keyword Research",
-      "On-page Optimization",
-      "Off-page Optimization",
-      "Technical SEO",
-      "Content Marketing",
-      "Local SEO",
-      "Analytics and Reporting",
-    ],
+    priceTier: {
+      basic: {
+        level: 0,
+        price: 4000,
+      },
+    },
+    inclusions: applyIds([
+      { tier: "basic", name: "Keyword Research" },
+      { tier: "basic", name: "On-page Optimization" },
+      { tier: "basic", name: "Off-page Optimization" },
+      { tier: "basic", name: "Technical SEO" },
+      { tier: "basic", name: "Content Marketing" },
+      { tier: "basic", name: "Local SEO" },
+      { tier: "basic", name: "Analytics and Reporting" },
+    ]),
   },
   {
     title: "Author's Blog Site",
-    unitPrice: 700,
-    inclusions: [
-      "Homepage",
-      "About Page",
-      "Blog Posts",
-      "Archives",
-      "Categories",
-      "Tags",
-      "Search Bar",
-      "Contact Page",
-      "Social Media Links",
-      "Comments Section",
-    ],
+    priceTier: {
+      basic: {
+        level: 0,
+        price: 1500,
+      },
+      premium: {
+        level: 1,
+        price: 2000,
+      },
+    },
+    inclusions: applyIds([
+      { tier: "basic", name: "Homepage" },
+      { tier: "basic", name: "About Page" },
+      { tier: "basic", name: "Blog Posts" },
+      { tier: "basic", name: "Contact Page" },
+      { tier: "basic", name: "Social Media Links" },
+      { tier: "premium", name: "Archives" },
+      { tier: "premium", name: "Categories" },
+      { tier: "premium", name: "Tags" },
+      { tier: "premium", name: "Search Bar" },
+      { tier: "premium", name: "Comments Section" },
+    ]),
   },
 ] satisfies Service[];

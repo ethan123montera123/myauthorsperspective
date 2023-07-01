@@ -6,6 +6,13 @@ interface SafeLinkProps {
   children?: React.ReactNode;
 }
 
+/**
+ * Component that wraps the link component to ensure that it
+ * always comes with a safe redirect url alongside its href.
+ *
+ * @param props SafeLink props.
+ * @return A JSX component that has a safe redirect url.
+ */
 function SafeLink({ url = "", children }: SafeLinkProps) {
   return (
     <Tailwind>

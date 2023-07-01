@@ -7,7 +7,7 @@ import { logger } from "firebase-functions";
  * @param context - Additional context regarding the entry.
  */
 export function log(message: string, context?: unknown): void {
-  return logger.log(["[ℹ]", message].join(" "), {
+  logger.log(["[ℹ]", message].join(" "), {
     context,
     timestamp: new Date().toISOString(),
   });
@@ -20,7 +20,7 @@ export function log(message: string, context?: unknown): void {
  * @param context - Additional context regarding the entry.
  */
 export function warn(message: string, context?: unknown): void {
-  return logger.warn(["[⚠]", message].join(" "), {
+  logger.warn(["[⚠]", message].join(" "), {
     context,
     timestamp: new Date().toISOString(),
   });
@@ -38,7 +38,7 @@ export function error(
   cause?: unknown,
   context?: unknown
 ): void {
-  return logger.error(["[❗]", message].join(" "), {
+  logger.error(["[❗]", message].join(" "), {
     context,
     cause,
     timestamp: new Date().toISOString(),

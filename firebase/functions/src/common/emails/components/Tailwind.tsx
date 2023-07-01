@@ -5,6 +5,12 @@ interface TailwindProps {
   children: React.ReactNode;
 }
 
+/**
+ * Configuration component for Tailwind base styles.
+ *
+ * @param props Tailwind props.
+ * @returns A wrapper component for a configured Tailwind Component.
+ */
 function Tailwind({ children }: TailwindProps) {
   return (
     <TailwindBase

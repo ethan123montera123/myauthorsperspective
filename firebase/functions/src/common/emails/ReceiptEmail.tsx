@@ -33,6 +33,12 @@ interface ReceiptEmailProps {
   issuedAt?: Date;
 }
 
+/**
+ * Template for Receipt Email.
+ *
+ * @param Props - Receipt Email props.
+ * @return Receipt email template in JSX.
+ */
 function ReceiptEmail({
   customer = {
     uid: "",

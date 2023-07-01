@@ -23,6 +23,9 @@ const orderSkeleton = z.object({
 /**
  * Populates the skeleton which just contians string and number IDs,
  * to their actual values from the database.
+ *
+ * @param skeleton The order skeleton to be populated.
+ * @param ctx      The validation execution context.
  */
 async function toPopulatedOrderSchema(
   { quantity, inclusions = [], service }: z.infer<typeof orderSkeleton>,

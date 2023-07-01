@@ -7,6 +7,13 @@ interface ReceiptInfoProps {
   isAccented?: boolean;
 }
 
+/**
+ * Component for displaying receipt information such as
+ * customer name, email, and order ID.
+ *
+ * @param props Receipt info props.
+ * @return A styled JSX template for receipt info.
+ */
 function ReceiptInfo({
   label = "",
   value = "",

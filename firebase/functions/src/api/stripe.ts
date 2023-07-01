@@ -25,7 +25,7 @@ export const createPaymentIntent = https.onCall(
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
 
-    const result = await orderSchema.spa(data);
+    const result = await orderSchema.safeParseAsync(data);
     if (!result.success) {
       throw new HttpsError("invalid-argument", result.error.message);
     }

@@ -23,14 +23,7 @@ export async function getServices() {
     /** @type {import("./@types").Service[]} */
     const docs = [];
     snapshot.forEach((doc) => {
-      const { inclusions, title, unitPrice } = doc.data();
-
-      docs.push({
-        id: doc.id,
-        title,
-        unitPrice,
-        inclusions: inclusions.map((name, id) => ({ id, name })),
-      });
+      docs.push({ id: doc.id, ...doc.data() });
     });
 
     return docs;

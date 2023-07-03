@@ -101,7 +101,98 @@ export default function Cart({ services }) {
 }
 
 export async function getStaticProps() {
-  const { data, error } = await getServices();
+  // commented out due to FirebaseError bug
+  // const { data, error } = await getServices();
+  const data = [
+    {
+      id: "6umwOV8A5lyaiBKCGq8G",
+      priceTier: {
+        default: "basic",
+        premium: { level: 1, price: 2000 },
+        basic: { level: 0, price: 1500 },
+      },
+      title: "Author's Blog Site",
+      inclusions: [
+        { tier: "basic", name: "Homepage", id: 1 },
+        { tier: "basic", name: "About Page", id: 2 },
+        { tier: "basic", name: "Blog Posts", id: 3 },
+        { tier: "basic", name: "Contact Page", id: 4 },
+        { tier: "basic", name: "Social Media Links", id: 5 },
+        { tier: "premium", name: "Archives", id: 6 },
+        { tier: "premium", name: "Categories", id: 7 },
+        { tier: "premium", name: "Tags", id: 8 },
+        { tier: "premium", name: "Search Bar", id: 9 },
+        { tier: "premium", name: "Comments Section", id: 10 },
+      ],
+    },
+    {
+      id: "ATzApWSjTwhMHUAZJeyF",
+      priceTier: { default: "basic", basic: { level: 0, price: 1800 } },
+      title: "Social Media Management Program",
+      inclusions: [
+        { tier: "basic", name: "Social Media Strategy", id: 1 },
+        { tier: "basic", name: "Content Creation", id: 2 },
+        { tier: "basic", name: "Account Management", id: 3 },
+        { tier: "basic", name: "Paid Social Advertising", id: 4 },
+        { tier: "basic", name: "Influencer Marketing", id: 5 },
+        { tier: "basic", name: "Analytics and Reporting", id: 6 },
+        { tier: "basic", name: "Social Listening", id: 7 },
+        { tier: "basic", name: "Community Management", id: 8 },
+        { tier: "basic", name: "Training and Consultation", id: 9 },
+      ],
+    },
+    {
+      id: "SfGuuWrDhL3J8EwwCDm3",
+      priceTier: { default: "basic", basic: { level: 0, price: 1800 } },
+      title: "Author's E-commerce Website",
+      inclusions: [
+        { tier: "basic", name: "Product Listing", id: 1 },
+        { tier: "basic", name: "Shopping Cart", id: 2 },
+        { tier: "basic", name: "Payment Getaway", id: 3 },
+        { tier: "basic", name: "Order Management", id: 4 },
+        { tier: "basic", name: "Inventory Management", id: 5 },
+        { tier: "basic", name: "Customer Database", id: 6 },
+        { tier: "basic", name: "Analytics and Reporting", id: 7 },
+        { tier: "basic", name: "Content Management System (CMS)", id: 8 },
+        { tier: "basic", name: "Search Engine Optimization (SEO)", id: 9 },
+        { tier: "basic", name: "Responsive Design", id: 10 },
+        { tier: "basic", name: "Security Features", id: 11 },
+        { tier: "basic", name: "Customer Support", id: 12 },
+      ],
+    },
+    {
+      id: "YbNUdzUl4wAnz7byvtAl",
+      priceTier: { default: "basic", basic: { level: 0, price: 1000 } },
+      title: "Book Video Creation",
+      inclusions: [
+        { tier: "basic", name: "Book Title and Author", id: 1 },
+        { tier: "basic", name: "Book Synopsis", id: 2 },
+        { tier: "basic", name: "Book Cover", id: 3 },
+        { tier: "basic", name: "Book Quotes", id: 4 },
+        { tier: "basic", name: "Author Background", id: 5 },
+        { tier: "basic", name: "Reader Demographic", id: 6 },
+        { tier: "basic", name: "Visual Aids", id: 7 },
+        { tier: "basic", name: "Music and Sound Effects", id: 8 },
+        { tier: "basic", name: "Call to Action", id: 9 },
+        { tier: "basic", name: "Credits", id: 10 },
+      ],
+    },
+    {
+      id: "nMtlPyHS83t6RkZNKjpp",
+      priceTier: { default: "basic", basic: { level: 0, price: 4000 } },
+      title: "Search Engine Optimization",
+      inclusions: [
+        { tier: "basic", name: "Keyword Research", id: 1 },
+        { tier: "basic", name: "On-page Optimization", id: 2 },
+        { tier: "basic", name: "Off-page Optimization", id: 3 },
+        { tier: "basic", name: "Technical SEO", id: 4 },
+        { tier: "basic", name: "Content Marketing", id: 5 },
+        { tier: "basic", name: "Local SEO", id: 6 },
+        { tier: "basic", name: "Analytics and Reporting", id: 7 },
+      ],
+    },
+  ];
+
   return {
     props: {
       services: data,

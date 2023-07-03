@@ -5,21 +5,36 @@ import Footer from "./Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CartHeaderLink from "../CartHeaderLink";
-import { useUser } from "@/helpers/auth.helper";
+import { auth } from "@/services/firebase";
+import { getAuthAccount } from "@/services/api/auth";
 
 /* NOTE: This component is highly dependent on LayoutGeneral, changes must be synchronized between them */
 export default function LayoutWhiteHeader({ children }) {
+  const [user, setUser] = useState(() => auth.currentUser);
+
+  useEffect(() => {
+    console.log("The currentUser right now.", user);
+  }, [user]);
+
+  useEffect(() => {
+    return auth.onAuthStateChanged(async (val) => {
+      if (!val) return setUser(null);
+
+      const { data, error } = await getAuthAccount();
+      if (error) return console.log(error);
+
+      setUser(data);
+    });
+  }, []);
+
   const CURRENT_PATH = useRouter().pathname;
-  const { currentUser, signOutCurrentUser } = useUser();
 
   const [isShowingLinks, setIsShowingLinks] = useState(false);
 
   const userIsAuthenticated = (() => {
-    // TODO: perform user authentication async functions here to determine to show cart link
-    return false;
-    // return currentUser !== null;
+    return user !== null;
   })();
 
   const toggleShowLinks = () => {
@@ -138,7 +153,7 @@ export default function LayoutWhiteHeader({ children }) {
           </Link>
           <Link
             href="/contact"
-            className="uppercase py-4 px-2 relative my-2"
+            className="uppercase py-4 px-2 relative"
             id={isSelected("contact")}
           >
             Contact

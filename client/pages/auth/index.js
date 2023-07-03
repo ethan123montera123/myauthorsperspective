@@ -1,13 +1,22 @@
 import Login from "@/components/auth/Login";
-import SignUp from "@/components/auth/Signup";
+import SignUp from "@/components/auth/SignUp";
+import ForgetPassword from "@/components/auth/ForgetPassword";
 import Head from "next/head";
 
 import { useState } from "react";
 
 export default function Auth() {
-  const [isShowingLogin, setIsShowingLogin] = useState(true);
+  const [currentComponent, setCurrentComponent] = useState("Login");
 
-  const toggleShowLogin = () => setIsShowingLogin((prev) => !prev);
+  const generateCurrentComponent = () => {
+    if (currentComponent === "Login") {
+      return <Login setCurrentComponent={setCurrentComponent} />;
+    } else if (currentComponent === "SignUp") {
+      return <SignUp setCurrentComponent={setCurrentComponent} />;
+    } else if (currentComponent === "ForgetPassword") {
+      return <ForgetPassword setCurrentComponent={setCurrentComponent} />;
+    }
+  };
 
   return (
     <>
@@ -20,11 +29,7 @@ export default function Auth() {
       </Head>
 
       <div className="flex justify-center pb-8">
-        {isShowingLogin ? (
-          <Login handleSwapAuth={toggleShowLogin} />
-        ) : (
-          <SignUp handleSwapAuth={toggleShowLogin} />
-        )}
+        {generateCurrentComponent()}
       </div>
     </>
   );

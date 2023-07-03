@@ -5,12 +5,13 @@ import {
   MailerConfig,
   StripeConfig,
 } from "../interface";
+import { envSchema } from "../validator";
 
-const { parsed: env } = dotenv.config();
+const env = envSchema.parse(dotenv.config().parsed);
 
 export const stripe = {
-  SECRET_KEY: env?.STRIPE_API_KEY || "",
-  WEBHOOK_SECRET: env?.STRIPE_WEBHOOK_SECRET || "",
+  SECRET_KEY: env.STRIPE_API_KEY,
+  WEBHOOK_SECRET: env.STRIPE_WEBHOOK_SECRET,
   API_VERSION: "2022-11-15",
   CURRENCY: "USD",
   AUTOMATIC_PAYMENT_METHOD: true,
@@ -23,16 +24,16 @@ export const firebase = {
     USERS: "users",
   },
   options: {
-    ENFORCE_APP_CHECK: env?.NODE_ENV === "production",
+    ENFORCE_APP_CHECK: env.BACKEND_ENV === "production",
   },
 } as const satisfies FirebaseConfig;
 
 export const cors = {
-  ORIGIN: env?.CORS_ORIGIN || "http://localhost:3000",
+  ORIGIN: env.CORS_ORIGIN,
 } as const satisfies CorsConfig;
 
 export const mailer = {
-  MAILER_EMAIL: "My Author's Perspective <myauthorsperspective.dev@gmail.com>",
-  COMPANY_EMAIL: "nvqdosrjy@sinaite.net",
-  API_KEY: env?.SENDGRID_API_KEY || "",
+  MAILER_EMAIL: `My Author's Perspective <${env.MAILER_EMAIL}>`,
+  COMPANY_EMAIL: env.MAILER_COMPANY_EMAIL,
+  API_KEY: env.MAILER_API_KEY,
 } as const satisfies MailerConfig;

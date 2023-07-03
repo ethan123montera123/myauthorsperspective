@@ -117,10 +117,10 @@ export const webhook = https.onRequest(async (req, res) => {
         .object as Stripe.Response<Stripe.PaymentIntent>;
 
       const { firebaseOrderId } = metadata;
+
+      context = { firebaseOrderId, stripePaymentId }; // For error logging
       if (!firebaseOrderId) {
         msg = "Missing firebase order ID from Stripe payment payload.";
-        context = { firebaseOrderId };
-
         throw new Error(msg);
       }
 
@@ -128,21 +128,15 @@ export const webhook = https.onRequest(async (req, res) => {
       const orderData = orderSnapshot.data();
       if (!orderData) {
         msg = "Payment's corresponding firebase order does not exist. ";
-        context = { stripePaymentId, firebaseOrderId };
-
         throw new Error(msg);
       }
 
       const customerSnapshot = await usersRef.doc(orderData.customerId).get();
       const customerData = customerSnapshot.data() as User;
+
+      context = { ...context, uid: orderData.customerId };
       if (!customerData) {
         msg = "Order data has an invalid or missing customer ID.";
-        context = {
-          stripePaymentId,
-          firebaseOrderId,
-          uid: orderData.customerId,
-        };
-
         throw new Error(msg);
       }
 

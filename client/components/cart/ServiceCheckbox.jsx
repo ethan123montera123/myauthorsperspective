@@ -1,17 +1,25 @@
 import React from "react";
 import { Star } from "@mui/icons-material";
-import propTypes from "prop-types";
+import CartContext from "./CartContextWrapper";
+import { useContext } from "react";
 
 export default function ServiceCheckbox({
-  isStarred,
+  serviceId,
   serviceTitle,
   selectedService,
   handleClick,
 }) {
+  const cart = useContext(CartContext);
+
   const outlineStyle =
     serviceTitle === selectedService
       ? "outline-yellow-400 outline outline-[3px]"
       : "";
+
+  const isStarred =
+    cart.find((cartItem) => cartItem.service === serviceId) !== undefined &&
+    cart.find((cartItem) => cartItem.service === serviceId).inclusions.length >
+      0;
 
   return (
     <div
@@ -31,10 +39,3 @@ export default function ServiceCheckbox({
     </div>
   );
 }
-
-ServiceCheckbox.propTypes = {
-  isStarred: propTypes.bool.isRequired,
-  serviceTitle: propTypes.string.isRequired,
-  selectedService: propTypes.string.isRequired,
-  handleClick: propTypes.func.isRequired,
-};

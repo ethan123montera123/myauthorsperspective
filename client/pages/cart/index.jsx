@@ -36,6 +36,52 @@ export default function Cart({ services }) {
     setSelectedService(serviceTitle);
   };
 
+  const addServiceAndInclusionToCart = (serviceId, inclusionIndex) => {
+    const cartItemWithServiceId = cart.find(
+      (cartItem) => cartItem.service === serviceId
+    );
+
+    // if there is no serviceId in the cart yet,
+    if (cartItemWithServiceId === undefined) {
+      setCart(
+        cart.concat({ service: serviceId, inclusions: [inclusionIndex] })
+      );
+    }
+    // if serviceId in the cart exists, but the length of inclusions is 0
+    else if (cartItemWithServiceId.inclusions.length === 0) {
+      setCart(
+        cart.map((cartItem) =>
+          cartItem.service === serviceId
+            ? { ...cartItemWithServiceId, inclusions: [inclusionIndex] }
+            : cartItem
+        )
+      );
+    } else if (
+      // if the inclusion is already found, we remove the inclusion
+      cartItemWithServiceId.inclusions.find((i) => i === inclusionIndex) !==
+      undefined
+    ) {
+      const newCartItem = {
+        ...cartItemWithServiceId,
+        inclusions: cartItemWithServiceId.inclusions.filter(
+          (i) => i !== inclusionIndex
+        ),
+      };
+
+      // we remove the item completely if the inclusions length is gone
+      setCart(
+        cart
+          .map((cartItem) =>
+            cartItem.service === serviceId ? newCartItem : cartItem
+          )
+          .filter((cartItem) => cartItem.inclusions.length > 0)
+      );
+    } else {
+      // get the cartItem with the serviceId and add inclusionIndex to its inclusions property
+      console.log("multiple inclusions of the same service can't be added yet");
+    }
+  };
+
   return (
     <>
       <Head>
@@ -52,6 +98,7 @@ export default function Cart({ services }) {
               services={services}
               selectedService={selectedService}
               selectService={selectService}
+              addServiceAndInclusionToCart={addServiceAndInclusionToCart}
             />
           </CartContextWrapper>
         </div>

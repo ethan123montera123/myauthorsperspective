@@ -8,9 +8,11 @@ export default function ServicesToAvail({
   services,
   selectedService,
   selectService,
+  addServiceAndInclusionToCart,
 }) {
+  const selectedServiceData = services.find((e) => e.title === selectedService);
   const cart = useContext(CartContext);
-  console.log(services);
+  console.log(cart);
 
   return (
     <div className="bg-neutral-200 py-6 px-4 md:px-8 rounded-xl">
@@ -19,14 +21,11 @@ export default function ServicesToAvail({
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 pb-8">
         {services.map((service) => {
-          const isStarred =
-            cart.find((cartItem) => cartItem.title === service.title) !==
-            undefined;
           return (
             <ServiceCheckbox
               key={service.id}
+              serviceId={service.id}
               serviceTitle={service.title}
-              isStarred={isStarred}
               selectedService={selectedService}
               handleClick={() => {
                 selectService(service.title);
@@ -38,20 +37,20 @@ export default function ServicesToAvail({
       <h2 className="uppercase font-semibold text-lg md:text-xl mb-4 md:mb-6">
         Inclusions:
       </h2>
-      {/* {selectedServiceData.inclusions.map((inclusionName) => (
+      {selectedServiceData.inclusions.map((inclusion, inclusionIndex) => (
         <InclusionCheckbox
-          key={inclusionName}
-          inclusionName={inclusionName}
-          serviceInclusions={selectedServiceData.serviceInclusions}
-          handleClick={(_) => {
-            toggleCartInclusion(
-              selectedServiceData.setFn,
-              selectedServiceData.serviceInclusions,
-              inclusionName
+          key={inclusion.name}
+          serviceId={selectedServiceData.id}
+          inclusionName={inclusion.name}
+          inclusionIndex={inclusionIndex}
+          handleClick={() => {
+            addServiceAndInclusionToCart(
+              selectedServiceData.id,
+              inclusionIndex
             );
           }}
         />
-      ))} */}
+      ))}
     </div>
   );
 }

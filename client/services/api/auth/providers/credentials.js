@@ -9,6 +9,7 @@ import { doc, setDoc } from "firebase/firestore";
 
 import { auth, collections, db } from "@/services/firebase";
 import {
+  ObjectWithError,
   parseThrowablesToObject,
   pick,
   verifyAuthLogon,

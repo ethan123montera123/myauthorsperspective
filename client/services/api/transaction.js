@@ -1,15 +1,15 @@
 import { httpsCallable } from "firebase/functions";
 
 import { callables, functions } from "@/services/firebase";
-import { parseThrowablesToObject } from "@/services/utils";
+import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
 
 /**
  * Creates a transaction payment intent for a list of services offered.
  *
- * @param   {import("./@types").ServiceOrder[]} services - The services that are
+ * @param   {import("./@types").ServiceOrder[]} services The services that are
  * being bought for the current transaction.
- * @returns {Promise<{ secret: string; }>} The object containing the client secret to
- * be used to complete the payment.
+ * @returns {Promise<ObjectWithError<{ secret: string; }>>}
+ * A promise containing the secret to be used to complete the payment, or a possible error.
  *
  * @example
  * const services = [

@@ -3,6 +3,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import { auth, collections, db } from "@/services/firebase";
 import {
+  ObjectWithError,
   parseThrowablesToObject,
   pick,
   stripEmptyAndUnchanged,

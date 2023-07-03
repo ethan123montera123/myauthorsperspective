@@ -1,7 +1,11 @@
 import { updatePassword } from "firebase/auth";
 
 import { auth } from "@/services/firebase";
-import { parseThrowablesToObject, verifyAuthLogon } from "@/services/utils";
+import {
+  ObjectWithError,
+  parseThrowablesToObject,
+  verifyAuthLogon,
+} from "@/services/utils";
 
 /**
  * Change the password of the currently authenticated user.

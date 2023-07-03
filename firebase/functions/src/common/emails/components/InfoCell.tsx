@@ -1,24 +1,24 @@
 import { Column, Text } from "@react-email/components";
 import Tailwind from "./Tailwind";
 
-interface ReceiptInfoProps {
+interface IncoCellProps {
   label: string;
   value: string;
   isAccented?: boolean;
 }
 
 /**
- * Component for displaying receipt information such as
+ * Component for displaying information such as
  * customer name, email, and order ID.
  *
- * @param props Receipt info props.
- * @return A styled JSX template for receipt info.
+ * @param props Info cell props.
+ * @return A styled JSX template for info cell.
  */
-function ReceiptInfo({
+function InfoCell({
   label = "",
   value = "",
   isAccented = false,
-}: ReceiptInfoProps) {
+}: IncoCellProps) {
   return (
     <Tailwind>
       <Column className="w-1/2 pl-5 border-r border-b border-white h-11">
@@ -37,4 +37,4 @@ function ReceiptInfo({
   );
 }
 
-export default ReceiptInfo;
+export default InfoCell;

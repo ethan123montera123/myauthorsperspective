@@ -2,7 +2,7 @@
  * @namespace Service
  *
  * @typedef   {object}              ServiceInclusion
- * @property  {string}              id
+ * @property  {number}              id
  * @property  {string}              tier
  * @property  {string}              name
  *

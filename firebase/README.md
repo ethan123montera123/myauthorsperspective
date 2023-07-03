@@ -206,6 +206,30 @@ data.secret; // Secret to be used to complete the payment intent
     `api-stripe-createPaymentIntent`, it then sends out email receipts via `SendGrid`, with the
     `ReceiptEmail` template.
 
+### Contact API
+
+- **api-contact-sendContactEmail**: Contact gateway for the customers to channel their concerns,
+  suggestions, and complaints to the company.
+
+```js
+const app = initializeApp();
+const functions = getFunctions(app);
+
+// Get the callable function on the front-end
+const sendContactEmail = httpsCallable(functions, "api-contact-sendContactEmail");
+
+const data = {
+  firstName: "John",
+  lastName: "Smith",
+  email: "john@smith.com",
+  subject: "Lorem Ipsum.",
+  message: "Lorem ipsum sitar dolor.",
+};
+
+// Send the contact email to the company wuth the `ContactEmail` template
+await sendContactEmail(data);
+```
+
 ## Access Required
 
 The extension will operate with the following IAM roles:

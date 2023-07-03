@@ -18,7 +18,7 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  *  message: "Lorem Ipsum",
  * };
  *
- * const { data } = await sendContactEmail(contact);
+ * const { error } = await sendContactEmail(contact);
  * if(error) // handle error
  */
 export async function sendContactEmail(contact) {

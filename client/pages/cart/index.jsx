@@ -78,7 +78,16 @@ export default function Cart({ services }) {
       );
     } else {
       // get the cartItem with the serviceId and add inclusionIndex to its inclusions property
-      console.log("multiple inclusions of the same service can't be added yet");
+      const newCartItem = {
+        ...cartItemWithServiceId,
+        inclusions: cartItemWithServiceId.inclusions.concat(inclusionIndex),
+      };
+
+      setCart(
+        cart.map((cartItem) =>
+          cartItem.service === serviceId ? newCartItem : cartItem
+        )
+      );
     }
   };
 

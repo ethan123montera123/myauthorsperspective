@@ -14,7 +14,7 @@ import {
 import dotenv from "dotenv";
 import React from "react";
 import { ServiceOrder, User } from "../interface";
-import { ReceiptInfo, Tailwind } from "./components";
+import { InfoCell, Tailwind } from "./components";
 
 const { parsed: env } = dotenv.config();
 const baseUrl = env?.VERCEL_DEPLOYMENT_URL;
@@ -84,20 +84,16 @@ function ReceiptEmail({
             <Section className="border-collapse border-spacing-0 bg-offwhite rounded-md">
               <Column>
                 <Row>
-                  <ReceiptInfo
+                  <InfoCell
                     label="Customer Name"
                     value={customer.firstName + " " + customer.lastName}
                   />
 
-                  <ReceiptInfo
-                    label="Email"
-                    value={customer.email}
-                    isAccented
-                  />
+                  <InfoCell label="Email" value={customer.email} isAccented />
                 </Row>
 
                 <Row>
-                  <ReceiptInfo
+                  <InfoCell
                     label="Receipt Issued"
                     value={issuedAt.toLocaleDateString("en-US", {
                       year: "numeric",
@@ -108,9 +104,9 @@ function ReceiptEmail({
                 </Row>
 
                 <Row>
-                  <ReceiptInfo label="Order ID" value={orderId} isAccented />
+                  <InfoCell label="Order ID" value={orderId} isAccented />
 
-                  <ReceiptInfo
+                  <InfoCell
                     label="Customer ID"
                     value={customer.uid || ""}
                     isAccented

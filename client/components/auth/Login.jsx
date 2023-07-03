@@ -63,7 +63,7 @@ export default function Login({ setCurrentComponent }) {
           <div className="relative">
             <label
               className="text-xs font-semibold text-neutral-700"
-              for="email"
+              htmlFor="email"
             >
               Email
             </label>
@@ -86,7 +86,7 @@ export default function Login({ setCurrentComponent }) {
           <div className="relative pt-2">
             <label
               className="text-xs font-semibold text-neutral-700"
-              for="password"
+              htmlFor="password"
             >
               Password
             </label>
@@ -185,5 +185,5 @@ export default function Login({ setCurrentComponent }) {
 }
 
 Login.propTypes = {
-  handleSwapAuth: propTypes.func.isRequired,
+  setCurrentComponent: propTypes.func.isRequired,
 };

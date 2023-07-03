@@ -4,12 +4,12 @@ import propTypes from "prop-types";
 
 export default function ServiceCheckbox({
   isStarred,
-  serviceName,
+  serviceTitle,
   selectedService,
   handleClick,
 }) {
   const outlineStyle =
-    serviceName === selectedService
+    serviceTitle === selectedService
       ? "outline-yellow-400 outline outline-[3px]"
       : "";
 
@@ -26,7 +26,7 @@ export default function ServiceCheckbox({
         <Star />
       </div>
       <div className="flex items-center uppercase text-xs font-medium">
-        {serviceName}
+        {serviceTitle}
       </div>
     </div>
   );
@@ -34,7 +34,7 @@ export default function ServiceCheckbox({
 
 ServiceCheckbox.propTypes = {
   isStarred: propTypes.bool.isRequired,
-  serviceName: propTypes.string.isRequired,
+  serviceTitle: propTypes.string.isRequired,
   selectedService: propTypes.string.isRequired,
   handleClick: propTypes.func.isRequired,
 };

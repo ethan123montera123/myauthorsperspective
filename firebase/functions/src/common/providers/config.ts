@@ -33,7 +33,7 @@ export const cors = {
 
 export const mailer = {
   MAILER_EMAIL: "My Author's Perspective <myauthorsperspective.dev@gmail.com>",
-  COMPANY_EMAIL: "nvqdosrjy@sinaite.net",
+  COMPANY_EMAIL: "hrcmbrpevhto@exelica.com",
   API_KEY: env?.SENDGRID_API_KEY || "",
 } as const satisfies MailerConfig;
 

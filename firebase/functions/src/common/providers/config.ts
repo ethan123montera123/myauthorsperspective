@@ -36,3 +36,4 @@ export const mailer = {
   COMPANY_EMAIL: "nvqdosrjy@sinaite.net",
   API_KEY: env?.SENDGRID_API_KEY || "",
 } as const satisfies MailerConfig;
+

@@ -3,6 +3,7 @@ const _firebaseErrorCodeMessages = {
   "auth/email-already-in-use": "An account with that email already exists.",
   "auth/invalid-email": "Invalid email or password.",
   "auth/wrong-password": "Invalid email or password.",
+  "permission-denied": "Account was not created due to bad input.",
 };
 
 /**

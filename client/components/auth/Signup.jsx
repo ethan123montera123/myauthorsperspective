@@ -69,17 +69,17 @@ export default function SignUp({ setCurrentComponent }) {
     const { error } = await signUpWithCredentials(accountPayload);
     if (error) {
       // handle errors gracefully and reflect it in UI
-      console.log("error.code", error.code, "error", error);
+      // console.log("error.code", error.code, "error", error);
       return notifyError(prettyPrintFirebaseError(error.code));
+    } else {
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+      notifySuccess("Account successfully created.");
+      router.push("/");
     }
-
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPhone("");
-    setPassword("");
-    notifySuccess("Account successfully created.");
-    router.push("/");
   };
 
   return (
@@ -180,7 +180,7 @@ export default function SignUp({ setCurrentComponent }) {
               required
             ></input>
             <div className="absolute left-1 bottom-3 ">
-              <Phone size="22" color={email.length > 0 ? "black" : "#8e8e8e"} />
+              <Phone size="22" color={phone.length > 0 ? "black" : "#8e8e8e"} />
             </div>
           </div>
           <div className="relative pt-2">

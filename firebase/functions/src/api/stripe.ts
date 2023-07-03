@@ -1,4 +1,5 @@
 import { render } from "@react-email/components";
+import { Timestamp } from "firebase-admin/firestore";
 import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
@@ -62,6 +63,8 @@ export const createPaymentIntent = https.onCall(
       const orderRecord = await ordersRef.add({
         services: result.data,
         customerId: auth.uid,
+        placedAt: Timestamp.now(),
+        paidAt: null,
         stripePaymentId: paymentIntent.id,
       });
 
@@ -140,10 +143,14 @@ export const webhook = https.onRequest(async (req, res) => {
         throw new Error(msg);
       }
 
+      const paidAt = Timestamp.now();
+      await orderSnapshot.ref.set({ paidAt }, { merge: true });
+
       // eslint-disable-next-line new-cap
       const email = ReceiptEmail({
         services: orderData.services,
         orderId: orderSnapshot.id,
+        issuedAt: paidAt.toDate(),
         customer: {
           ...customerData,
           uid: customerSnapshot.id,

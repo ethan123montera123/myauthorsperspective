@@ -1,79 +1,16 @@
 import React from "react";
-import propTypes from "prop-types";
 import ServiceCheckbox from "./ServiceCheckbox";
 import InclusionCheckbox from "./InclusionCheckbox";
-import { getInclusionsOfService } from "@/helpers/services.helper";
+import { useContext } from "react";
+import CartContext from "./CartContextWrapper";
 
 export default function ServicesToAvail({
-  availedServices,
-  availedServicesSetters,
+  services,
   selectedService,
-  setSelectedService,
+  selectService,
+  addServiceAndInclusionToCart,
 }) {
-  const {
-    socialMediaManagementProgramServices,
-    searchEngineOptimizationServices,
-    bookVideoCreationServices,
-    authorsBlogSiteServices,
-    authorsEcommerceWebsiteServices,
-  } = availedServices;
-
-  const {
-    setSocialMediaManagementProgramServices,
-    setSearchEngineOptimizationServices,
-    setBookVideoCreationServices,
-    setAuthorsBlogSiteServices,
-    setAuthorsEcommerceWebsiteServices,
-  } = availedServicesSetters;
-
-  const handleSelectService = (_, serviceName) => {
-    setSelectedService(serviceName);
-  };
-
-  const inclusionsData = [
-    {
-      serviceInclusions: socialMediaManagementProgramServices,
-      serviceName: "Social Media Management Program",
-      inclusions: getInclusionsOfService("Social Media Management Program"),
-      setFn: setSocialMediaManagementProgramServices,
-    },
-    {
-      serviceInclusions: searchEngineOptimizationServices,
-      serviceName: "Search Engine Optimization",
-      inclusions: getInclusionsOfService("Search Engine Optimization"),
-      setFn: setSearchEngineOptimizationServices,
-    },
-    {
-      serviceInclusions: bookVideoCreationServices,
-      serviceName: "Book Video Creation",
-      inclusions: getInclusionsOfService("Book Video Creation"),
-      setFn: setBookVideoCreationServices,
-    },
-    {
-      serviceInclusions: authorsBlogSiteServices,
-      serviceName: "Author's Blog Site",
-      inclusions: getInclusionsOfService("Author's Blog Site"),
-      setFn: setAuthorsBlogSiteServices,
-    },
-    {
-      serviceInclusions: authorsEcommerceWebsiteServices,
-      serviceName: "Author's E-commerce Website",
-      inclusions: getInclusionsOfService("Author's E-commerce Website"),
-      setFn: setAuthorsEcommerceWebsiteServices,
-    },
-  ];
-
-  const selectedServiceData = inclusionsData.find(
-    (e) => e.serviceName === selectedService
-  );
-
-  const toggleCartInclusion = (setFn, prevInclusions, inclusionName) => {
-    if (prevInclusions.find((i) => i === inclusionName) === undefined) {
-      setFn(prevInclusions.concat(inclusionName));
-    } else {
-      setFn(prevInclusions.filter((i) => i !== inclusionName));
-    }
-  };
+  const selectedServiceData = services.find((e) => e.title === selectedService);
 
   return (
     <div className="bg-neutral-200 py-6 px-4 md:px-8 rounded-xl">
@@ -81,16 +18,15 @@ export default function ServicesToAvail({
         Services to Avail
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 pb-8">
-        {inclusionsData.map(({ serviceInclusions, serviceName }) => {
-          const isStarred = serviceInclusions.length > 0 ? true : false;
+        {services.map((service) => {
           return (
             <ServiceCheckbox
-              key={serviceName}
-              serviceName={serviceName}
+              key={service.id}
+              serviceId={service.id}
+              serviceTitle={service.title}
               selectedService={selectedService}
-              isStarred={isStarred}
-              handleClick={(_) => {
-                handleSelectService(_, serviceName);
+              handleClick={() => {
+                selectService(service.title);
               }}
             />
           );
@@ -99,16 +35,16 @@ export default function ServicesToAvail({
       <h2 className="uppercase font-semibold text-lg md:text-xl mb-4 md:mb-6">
         Inclusions:
       </h2>
-      {selectedServiceData.inclusions.map((inclusionName) => (
+      {selectedServiceData.inclusions.map((inclusion, inclusionIndex) => (
         <InclusionCheckbox
-          key={inclusionName}
-          inclusionName={inclusionName}
-          serviceInclusions={selectedServiceData.serviceInclusions}
-          handleClick={(_) => {
-            toggleCartInclusion(
-              selectedServiceData.setFn,
-              selectedServiceData.serviceInclusions,
-              inclusionName
+          key={inclusion.name}
+          serviceId={selectedServiceData.id}
+          inclusionName={inclusion.name}
+          inclusionIndex={inclusionIndex}
+          handleClick={() => {
+            addServiceAndInclusionToCart(
+              selectedServiceData.id,
+              inclusionIndex
             );
           }}
         />
@@ -116,10 +52,3 @@ export default function ServicesToAvail({
     </div>
   );
 }
-
-ServicesToAvail.propTypes = {
-  availedServices: propTypes.object.isRequired,
-  availedServicesSetters: propTypes.object.isRequired,
-  selectedService: propTypes.string.isRequired,
-  setSelectedService: propTypes.func.isRequired,
-};

@@ -11,8 +11,6 @@ export default function ServicesToAvail({
   addServiceAndInclusionToCart,
 }) {
   const selectedServiceData = services.find((e) => e.title === selectedService);
-  const cart = useContext(CartContext);
-  console.log(cart);
 
   return (
     <div className="bg-neutral-200 py-6 px-4 md:px-8 rounded-xl">

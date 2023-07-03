@@ -6,6 +6,7 @@ import CardInformationForm from "@/components/cart/CardInformationForm";
 import ServicesToAvail from "@/components/cart/ServicesToAvail";
 import { CartContextWrapper } from "@/components/cart/CartContextWrapper";
 import { getServices } from "@/services/api/services";
+import { inclusionFunctionThunk, getTotalPrice } from "@/helpers/cart.helper";
 
 export default function Cart({ services }) {
   /* payment method */
@@ -16,7 +17,6 @@ export default function Cart({ services }) {
   const [cardExpiryDate, setCardExpiryDate] = useState("");
   const [cardVerificationValue, setCardVerificationValue] = useState("");
   const [cardZipCode, setCardZipCode] = useState("");
-  const [totalPriceUsd, setTotalPriceUsd] = useState(0);
 
   const isSelectedPaymentMethod = (str) => {
     return str === selectedPaymentMethod
@@ -36,60 +36,7 @@ export default function Cart({ services }) {
     setSelectedService(serviceTitle);
   };
 
-  const addServiceAndInclusionToCart = (serviceId, inclusionIndex) => {
-    const cartItemWithServiceId = cart.find(
-      (cartItem) => cartItem.service === serviceId
-    );
-
-    // if there is no serviceId in the cart yet,
-    if (cartItemWithServiceId === undefined) {
-      setCart(
-        cart.concat({ service: serviceId, inclusions: [inclusionIndex] })
-      );
-    }
-    // if serviceId in the cart exists, but the length of inclusions is 0
-    else if (cartItemWithServiceId.inclusions.length === 0) {
-      setCart(
-        cart.map((cartItem) =>
-          cartItem.service === serviceId
-            ? { ...cartItemWithServiceId, inclusions: [inclusionIndex] }
-            : cartItem
-        )
-      );
-    } else if (
-      // if the inclusion is already found, we remove the inclusion
-      cartItemWithServiceId.inclusions.find((i) => i === inclusionIndex) !==
-      undefined
-    ) {
-      const newCartItem = {
-        ...cartItemWithServiceId,
-        inclusions: cartItemWithServiceId.inclusions.filter(
-          (i) => i !== inclusionIndex
-        ),
-      };
-
-      // we remove the item completely if the inclusions length is gone
-      setCart(
-        cart
-          .map((cartItem) =>
-            cartItem.service === serviceId ? newCartItem : cartItem
-          )
-          .filter((cartItem) => cartItem.inclusions.length > 0)
-      );
-    } else {
-      // get the cartItem with the serviceId and add inclusionIndex to its inclusions property
-      const newCartItem = {
-        ...cartItemWithServiceId,
-        inclusions: cartItemWithServiceId.inclusions.concat(inclusionIndex),
-      };
-
-      setCart(
-        cart.map((cartItem) =>
-          cartItem.service === serviceId ? newCartItem : cartItem
-        )
-      );
-    }
-  };
+  const addServiceAndInclusionToCart = inclusionFunctionThunk(cart, setCart);
 
   return (
     <>
@@ -138,11 +85,11 @@ export default function Cart({ services }) {
           />
 
           <div className="flex flex-col items-center md:items-end">
-            <div>
+            <div className="flex flex-col">
               <h2 className="tracking-wider uppercase font-semibold text-xl mb-2 mt-12 text-center">
-                Total: {formatUsd(totalPriceUsd)}
+                Total: {formatUsd(getTotalPrice(services, cart))}
               </h2>
-              <button className="py-3 px-6 shadow hover:shadow-lg transition-shadow bg-[#04b2bd] hover:bg-[#1c7b82] text-white uppercase rounded-[2rem] font-semibold tracking-wider">
+              <button className="self-end py-3 px-6 shadow hover:shadow-lg transition-shadow bg-[#04b2bd] hover:bg-[#1c7b82] text-white uppercase rounded-[2rem] font-semibold tracking-wider">
                 Check Out
               </button>
             </div>

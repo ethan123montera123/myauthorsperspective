@@ -3,7 +3,7 @@ import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
-import ReceiptEmail from "../common/emails/ReceiptEmail";
+import { ReceiptEmail } from "../common/emails";
 import { User } from "../common/interface";
 import { config, firebase, logger, mailer, stripe } from "../common/providers";
 import { orderSchema } from "../common/validator";

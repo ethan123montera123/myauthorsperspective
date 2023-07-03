@@ -2,7 +2,7 @@ import { render } from "@react-email/components";
 import { HttpsError } from "firebase-functions/v1/auth";
 import { https } from "firebase-functions/v2";
 
-import ContactEmail from "../common/emails/ContactEmail";
+import { ContactEmail } from "../common/emails";
 import { config, logger, mailer } from "../common/providers";
 import { contactSchema } from "../common/validator";
 

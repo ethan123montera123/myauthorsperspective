@@ -1,20 +1,16 @@
-import { randomUUID } from "crypto";
 import { Service, ServiceInclusion } from "../../../interface";
 import { config } from "../../../providers";
 
 /**
- * Apply Ids to an array values.
+ * Apply IDs to an array of values based on their indices.
  *
- * @param arr An array to be applied with Ids.
+ * @param arr An array to be applied with .
  * @return Array with values mapped with ids.
  */
 function applyIds<T extends string>(
   arr: Omit<ServiceInclusion<T>, "id">[]
 ): ServiceInclusion<T>[] {
-  return arr.map((v) => ({
-    id: randomUUID() as string,
-    ...v,
-  }));
+  return arr.map((v, idx) => ({ id: idx + 1, ...v }));
 }
 
 export const collection = config.firebase.collections.SERVICES;

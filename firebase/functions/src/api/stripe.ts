@@ -157,9 +157,9 @@ export const webhook = https.onRequest(async (req, res) => {
       });
 
       await mailer.send({
-        from: config.mailer.FROM_EMAIL,
+        from: config.mailer.MAILER_EMAIL,
         to: customerData.email,
-        bcc: config.mailer.BCC,
+        bcc: config.mailer.COMPANY_EMAIL,
         subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
         html: render(email),
       });

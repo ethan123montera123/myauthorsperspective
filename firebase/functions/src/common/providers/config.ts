@@ -32,7 +32,7 @@ export const cors = {
 } as const satisfies CorsConfig;
 
 export const mailer = {
-  FROM_EMAIL: "My Author's Perspective <myauthorsperspective.dev@gmail.com>",
-  BCC: undefined,
+  MAILER_EMAIL: "My Author's Perspective <myauthorsperspective.dev@gmail.com>",
+  COMPANY_EMAIL: "nvqdosrjy@sinaite.net",
   API_KEY: env?.SENDGRID_API_KEY || "",
 } as const satisfies MailerConfig;

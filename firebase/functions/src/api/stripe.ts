@@ -3,7 +3,7 @@ import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
-import ReceiptEmail from "../common/emails/ReceiptEmail";
+import { ReceiptEmail } from "../common/emails";
 import { User } from "../common/interface";
 import { config, firebase, logger, mailer, stripe } from "../common/providers";
 import { orderSchema } from "../common/validator";
@@ -157,9 +157,9 @@ export const webhook = https.onRequest(async (req, res) => {
       });
 
       await mailer.send({
-        from: config.mailer.FROM_EMAIL,
+        from: config.mailer.MAILER_EMAIL,
         to: customerData.email,
-        bcc: config.mailer.BCC,
+        bcc: config.mailer.COMPANY_EMAIL,
         subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
         html: render(email),
       });

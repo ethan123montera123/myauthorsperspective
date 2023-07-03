@@ -1,8 +1,6 @@
 import React from "react";
 import ServiceCheckbox from "./ServiceCheckbox";
 import InclusionCheckbox from "./InclusionCheckbox";
-import { useContext } from "react";
-import CartContext from "./CartContextWrapper";
 
 export default function ServicesToAvail({
   services,

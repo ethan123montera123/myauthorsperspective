@@ -6,9 +6,6 @@
  */
 export const inclusionFunctionThunk =
   (cart, setCart) => (serviceId, inclusionIndex) => {
-    console.log("Current Cart:");
-    console.log(cart);
-
     const cartItemWithServiceId = cart.find(
       (cartItem) => cartItem.service === serviceId
     );
@@ -77,7 +74,6 @@ export const inclusionFunctionThunk =
  * console.log(total);
  */
 export const getTotalPrice = (services, cart) => {
-  console.log("services, cart", services, cart);
   const AUTHOR_BLOG_SITE_SERVICE_ID = services.find(
     (service) => service.title === "Author's Blog Site"
   )?.id;

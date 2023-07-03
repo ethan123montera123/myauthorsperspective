@@ -1,7 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 
 import { collections, db } from "@/services/firebase";
-import { parseThrowablesToObject } from "@/services/utils";
+import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
 
 /**
  * Gets the offered services from the database.

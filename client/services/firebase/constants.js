@@ -5,4 +5,5 @@ export const collections = {
 
 export const callables = {
   createPaymentIntent: "api-stripe-createPaymentIntent",
+  sendContactEmail: "api-contact-sendContactEmail",
 };

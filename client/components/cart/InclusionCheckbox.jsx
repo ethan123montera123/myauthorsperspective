@@ -1,14 +1,21 @@
-import propTypes from "prop-types";
 import { Check } from "lucide-react";
+import CartContext from "./CartContextWrapper";
+import { useContext } from "react";
 
 export default function InclusionCheckbox({
+  serviceId,
   inclusionName,
-  serviceInclusions,
+  inclusionIndex,
   handleClick,
 }) {
+  const cart = useContext(CartContext);
+
+  // find the matching cartItem entry based on the inclusion's serviceId,
+  // then see if the inclusion is in the inclusions array
   const isChecked =
-    serviceInclusions.find((inclusion) => inclusion === inclusionName) !==
-    undefined;
+    cart
+      .find((e) => e.service === serviceId)
+      ?.inclusions.find((i) => i === inclusionIndex) !== undefined;
 
   return (
     <button
@@ -24,9 +31,3 @@ export default function InclusionCheckbox({
     </button>
   );
 }
-
-InclusionCheckbox.propTypes = {
-  inclusionName: propTypes.string.isRequired,
-  serviceInclusions: propTypes.arrayOf(propTypes.string).isRequired,
-  handleClick: propTypes.func.isRequired,
-};

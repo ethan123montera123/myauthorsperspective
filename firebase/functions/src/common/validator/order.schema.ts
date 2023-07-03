@@ -1,10 +1,5 @@
 import { z } from "zod";
-import {
-  PopulatedService,
-  Service,
-  ServiceOrder,
-  ServiceTierInfo,
-} from "../interface";
+import { PopulatedService, Service, ServiceOrder } from "../interface";
 import { config, firebase } from "../providers";
 
 /**
@@ -94,16 +89,16 @@ async function toServiceOrder({
   // then it defaults to the price defaults.
   const uniqueTiers = new Set(inclusions.map(({ tier }) => tier));
 
-  let info: ServiceTierInfo = priceTier[priceTier.default]!;
+  let highestTier = priceTier[priceTier.default]!;
   for (const tier of uniqueTiers) {
-    if (priceTier[tier]!.level > info.level) {
-      info = priceTier[tier]!;
+    if (priceTier[tier]!.level > highestTier.level) {
+      highestTier = priceTier[tier]!;
     }
   }
 
   return {
-    title: title,
-    unitPrice: info.price,
+    title,
+    unitPrice: highestTier.price,
     inclusions: inclusions.map(({ name }) => name),
     quantity,
   };

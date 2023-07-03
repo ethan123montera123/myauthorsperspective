@@ -6,7 +6,7 @@ export interface ServiceTierInfo {
 }
 
 export interface ServiceInclusion<T extends string> {
-  id: string;
+  id: number;
   tier: T;
   name: string;
 }

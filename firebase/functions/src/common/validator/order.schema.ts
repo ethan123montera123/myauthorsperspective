@@ -12,7 +12,12 @@ import { config, firebase } from "../providers";
  */
 const orderSkeleton = z.object({
   service: z.string(),
-  inclusions: z.string().array().default([]).optional(),
+  inclusions: z
+    .number()
+    .min(1, "Invalid inclusion ID.")
+    .array()
+    .default([])
+    .optional(),
   quantity: z
     .number()
     .min(1, "The minimum quantity that can be ordered for a service is 1.")

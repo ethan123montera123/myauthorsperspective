@@ -20,5 +20,7 @@ export interface CorsConfig {
 }
 
 export interface MailerConfig {
+  FROM_EMAIL: string;
+  BCC?: string[] | string | undefined;
   API_KEY: string;
 }

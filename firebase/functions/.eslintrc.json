@@ -23,6 +23,15 @@
     "import/no-unresolved": [
       "error",
       { "ignore": ["^firebase-functions/.+", "^firebase-admin/.+"] }
+    ],
+    "valid-jsdoc": [
+      "error",
+      {
+        "requireReturnType": false,
+        "requireReturn": false,
+        "requireReturnDescription": false,
+        "requireParamType": false
+      }
     ]
   }
 }

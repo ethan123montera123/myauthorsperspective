@@ -14,11 +14,19 @@
 
 ### Local Functions Configuration
 
-1. Make sure that you have `JDK v11+`.
-2. Go into the functions directory using `cd firebase/functions`.
-3. Install the required dependencies using `npm ci`.
-6. Run `npm run serve` to start the firebase emulators, and serve the project locally.
-7. To be able to use the emulators in javascript, you can create the following configuration in the
+### Setup
+
+1. Clone this project directory.
+2. Install `Firebase CLI` globally using `npm i firebase-tools -g`. This is required for linking the
+   firebase app locally, and for running emulators.
+3. Login to the `Firebase CLI` by running `firebase login` in the console.
+4. Go into the functions directory by running the command `cd firebase/functions` from the root directory.
+5. Once logged in, run `firebase use --add my-authors-perspective-dev` in the console to add this project as
+   the active project. This is assuming that you have already been added to the firebase project.
+6. Installed the required dependencies using `npm ci`.
+7. Run `npm run serve` to run the firebase emulators. Configurations can be seen in `firebase.json`, and
+   local dashboard can be seen at `localhost:4000`.
+8. To be able to use the emulators in javascript, you can create the following configuration in the
    initialization of the firebase project.
 
 ```js
@@ -35,7 +43,17 @@ connectAuthEmulator(auth, "http://127.0.0.1:9099");
 connectFirestoreEmulator(db, "127.0.0.1", 8080);
 ```
 
-8. You may also go to `http://127.0.0.1:4000` to view the local firebase dashboard.
+8. If emulation of webhooks are required for the session, then you must also download `Stripe CLI` from the
+   prerequisites.
+9. After downloading, place the extracted `stripe.exe` anywhere, and add it to the `PATH` environment
+   variable.
+10. Run `stripe login` on the console to link your local environment to Stripe.
+11. Once logged in, register the webhook using `stripe listen --forward-to [webhook-endpoint]`. You can
+    check the firebase logs for the actual endpoint of the webhook.
+12. Once stripe is readily listening at the webhook endpoint, they would then return a signing secret. Add
+    this secret to the `.env` file as `STRIPE_WEBHOOK_SECRET`.
+13. Afterwards, you can test if the webhook is working by running `stripe trigger payment_intent.succeeded.`
+    You should see an activity in the terminal of step 11.
 
 ## Resources
 

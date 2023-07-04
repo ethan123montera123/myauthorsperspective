@@ -16,14 +16,3 @@ export interface Service<T extends string = PriceTier> {
   priceTier: { default: T } & Partial<Record<T, ServiceTierInfo>>;
   inclusions: ServiceInclusion<T>[];
 }
-
-export interface PopulatedService<T extends string = PriceTier>
-  extends Service<T> {
-  quantity: number;
-}
-
-export interface ServiceOrder
-  extends Pick<PopulatedService, "title" | "quantity"> {
-  unitPrice: number;
-  inclusions: ServiceInclusion<PriceTier>["name"][];
-}

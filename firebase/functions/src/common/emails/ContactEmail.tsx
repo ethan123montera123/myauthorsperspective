@@ -15,7 +15,7 @@ import dotenv from "dotenv";
 import { InfoCell, Tailwind } from "./components";
 
 const { parsed: env } = dotenv.config();
-const baseUrl = env?.VERCEL_DEPLOYMENT_URL;
+const BASE_URL = env?.FRONTEND_DEPLOYMENT_URL ?? "http://localhost:3000";
 
 interface ContactEmailProps {
   name: string;
@@ -51,7 +51,7 @@ function ContactEmail({
             <Section>
               <Column>
                 <Img
-                  src={`${baseUrl}/_next/image?url=%2Fimages%2Flogo.png&w=96&q=75`}
+                  src={`${BASE_URL}/_next/image?url=%2Fimages%2Flogo.png&w=96&q=75`}
                   width="64"
                   height="64"
                   alt="My Author's Perspective Logo"

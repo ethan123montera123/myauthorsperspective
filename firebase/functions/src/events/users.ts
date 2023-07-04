@@ -1,4 +1,5 @@
 import { firestore } from "firebase-functions/v2";
+import { User } from "../common/interface";
 import { config, logger, stripe } from "../common/providers";
 
 const { USERS } = config.firebase.collections;
@@ -11,7 +12,7 @@ export const createStripeAccount = firestore.onDocumentCreated(
       return null;
     }
 
-    const data = snapshot.data();
+    const data = snapshot.data() as User;
 
     try {
       logger.log("Creating stripe account...", { user: uid });
@@ -49,7 +50,12 @@ export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
       return null;
     }
 
-    const { stripeId, ...data } = snapshot.after.data();
+    const { stripeId, ...data } = snapshot.after.data() as User;
+    if (!stripeId) {
+      logger.warn("User does not have a linked Stripe account.", { user: uid });
+      return null;
+    }
+
     const account = { user: uid, stripe: stripeId };
 
     try {
@@ -80,7 +86,12 @@ export const syncAccountDeleteToStripe = firestore.onDocumentDeleted(
       return null;
     }
 
-    const account = { user: uid, stripe: snapshot.data().stripeId };
+    const user = snapshot.data() as User;
+    const account = { user: uid, stripe: user.stripeId };
+    if (!account.stripe) {
+      logger.warn("User does not have a linked stripe account.");
+      return null;
+    }
 
     try {
       logger.log("Deleting stripe account...", account);

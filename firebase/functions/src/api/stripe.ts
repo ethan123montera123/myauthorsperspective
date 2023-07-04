@@ -1,10 +1,11 @@
 import { render } from "@react-email/components";
+import { Timestamp } from "firebase-admin/firestore";
 import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
 import { ReceiptEmail } from "../common/emails";
-import { User } from "../common/interface";
+import { Order, User } from "../common/interface";
 import { config, firebase, logger, mailer, stripe } from "../common/providers";
 import { orderSchema } from "../common/validator";
 
@@ -44,15 +45,9 @@ export const createPaymentIntent = https.onCall(
     try {
       logger.log("Creating payment intent...", { user: auth.uid, args: data });
 
-      const total =
-        result.data.reduce(
-          (acc, { quantity, unitPrice }) => acc + quantity * unitPrice,
-          0
-        ) * CENTS_IN_A_DOLLAR;
-
       const paymentIntent = await stripe.paymentIntents.create({
         customer: user.stripeId,
-        amount: total,
+        amount: result.data.totalPrice * CENTS_IN_A_DOLLAR,
         currency: config.stripe.CURRENCY,
         automatic_payment_methods: {
           enabled: config.stripe.AUTOMATIC_PAYMENT_METHOD,
@@ -60,10 +55,12 @@ export const createPaymentIntent = https.onCall(
       });
 
       const orderRecord = await ordersRef.add({
-        services: result.data,
+        ...result.data,
         customerId: auth.uid,
+        placedAt: Timestamp.now(),
+        paidAt: null,
         stripePaymentId: paymentIntent.id,
-      });
+      } satisfies Order);
 
       await stripe.paymentIntents.update(paymentIntent.id, {
         metadata: { firebaseOrderId: orderRecord.id },
@@ -117,42 +114,41 @@ export const webhook = https.onRequest(async (req, res) => {
         .object as Stripe.Response<Stripe.PaymentIntent>;
 
       const { firebaseOrderId } = metadata;
+
+      context = { firebaseOrderId, stripePaymentId }; // For error logging
       if (!firebaseOrderId) {
         msg = "Missing firebase order ID from Stripe payment payload.";
-        context = { firebaseOrderId };
-
         throw new Error(msg);
       }
 
       const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
-      const orderData = orderSnapshot.data();
+      const orderData = orderSnapshot.data() as Order;
       if (!orderData) {
         msg = "Payment's corresponding firebase order does not exist. ";
-        context = { stripePaymentId, firebaseOrderId };
-
         throw new Error(msg);
       }
 
       const customerSnapshot = await usersRef.doc(orderData.customerId).get();
       const customerData = customerSnapshot.data() as User;
+
+      context = { ...context, customer: orderData.customerId };
       if (!customerData) {
         msg = "Order data has an invalid or missing customer ID.";
-        context = {
-          stripePaymentId,
-          firebaseOrderId,
-          uid: orderData.customerId,
-        };
-
         throw new Error(msg);
       }
 
+      const paidAt = Timestamp.now();
+      await orderSnapshot.ref.set({ paidAt }, { merge: true });
+
       // eslint-disable-next-line new-cap
       const email = ReceiptEmail({
-        services: orderData.services,
-        orderId: orderSnapshot.id,
         customer: {
-          ...customerData,
           uid: customerSnapshot.id,
+          ...customerData,
+        },
+        order: {
+          id: orderSnapshot.id,
+          ...orderData,
         },
       });
 
@@ -164,11 +160,7 @@ export const webhook = https.onRequest(async (req, res) => {
         html: render(email),
       });
 
-      logger.log("Receipt emailed successfully.", {
-        stripePaymentId,
-        firebaseOrderId,
-        uid: orderData.customerId,
-      });
+      logger.log("Receipt emailed successfully.", context);
     } else {
       logger.log("Triggered by an unhandled event type.", {
         event: event.type,

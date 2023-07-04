@@ -1,11 +1,16 @@
 import Head from "next/head";
-import { useState, useContext } from "react";
+import { useState, useEffect } from "react";
 import { formatUsd } from "@/helpers/currency.helper";
 import PaymentMethodSelector from "@/components/cart/PaymentMethodSelector";
 import CardInformationForm from "@/components/cart/CardInformationForm";
 import ServicesToAvail from "@/components/cart/ServicesToAvail";
 import { CartContextWrapper } from "@/components/cart/CartContextWrapper";
-import { inclusionFunctionThunk, getTotalPrice } from "@/helpers/cart.helper";
+import {
+  getCartState,
+  setCartState,
+  inclusionFunctionThunk,
+  getTotalPrice,
+} from "@/helpers/cart.helper";
 import { rawServices } from "@/helpers/services.helper";
 import { createServiceTransaction } from "@/services/api/transaction";
 
@@ -20,8 +25,13 @@ export default function Cart({ services }) {
   const [cardZipCode, setCardZipCode] = useState("");
 
   /* cart state */
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(getCartState());
   const [selectedService, setSelectedService] = useState(services[0].title);
+
+  // updates localStorage.cart whenever cart state changes
+  useEffect(() => {
+    setCartState(cart);
+  }, [cart]);
 
   // (serviceId: string, inclusionId: number): void
   const addServiceAndInclusionToCart = inclusionFunctionThunk(cart, setCart);

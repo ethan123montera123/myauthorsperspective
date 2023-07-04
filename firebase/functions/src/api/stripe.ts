@@ -131,7 +131,7 @@ export const webhook = https.onRequest(async (req, res) => {
       const customerSnapshot = await usersRef.doc(orderData.customerId).get();
       const customerData = customerSnapshot.data() as User;
 
-      context = { ...context, uid: orderData.customerId };
+      context = { ...context, customer: orderData.customerId };
       if (!customerData) {
         msg = "Order data has an invalid or missing customer ID.";
         throw new Error(msg);
@@ -160,11 +160,7 @@ export const webhook = https.onRequest(async (req, res) => {
         html: render(email),
       });
 
-      logger.log("Receipt emailed successfully.", {
-        stripePaymentId,
-        firebaseOrderId,
-        uid: orderData.customerId,
-      });
+      logger.log("Receipt emailed successfully.", context);
     } else {
       logger.log("Triggered by an unhandled event type.", {
         event: event.type,

@@ -21,7 +21,7 @@ const config = Object.freeze({
 export const app = initializeApp(config);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const functions = getFunctions(app);
+export const functions = getFunctions(app, "asia-southeast1");
 
 if (process.env.NEXT_PUBLIC_NODE_ENV?.toLowerCase() !== "production") {
   const HOST = "127.0.0.1";

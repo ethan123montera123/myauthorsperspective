@@ -7,7 +7,8 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  * Contact gateway for the customers to send an email to the company.
  *
  * @param   {import("./@types").ContactData[]} contact The data associated with the contact.
- * @returns {Promise<ObjectWithError<void>>} A promise containing a possible error from the execution.
+ * @returns {Promise<ObjectWithError<{ msg: string; }>>}
+ * A promise containing a success message, and a possible error from the execution.
  *
  * @example
  * const contact = {
@@ -18,12 +19,16 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  *  message: "Lorem Ipsum",
  * };
  *
- * const { error } = await sendContactEmail(contact);
+ * const { data, error } = await sendContactEmail(contact);
  * if(error) // handle error
+ *
+ * data.msg // The msg returned when execution is successful
  */
 export async function sendContactEmail(contact) {
   return parseThrowablesToObject(async () => {
     const fn = httpsCallable(functions, callables.sendContactEmail);
-    await fn(contact);
+    const { data } = await fn(contact);
+
+    return data;
   });
 }

@@ -172,7 +172,7 @@ export const webhook = https.onRequest(
         });
       }
 
-      res.send({ msg: "Successfully processed webhook." });
+      res.status(200).send({ msg: "Successfully processed webhook." });
     } catch (err) {
       logger.error(msg, err, context);
       res.status(400).send({ msg });

@@ -32,6 +32,8 @@ export const sendContactEmail = https.onCall(
       });
 
       logger.log("Contact email sent.", result.data);
+
+      return { msg: "Successfully sent contact email." };
     } catch (err) {
       logger.error("Sending contact email failed.", err, result.data);
       throw new HttpsError(

@@ -43,7 +43,7 @@ export const data = [
       default: "basic",
       basic: {
         level: 0,
-        price: 1000,
+        price: 1800,
       },
     },
     inclusions: applyIds([

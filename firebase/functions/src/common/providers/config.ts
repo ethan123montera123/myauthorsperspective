@@ -25,6 +25,7 @@ export const firebase = {
   },
   options: {
     ENFORCE_APP_CHECK: env.BACKEND_ENV === "production",
+    FUNCTION_REGION: "asia-southeast1",
   },
 } as const satisfies FirebaseConfig;
 

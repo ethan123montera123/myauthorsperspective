@@ -5,7 +5,10 @@ import { config, logger, stripe } from "../common/providers";
 const { USERS } = config.firebase.collections;
 
 export const createStripeAccount = firestore.onDocumentCreated(
-  `${USERS}/{uid}`,
+  {
+    document: `${USERS}/{uid}`,
+    region: config.firebase.options.FUNCTION_REGION,
+  },
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
@@ -43,7 +46,10 @@ export const createStripeAccount = firestore.onDocumentCreated(
 );
 
 export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
-  `${USERS}/{uid}`,
+  {
+    document: `${USERS}/{uid}`,
+    region: config.firebase.options.FUNCTION_REGION,
+  },
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });
@@ -79,7 +85,10 @@ export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
 );
 
 export const syncAccountDeleteToStripe = firestore.onDocumentDeleted(
-  `${USERS}/{uid}`,
+  {
+    document: `${USERS}/{uid}`,
+    region: config.firebase.options.FUNCTION_REGION,
+  },
   async function ({ data: snapshot, params: { uid } }) {
     if (!snapshot) {
       logger.warn("Snapshot did not contain any data.", { user: uid });

@@ -10,6 +10,7 @@ export const sendContactEmail = https.onCall(
   {
     cors: config.cors.ORIGIN,
     enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
+    region: config.firebase.options.FUNCTION_REGION,
   },
   async (req) => {
     const result = contactSchema.safeParse(req.data);

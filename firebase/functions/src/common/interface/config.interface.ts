@@ -4,6 +4,7 @@ export interface FirebaseConfig {
   collections: Record<Uppercase<FirestoreCollections>, string>;
   options: {
     ENFORCE_APP_CHECK: boolean;
+    FUNCTION_REGION: string;
   };
 }
 

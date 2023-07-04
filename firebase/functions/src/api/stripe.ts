@@ -20,6 +20,7 @@ export const createPaymentIntent = https.onCall(
   {
     cors: config.cors.ORIGIN,
     enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
+    region: config.firebase.options.FUNCTION_REGION,
   },
   async function ({ auth, data }) {
     if (!auth) {
@@ -84,92 +85,97 @@ export const createPaymentIntent = https.onCall(
   }
 );
 
-export const webhook = https.onRequest(async (req, res) => {
-  let event = null;
-  let context = null;
-  let msg = "";
+export const webhook = https.onRequest(
+  {
+    region: config.firebase.options.FUNCTION_REGION,
+  },
+  async (req, res) => {
+    let event = null;
+    let context = null;
+    let msg = "";
 
-  logger.log("Constructing event...");
+    logger.log("Constructing event...");
 
-  try {
-    event = stripe.webhooks.constructEvent(
-      req.rawBody,
-      req.headers["stripe-signature"] ?? "",
-      config.stripe.WEBHOOK_SECRET
-    );
-  } catch (err) {
-    logger.error("Webhook event processing failed.", err);
-    res.status(500).send({ msg: "Error in processing webhook event." });
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.rawBody,
+        req.headers["stripe-signature"] ?? "",
+        config.stripe.WEBHOOK_SECRET
+      );
+    } catch (err) {
+      logger.error("Webhook event processing failed.", err);
+      res.status(500).send({ msg: "Error in processing webhook event." });
 
-    return;
-  }
-
-  logger.log("Event constructed.");
-
-  try {
-    if (event.type === "payment_intent.succeeded") {
-      logger.log("Sending email receipt upon successful payment...");
-
-      const { id: stripePaymentId, metadata } = event.data
-        .object as Stripe.Response<Stripe.PaymentIntent>;
-
-      const { firebaseOrderId } = metadata;
-
-      context = { firebaseOrderId, stripePaymentId }; // For error logging
-      if (!firebaseOrderId) {
-        msg = "Missing firebase order ID from Stripe payment payload.";
-        throw new Error(msg);
-      }
-
-      const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
-      const orderData = orderSnapshot.data() as Order;
-      if (!orderData) {
-        msg = "Payment's corresponding firebase order does not exist. ";
-        throw new Error(msg);
-      }
-
-      const customerSnapshot = await usersRef.doc(orderData.customerId).get();
-      const customerData = customerSnapshot.data() as User;
-
-      context = { ...context, customer: orderData.customerId };
-      if (!customerData) {
-        msg = "Order data has an invalid or missing customer ID.";
-        throw new Error(msg);
-      }
-
-      const paidAt = Timestamp.now();
-      await orderSnapshot.ref.set({ paidAt }, { merge: true });
-
-      // eslint-disable-next-line new-cap
-      const email = ReceiptEmail({
-        customer: {
-          uid: customerSnapshot.id,
-          ...customerData,
-        },
-        order: {
-          id: orderSnapshot.id,
-          ...orderData,
-        },
-      });
-
-      await mailer.send({
-        from: config.mailer.MAILER_EMAIL,
-        to: customerData.email,
-        bcc: config.mailer.COMPANY_EMAIL,
-        subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
-        html: render(email),
-      });
-
-      logger.log("Receipt emailed successfully.", context);
-    } else {
-      logger.log("Triggered by an unhandled event type.", {
-        event: event.type,
-      });
+      return;
     }
 
-    res.send({ msg: "Successfully processed webhook." });
-  } catch (err) {
-    logger.error(msg, err, context);
-    res.status(400).send({ msg });
+    logger.log("Event constructed.");
+
+    try {
+      if (event.type === "payment_intent.succeeded") {
+        logger.log("Sending email receipt upon successful payment...");
+
+        const { id: stripePaymentId, metadata } = event.data
+          .object as Stripe.Response<Stripe.PaymentIntent>;
+
+        const { firebaseOrderId } = metadata;
+
+        context = { firebaseOrderId, stripePaymentId }; // For error logging
+        if (!firebaseOrderId) {
+          msg = "Missing firebase order ID from Stripe payment payload.";
+          throw new Error(msg);
+        }
+
+        const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
+        const orderData = orderSnapshot.data() as Order;
+        if (!orderData) {
+          msg = "Payment's corresponding firebase order does not exist. ";
+          throw new Error(msg);
+        }
+
+        const customerSnapshot = await usersRef.doc(orderData.customerId).get();
+        const customerData = customerSnapshot.data() as User;
+
+        context = { ...context, customer: orderData.customerId };
+        if (!customerData) {
+          msg = "Order data has an invalid or missing customer ID.";
+          throw new Error(msg);
+        }
+
+        const paidAt = Timestamp.now();
+        await orderSnapshot.ref.set({ paidAt }, { merge: true });
+
+        // eslint-disable-next-line new-cap
+        const email = ReceiptEmail({
+          customer: {
+            uid: customerSnapshot.id,
+            ...customerData,
+          },
+          order: {
+            id: orderSnapshot.id,
+            ...orderData,
+          },
+        });
+
+        await mailer.send({
+          from: config.mailer.MAILER_EMAIL,
+          to: customerData.email,
+          bcc: config.mailer.COMPANY_EMAIL,
+          subject: "My Author's Perspective Order Receipt #" + orderSnapshot.id,
+          html: render(email),
+        });
+
+        logger.log("Receipt emailed successfully.", context);
+      } else {
+        logger.log("Triggered by an unhandled event type.", {
+          event: event.type,
+        });
+      }
+
+      res.send({ msg: "Successfully processed webhook." });
+    } catch (err) {
+      logger.error(msg, err, context);
+      res.status(400).send({ msg });
+    }
   }
-});
+);

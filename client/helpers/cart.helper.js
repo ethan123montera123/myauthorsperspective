@@ -2,38 +2,36 @@
  *
  * @param {Array} cart - the cart state handled by the cart index.js page
  * @param {Function} setCart - the setter function for the cart state
- * @returns a function with the signature: `(serviceId: string, inclusionIndex: number): void`
+ * @returns a function with the signature: `(serviceId: string, inclusionId: number): void`
  */
 export const inclusionFunctionThunk =
-  (cart, setCart) => (serviceId, inclusionIndex) => {
+  (cart, setCart) => (serviceId, inclusionId) => {
     const cartItemWithServiceId = cart.find(
       (cartItem) => cartItem.service === serviceId
     );
 
     // if there is no serviceId in the cart yet,
     if (cartItemWithServiceId === undefined) {
-      setCart(
-        cart.concat({ service: serviceId, inclusions: [inclusionIndex] })
-      );
+      setCart(cart.concat({ service: serviceId, inclusions: [inclusionId] }));
     }
     // if serviceId in the cart exists, but the length of inclusions is 0
     else if (cartItemWithServiceId.inclusions.length === 0) {
       setCart(
         cart.map((cartItem) =>
           cartItem.service === serviceId
-            ? { ...cartItemWithServiceId, inclusions: [inclusionIndex] }
+            ? { ...cartItemWithServiceId, inclusions: [inclusionId] }
             : cartItem
         )
       );
     } else if (
       // if the inclusion is already found, we remove the inclusion
-      cartItemWithServiceId.inclusions.find((i) => i === inclusionIndex) !==
+      cartItemWithServiceId.inclusions.find((i) => i === inclusionId) !==
       undefined
     ) {
       const newCartItem = {
         ...cartItemWithServiceId,
         inclusions: cartItemWithServiceId.inclusions.filter(
-          (i) => i !== inclusionIndex
+          (i) => i !== inclusionId
         ),
       };
 
@@ -46,10 +44,10 @@ export const inclusionFunctionThunk =
           .filter((cartItem) => cartItem.inclusions.length > 0)
       );
     } else {
-      // get the cartItem with the serviceId and add inclusionIndex to its inclusions property
+      // get the cartItem with the serviceId and add inclusionId to its inclusions property
       const newCartItem = {
         ...cartItemWithServiceId,
-        inclusions: cartItemWithServiceId.inclusions.concat(inclusionIndex),
+        inclusions: cartItemWithServiceId.inclusions.concat(inclusionId),
       };
 
       setCart(
@@ -85,7 +83,7 @@ export const getTotalPrice = (services, cart) => {
       return serviceDetails.priceTier.basic.price;
     } else {
       // otherwise, we traverse the cart to see if the blog site service inclusions have the premium services
-      const isPremium = (inclusionIndex) => inclusionIndex >= 5; // 5-9 denote premium tier
+      const isPremium = (inclusionId) => inclusionId >= 6; // 6-10 denote premium tier
       return cart
         .find((cartItem) => cartItem.service === AUTHOR_BLOG_SITE_SERVICE_ID)
         ?.inclusions.filter(isPremium).length > 0
@@ -94,7 +92,9 @@ export const getTotalPrice = (services, cart) => {
     }
   };
 
-  return cart
+  const totalPriceOfCartItems = cart
     .map((cartItem) => getPriceOfService(cartItem.service))
     .reduce((total, currentItem) => total + currentItem, 0);
+
+  return totalPriceOfCartItems;
 };

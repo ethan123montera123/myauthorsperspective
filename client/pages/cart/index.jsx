@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { formatUsd } from "@/helpers/currency.helper";
 import PaymentMethodSelector from "@/components/cart/PaymentMethodSelector";
 import CardInformationForm from "@/components/cart/CardInformationForm";
@@ -7,6 +7,7 @@ import ServicesToAvail from "@/components/cart/ServicesToAvail";
 import { CartContextWrapper } from "@/components/cart/CartContextWrapper";
 import { inclusionFunctionThunk, getTotalPrice } from "@/helpers/cart.helper";
 import { rawServices } from "@/helpers/services.helper";
+import { createServiceTransaction } from "@/services/api/transaction";
 
 export default function Cart({ services }) {
   /* payment method */
@@ -18,25 +19,36 @@ export default function Cart({ services }) {
   const [cardVerificationValue, setCardVerificationValue] = useState("");
   const [cardZipCode, setCardZipCode] = useState("");
 
-  const isSelectedPaymentMethod = (str) => {
-    return str === selectedPaymentMethod
-      ? "relative selectedPaymentMethod"
-      : "";
+  /* cart state */
+  const [cart, setCart] = useState([]);
+  const [selectedService, setSelectedService] = useState(services[0].title);
+
+  // (serviceId: string, inclusionId: number): void
+  const addServiceAndInclusionToCart = inclusionFunctionThunk(cart, setCart);
+
+  const handleCheckOut = () => {
+    console.log("Handling cart checkout... Cart payload:");
+    console.log(cart);
+
+    /* code to make stripe payment intent */
+    // const { data, error } = createServiceTransaction(cart);
+    // if (error) return notifyFailure(error.message);
+    // setSecret(data.secret);
+  };
+
+  const selectService = (serviceTitle) => {
+    setSelectedService(serviceTitle);
   };
 
   const handleClickPaymentMethod = (_, str) => {
     setSelectedPaymentMethod(str);
   };
 
-  /* cart state */
-  const [cart, setCart] = useState([]);
-  const [selectedService, setSelectedService] = useState(services[0].title);
-
-  const selectService = (serviceTitle) => {
-    setSelectedService(serviceTitle);
+  const isSelectedPaymentMethod = (str) => {
+    return str === selectedPaymentMethod
+      ? "relative selectedPaymentMethod"
+      : "";
   };
-
-  const addServiceAndInclusionToCart = inclusionFunctionThunk(cart, setCart);
 
   return (
     <>
@@ -89,7 +101,10 @@ export default function Cart({ services }) {
               <h2 className="tracking-wider uppercase font-semibold text-xl mb-2 mt-12 text-center">
                 Total: {formatUsd(getTotalPrice(services, cart))}
               </h2>
-              <button className="self-end py-3 px-6 shadow hover:shadow-lg transition-shadow bg-[#04b2bd] hover:bg-[#1c7b82] text-white uppercase rounded-[2rem] font-semibold tracking-wider">
+              <button
+                onClick={handleCheckOut}
+                className="self-end py-3 px-6 shadow hover:shadow-lg transition-shadow bg-[#04b2bd] hover:bg-[#1c7b82] text-white uppercase rounded-[2rem] font-semibold tracking-wider"
+              >
                 Check Out
               </button>
             </div>

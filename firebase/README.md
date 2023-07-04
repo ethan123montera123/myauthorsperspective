@@ -226,8 +226,10 @@ const data = {
   message: "Lorem ipsum sitar dolor.",
 };
 
-// Send the contact email to the company wuth the `ContactEmail` template
-await sendContactEmail(data);
+// Send the contact email to the company with the `ContactEmail` template
+const { data } = await sendContactEmail(data);
+
+data.msg; // Contains the success message
 ```
 
 ## Access Required

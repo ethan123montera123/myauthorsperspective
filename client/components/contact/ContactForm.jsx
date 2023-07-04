@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 import FormField from "./FormField";
+import { sendContactEmail } from "@/services/api/contact";
+import { notifySuccess, notifyError } from "@/helpers/notification.helper.";
 
 export default function ContactForm() {
   const [fName, setFName] = useState("");
@@ -9,14 +11,31 @@ export default function ContactForm() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Inputs:");
-    console.log("fName -", fName);
-    console.log("lName -", lName);
-    console.log("email -", email);
-    console.log("subject -", subject);
-    console.log("message -", message);
+
+    const payload = {
+      firstName: fName,
+      lastName: lName,
+      email,
+      subject,
+      message,
+    };
+
+    console.log(payload);
+
+    const { error } = await sendContactEmail(payload);
+
+    if (error) {
+      return notifyError(error.message);
+    } else {
+      notifySuccess("Message sent successfully!");
+      setFName("");
+      setLName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    }
   };
 
   return (
@@ -69,7 +88,7 @@ export default function ContactForm() {
             Message
           </label>
           <textarea
-            className="rounded border-[1.5px] border-black px-2 py-1"
+            className="rounded-xl border-[1.5px] border-black px-2 py-1"
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
@@ -80,7 +99,7 @@ export default function ContactForm() {
             required
           ></textarea>
         </div>
-        <button className="justify-self-end mt-3 w-32 lg:w-[10rem] bg-black hover:bg-[#04b2bd] text-white uppercase py-3 rounded-[2rem] font-semibold tracking-wider">
+        <button className="justify-self-end mt-3 w-32 lg:w-[10rem] bg-black hover:bg-[#04b2bd] text-white uppercase py-3 rounded-3xl font-semibold tracking-wider">
           Send
         </button>
       </form>

@@ -26,7 +26,7 @@ export default function AuthorBlogSite() {
       <ServiceDetails
         title="Author's Blog Site"
         imgSrc="/images/services/author-blog-site.webp"
-        priceUsd={1800}
+        priceUsd={1500}
         inclusions={[
           "Homepage",
           "About Page",

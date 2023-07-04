@@ -13,6 +13,11 @@ export default function ServiceDetails({
     console.log(`Handle adding ${title} to cart...`);
   };
 
+  const priceTag =
+    title !== "Author's Blog Site"
+      ? formatUsd(priceUsd, { showDecimals: false })
+      : "$1,500 - $2,000";
+
   return (
     <div className="ServiceDetails grid gap-8 grid-cols-1 xl:grid-cols-2">
       <Image
@@ -31,9 +36,7 @@ export default function ServiceDetails({
         <h2 className="tracking-wider text-lg lg:text-2xl uppercase font-bold">
           {title}
         </h2>
-        <h3 className="tracking-widest font-bold mt-3 text-xl">
-          {formatUsd(priceUsd, { showDecimals: false })}
-        </h3>
+        <h3 className="tracking-widest font-bold mt-3 text-xl">{priceTag}</h3>
         <div>
           <h4 className="mt-4 uppercase">Inclusions:</h4>
           <ul className="pl-6 list-disc grid grid-cols-1 sm:grid-cols-2 lg:gap-x-4">

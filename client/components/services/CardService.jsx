@@ -5,6 +5,11 @@ import Link from "next/link";
 import { formatUsd } from "@/helpers/currency.helper";
 
 export default function CardService({ url, imgSrc, title, priceUsd }) {
+  const priceTag =
+    title !== "Author's Blog Site"
+      ? formatUsd(priceUsd, { showDecimals: false })
+      : "$1,500 - $2,000";
+
   return (
     <Link
       href={url}
@@ -21,9 +26,7 @@ export default function CardService({ url, imgSrc, title, priceUsd }) {
       </div>
       <div className="px-4 py-2">
         <h3 className="font-semibold uppercase text-base">{title}</h3>
-        <div className="flex justify-end text-lg mt-2">
-          {formatUsd(priceUsd, { showDecimals: false })}
-        </div>
+        <div className="flex justify-end text-lg mt-2">{priceTag}</div>
       </div>
     </Link>
   );

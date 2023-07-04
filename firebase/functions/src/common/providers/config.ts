@@ -37,4 +37,3 @@ export const mailer = {
   COMPANY_EMAIL: env.MAILER_COMPANY_EMAIL,
   API_KEY: env.MAILER_API_KEY,
 } as const satisfies MailerConfig;
-

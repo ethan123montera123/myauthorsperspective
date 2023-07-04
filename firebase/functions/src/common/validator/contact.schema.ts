@@ -25,7 +25,7 @@ export const contactSchema = z
       .min(1)
       .max(256)
       .regex(
-        /^[a-zA-Z][a-zA-Z\ \.\-\_]+[a-zA-Z]$/,
+        /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
         "Must only contain alpha characters, whitespace, ., -, and _."
       ),
     lastName: z
@@ -34,7 +34,7 @@ export const contactSchema = z
       .min(1)
       .max(256)
       .regex(
-        /^[a-zA-Z][a-zA-Z\ \.\-\_]+[a-zA-Z]$/,
+        /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
         "Must only contain alpha characters, whitespace, ., -, and _."
       ),
     email: z.string().email(),

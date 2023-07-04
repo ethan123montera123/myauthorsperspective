@@ -87,10 +87,14 @@ async function toServiceOrder({
   // then it defaults to the price defaults.
   const uniqueTiers = new Set(inclusions.map(({ tier }) => tier));
 
-  let highestTier = priceTier[priceTier.default]!;
+  const DEFAULT_TIER = { level: -1, price: 0 };
+  let highestTier = priceTier[priceTier.default] ?? DEFAULT_TIER;
+  let currentTier = DEFAULT_TIER;
   for (const tier of uniqueTiers) {
-    if (priceTier[tier]!.level > highestTier.level) {
-      highestTier = priceTier[tier]!;
+    currentTier = priceTier[tier] ?? DEFAULT_TIER;
+
+    if (currentTier.level > highestTier.level) {
+      highestTier = currentTier;
     }
   }
 

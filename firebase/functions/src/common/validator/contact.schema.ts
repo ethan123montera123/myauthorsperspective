@@ -22,7 +22,7 @@ export const contactSchema = z
     firstName: z
       .string()
       .trim()
-      .min(1)
+      .nonempty()
       .max(256)
       .regex(
         /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
@@ -31,15 +31,15 @@ export const contactSchema = z
     lastName: z
       .string()
       .trim()
-      .min(1)
+      .nonempty()
       .max(256)
       .regex(
         /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
         "Must only contain alpha characters, whitespace, ., -, and _."
       ),
-    email: z.string().email(),
-    subject: z.string().trim().min(1).max(256),
-    message: z.string().trim().min(1),
+    email: z.string().trim().nonempty().email(),
+    subject: z.string().trim().nonempty().max(256),
+    message: z.string().trim().nonempty(),
   })
   .strip()
   .required()

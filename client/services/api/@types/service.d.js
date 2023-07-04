@@ -19,6 +19,5 @@
  * @typedef   {object}              ServiceOrder
  * @property  {string}              service      ID of the service.
  * @property  {string[]}            [inclusions] ID of the inclusions.
- * @property  {number}              [quantity]
  */
 export {};

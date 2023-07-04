@@ -5,7 +5,7 @@ import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
 import { ReceiptEmail } from "../common/emails";
-import { User } from "../common/interface";
+import { Order, User } from "../common/interface";
 import { config, firebase, logger, mailer, stripe } from "../common/providers";
 import { orderSchema } from "../common/validator";
 
@@ -45,15 +45,9 @@ export const createPaymentIntent = https.onCall(
     try {
       logger.log("Creating payment intent...", { user: auth.uid, args: data });
 
-      const total =
-        result.data.reduce(
-          (acc, { quantity, unitPrice }) => acc + quantity * unitPrice,
-          0
-        ) * CENTS_IN_A_DOLLAR;
-
       const paymentIntent = await stripe.paymentIntents.create({
         customer: user.stripeId,
-        amount: total,
+        amount: result.data.totalPrice * CENTS_IN_A_DOLLAR,
         currency: config.stripe.CURRENCY,
         automatic_payment_methods: {
           enabled: config.stripe.AUTOMATIC_PAYMENT_METHOD,
@@ -61,12 +55,12 @@ export const createPaymentIntent = https.onCall(
       });
 
       const orderRecord = await ordersRef.add({
-        services: result.data,
+        ...result.data,
         customerId: auth.uid,
         placedAt: Timestamp.now(),
         paidAt: null,
         stripePaymentId: paymentIntent.id,
-      });
+      } satisfies Order);
 
       await stripe.paymentIntents.update(paymentIntent.id, {
         metadata: { firebaseOrderId: orderRecord.id },
@@ -128,7 +122,7 @@ export const webhook = https.onRequest(async (req, res) => {
       }
 
       const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
-      const orderData = orderSnapshot.data();
+      const orderData = orderSnapshot.data() as Order;
       if (!orderData) {
         msg = "Payment's corresponding firebase order does not exist. ";
         throw new Error(msg);
@@ -148,12 +142,13 @@ export const webhook = https.onRequest(async (req, res) => {
 
       // eslint-disable-next-line new-cap
       const email = ReceiptEmail({
-        services: orderData.services,
-        orderId: orderSnapshot.id,
-        issuedAt: paidAt.toDate(),
         customer: {
-          ...customerData,
           uid: customerSnapshot.id,
+          ...customerData,
+        },
+        order: {
+          id: orderSnapshot.id,
+          ...orderData,
         },
       });
 

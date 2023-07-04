@@ -1,23 +1,18 @@
 import { z } from "zod";
-import { PopulatedService, Service, ServiceOrder } from "../interface";
+import { OrderLine, Service } from "../interface";
 import { config, firebase } from "../providers";
 
 /**
  * The general data format of the data received from the client.
  */
 const orderSkeleton = z.object({
-  service: z.string(),
+  service: z.string().nonempty(),
   inclusions: z
     .number()
     .min(1, "Invalid inclusion ID.")
     .array()
     .default([])
     .optional(),
-  quantity: z
-    .number()
-    .min(1, "The minimum quantity that can be ordered for a service is 1.")
-    .optional()
-    .default(1),
 });
 
 /**
@@ -28,9 +23,9 @@ const orderSkeleton = z.object({
  * @param ctx      The validation execution context.
  */
 async function toPopulatedOrderSchema(
-  { quantity = 1, inclusions = [], service }: z.infer<typeof orderSkeleton>,
+  { inclusions = [], service }: z.infer<typeof orderSkeleton>,
   ctx: z.RefinementCtx
-): Promise<PopulatedService> {
+): Promise<Service & { quantity: number }> {
   const snapshot = await firebase.db
     .collection(config.firebase.collections.SERVICES)
     .doc(service)
@@ -47,14 +42,12 @@ async function toPopulatedOrderSchema(
     return z.NEVER;
   }
 
-  const dedupedInclusions = new Set(inclusions);
-  const populatedInclusions = data.inclusions.filter(({ id }) =>
-    dedupedInclusions.has(id)
-  );
+  const uniqueIncl = new Set(inclusions);
+  const populatedIncl = data.inclusions.filter(({ id }) => uniqueIncl.has(id));
 
   // If the mappedInclusions does not match the length of the non-mapped one
   // Then there must be a non-existent ID passed in, and we should throw an error.
-  if (populatedInclusions.length !== dedupedInclusions.size) {
+  if (populatedIncl.length !== uniqueIncl.size) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: "Inclusions contain an invalid ID.",
@@ -67,8 +60,13 @@ async function toPopulatedOrderSchema(
   return {
     title: data.title,
     priceTier: data.priceTier,
-    inclusions: populatedInclusions,
-    quantity,
+    inclusions: populatedIncl,
+
+    // Placeholder property, leftover from previous implementations
+    // of a bulk order. I'm keeping this here, just in case business
+    // requirements change it would be easy to extend functionality
+    // to include quantity since all the logic is in place.
+    quantity: 1,
   };
 }
 
@@ -83,7 +81,7 @@ async function toServiceOrder({
   inclusions,
   priceTier,
   title,
-}: PopulatedService): Promise<ServiceOrder> {
+}: Service & { quantity: number }): Promise<OrderLine> {
   // Pricing is based upon the price of the highest tier based on
   // the inclusions' tier. If there are no inclusions selected,
   // then it defaults to the price defaults.
@@ -105,6 +103,35 @@ async function toServiceOrder({
 }
 
 /**
+ * Checks whether there are duplicate services in the transaction.
+ *
+ * @param services The array of services.
+ * @return `True` if there are no duplicate services, otherwise `false`.
+ */
+async function checkForDuplicateServices(services: OrderLine[]) {
+  const uniqueServices = new Set(services.map(({ title }) => title));
+
+  return uniqueServices.size === services.length;
+}
+
+/**
+ * Calculates the total price of the order.
+ *
+ * @param services The array of services.
+ * @return An object containing the services and their total price.
+ */
+async function calculateOrderTotal(services: OrderLine[]) {
+  const total = services.reduce(function (total, { quantity, unitPrice }) {
+    return total + quantity * unitPrice;
+  }, 0);
+
+  return {
+    services,
+    totalPrice: total,
+  };
+}
+
+/**
  * Validator and populator for an order schema.
  */
 export const orderSchema = orderSkeleton
@@ -112,4 +139,9 @@ export const orderSchema = orderSkeleton
   .transform(toPopulatedOrderSchema)
   .transform(toServiceOrder)
   .array()
-  .nonempty("Order must contain at least 1 or more services.");
+  .nonempty("Order must contain at least 1 or more services.")
+  .refine(checkForDuplicateServices, {
+    message:
+      "There should be no duplicate services of the same type in a single order.",
+  })
+  .transform(calculateOrderTotal);

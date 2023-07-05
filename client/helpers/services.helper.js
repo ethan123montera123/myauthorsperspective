@@ -57,7 +57,7 @@ const firebaseData = [
   },
   {
     id: "YbNUdzUl4wAnz7byvtAl",
-    priceTier: { default: "basic", basic: { level: 0, price: 1000 } },
+    priceTier: { default: "basic", basic: { level: 0, price: 1800 } },
     title: "Book Video Creation",
     inclusions: [
       { tier: "basic", name: "Book Title and Author", id: 1 },
@@ -110,7 +110,7 @@ const services = [
     title: "Book Video Creation",
     url: "/services/book-video-creation",
     imgSrc: "/images/services/book-video-creation.webp",
-    priceUsd: 1000,
+    priceUsd: 1800,
     inclusions: [
       "Book Title and Author",
       "Book Synopsis",

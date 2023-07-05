@@ -2,9 +2,9 @@ import Head from "next/head";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
-import { rawServices } from "@/helpers/services.helper";
+import { rawServices, getRandomServices } from "@/helpers/services.helper";
 
-export default function BookVideoCreation() {
+export default function BookVideoCreation({ otherServices }) {
   const serviceName = "Book Video Creation";
   const { inclusions } = rawServices.find((e) => e.title === serviceName);
 
@@ -33,7 +33,18 @@ export default function BookVideoCreation() {
         priceUsd={1800}
         inclusions={inclusions}
       />
-      <OtherServices excludeUrl="/services/book-video-creation" />
+      <OtherServices servicesData={otherServices} />
     </>
   );
+}
+
+export async function getStaticProps() {
+  const excludeUrl = "/services/book-video-creation";
+  const otherServices = getRandomServices(3, { excludeUrl });
+
+  return {
+    props: {
+      otherServices,
+    },
+  };
 }

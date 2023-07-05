@@ -2,9 +2,9 @@ import Head from "next/head";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
-import { rawServices } from "@/helpers/services.helper";
+import { rawServices, getRandomServices } from "@/helpers/services.helper";
 
-export default function AuthorEcommerceSite() {
+export default function AuthorEcommerceSite({ otherServices }) {
   const serviceName = "Author's E-commerce Website";
   const { inclusions } = rawServices.find((e) => e.title === serviceName);
 
@@ -33,7 +33,18 @@ export default function AuthorEcommerceSite() {
         priceUsd={1800}
         inclusions={inclusions}
       />
-      <OtherServices excludeUrl="/services/author-ecommerce-site" />
+      <OtherServices servicesData={otherServices} />
     </>
   );
+}
+
+export async function getStaticProps() {
+  const excludeUrl = "/services/author-ecommerce-site";
+  const otherServices = getRandomServices(3, { excludeUrl });
+
+  return {
+    props: {
+      otherServices,
+    },
+  };
 }

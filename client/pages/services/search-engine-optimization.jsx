@@ -2,9 +2,9 @@ import Head from "next/head";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
-import { rawServices } from "@/helpers/services.helper";
+import { rawServices, getRandomServices } from "@/helpers/services.helper";
 
-export default function SearchEngineOptimization() {
+export default function SearchEngineOptimization({ otherServices }) {
   const serviceName = "Search Engine Optimization";
   const { inclusions } = rawServices.find((e) => e.title === serviceName);
 
@@ -33,7 +33,18 @@ export default function SearchEngineOptimization() {
         priceUsd={4000}
         inclusions={inclusions}
       />
-      <OtherServices excludeUrl="/services/search-engine-optimization" />
+      <OtherServices servicesData={otherServices} />
     </>
   );
+}
+
+export async function getStaticProps() {
+  const excludeUrl = "/services/search-engine-optimization";
+  const otherServices = getRandomServices(3, { excludeUrl });
+
+  return {
+    props: {
+      otherServices,
+    },
+  };
 }

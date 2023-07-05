@@ -34,7 +34,7 @@ export default function Breadcrumb({ orderedPathNames }) {
 
 Breadcrumb.propTypes = {
   // example: [{name, url}, {name, url}, ...]
-  orderdPathNames: propTypes.arrayOf(
+  orderedPathNames: propTypes.arrayOf(
     propTypes.shape({
       name: propTypes.string.isRequired,
       url: propTypes.string.isRequired,

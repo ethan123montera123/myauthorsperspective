@@ -6,7 +6,7 @@ import { rawServices, getRandomServices } from "@/helpers/services.helper";
 
 export default function SearchEngineOptimization({ otherServices }) {
   const serviceName = "Search Engine Optimization";
-  const { inclusions } = rawServices.find((e) => e.title === serviceName);
+  const { inclusions, id } = rawServices.find((e) => e.title === serviceName);
 
   return (
     <>
@@ -31,6 +31,7 @@ export default function SearchEngineOptimization({ otherServices }) {
         title={serviceName}
         imgSrc="/images/services/search-engine-optimization.webp"
         priceUsd={4000}
+        serviceId={id}
         inclusions={inclusions}
       />
       <OtherServices servicesData={otherServices} />

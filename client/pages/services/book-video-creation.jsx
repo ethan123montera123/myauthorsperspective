@@ -6,7 +6,7 @@ import { rawServices, getRandomServices } from "@/helpers/services.helper";
 
 export default function BookVideoCreation({ otherServices }) {
   const serviceName = "Book Video Creation";
-  const { inclusions } = rawServices.find((e) => e.title === serviceName);
+  const { inclusions, id } = rawServices.find((e) => e.title === serviceName);
 
   return (
     <>
@@ -31,6 +31,7 @@ export default function BookVideoCreation({ otherServices }) {
         title={serviceName}
         imgSrc="/images/services/book-video-creation.webp"
         priceUsd={1800}
+        serviceId={id}
         inclusions={inclusions}
       />
       <OtherServices servicesData={otherServices} />

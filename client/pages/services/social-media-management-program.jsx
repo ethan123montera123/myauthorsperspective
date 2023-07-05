@@ -6,7 +6,7 @@ import { rawServices, getRandomServices } from "@/helpers/services.helper";
 
 export default function SocialMediaManagementProgram({ otherServices }) {
   const serviceName = "Social Media Management Program";
-  const { inclusions } = rawServices.find((e) => e.title === serviceName);
+  const { inclusions, id } = rawServices.find((e) => e.title === serviceName);
 
   return (
     <>
@@ -31,6 +31,7 @@ export default function SocialMediaManagementProgram({ otherServices }) {
         title={serviceName}
         imgSrc="/images/services/social-media-management-program.webp"
         priceUsd={1800}
+        serviceId={id}
         inclusions={inclusions}
       />
       <OtherServices servicesData={otherServices} />

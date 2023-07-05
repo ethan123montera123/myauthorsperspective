@@ -1,16 +1,17 @@
 import propTypes from "prop-types";
 import Image from "next/image";
-
 import { formatUsd } from "@/helpers/currency.helper";
 
 export default function ServiceDetails({
   title,
   imgSrc,
   priceUsd,
+  serviceId,
   inclusions,
 }) {
+  console.log(inclusions);
   const handleAddToCart = () => {
-    console.log(`Handle adding ${title} to cart...`);
+    console.log(`Handle adding ${serviceId} to cart...`);
   };
 
   const priceTag =
@@ -65,6 +66,7 @@ ServiceDetails.propTypes = {
   title: propTypes.string.isRequired,
   imgSrc: propTypes.string.isRequired,
   priceUsd: propTypes.number.isRequired,
+  serviceId: propTypes.string.isRequired,
   inclusions: propTypes.arrayOf(
     propTypes.shape({
       id: propTypes.number,

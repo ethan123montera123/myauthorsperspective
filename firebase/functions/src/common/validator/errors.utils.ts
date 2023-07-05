@@ -62,7 +62,7 @@ export function parseErrors(errors: ZodIssue[]): FormattedError {
   for (const error of errors) {
     path = error.path.shift();
 
-    if (path) {
+    if (typeof path !== "undefined") {
       if (!buckets[path]) {
         buckets[path] = [];
       }

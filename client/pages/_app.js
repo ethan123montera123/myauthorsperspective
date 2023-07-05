@@ -1,8 +1,10 @@
 import "@/styles/globals.css";
-import LayoutWhiteHeader from "@/components/ui/LayoutWhiteHeader";
-import LayoutGeneral from "@/components/ui/LayoutGeneral";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import LayoutGeneral from "@/components/ui/LayoutGeneral";
+import LayoutWhiteHeader from "@/components/ui/LayoutWhiteHeader";
+import { useAppCheck } from "@/services/firebase";
 
 // fonts
 import { Inter } from "next/font/google";
@@ -18,6 +20,8 @@ function pageUsesWhiteHeader(urlPath) {
 }
 
 export default function App({ Component, pageProps, router }) {
+  useAppCheck(); // Initializes App Check for protecting Firebase Resources
+
   const path = router.pathname;
 
   if (pageUsesWhiteHeader(path)) {
@@ -40,4 +44,3 @@ export default function App({ Component, pageProps, router }) {
     );
   }
 }
-

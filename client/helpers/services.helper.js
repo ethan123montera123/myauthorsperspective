@@ -1,6 +1,6 @@
 const firebaseData = [
   {
-    id: "6umwOV8A5lyaiBKCGq8G",
+    id: "J4Wvbm04PMfrLtq52JU4",
     priceTier: {
       default: "basic",
       premium: { level: 1, price: 2000 },
@@ -21,8 +21,11 @@ const firebaseData = [
     ],
   },
   {
-    id: "ATzApWSjTwhMHUAZJeyF",
-    priceTier: { default: "basic", basic: { level: 0, price: 1800 } },
+    id: "bOM1quqrDOqKHKdUWWwN",
+    priceTier: {
+      default: "basic",
+      basic: { level: 0, price: 1800 },
+    },
     title: "Social Media Management Program",
     inclusions: [
       { tier: "basic", name: "Social Media Strategy", id: 1 },
@@ -37,8 +40,11 @@ const firebaseData = [
     ],
   },
   {
-    id: "SfGuuWrDhL3J8EwwCDm3",
-    priceTier: { default: "basic", basic: { level: 0, price: 1800 } },
+    id: "gTOpZnGAC9ByAeyek8W0",
+    priceTier: {
+      default: "basic",
+      basic: { level: 0, price: 1800 },
+    },
     title: "Author's E-commerce Website",
     inclusions: [
       { tier: "basic", name: "Product Listing", id: 1 },
@@ -56,8 +62,11 @@ const firebaseData = [
     ],
   },
   {
-    id: "YbNUdzUl4wAnz7byvtAl",
-    priceTier: { default: "basic", basic: { level: 0, price: 1800 } },
+    id: "jQNbJuv5eg8Sp55THM3X",
+    priceTier: {
+      default: "basic",
+      basic: { level: 0, price: 1800 },
+    },
     title: "Book Video Creation",
     inclusions: [
       { tier: "basic", name: "Book Title and Author", id: 1 },
@@ -73,8 +82,11 @@ const firebaseData = [
     ],
   },
   {
-    id: "nMtlPyHS83t6RkZNKjpp",
-    priceTier: { default: "basic", basic: { level: 0, price: 4000 } },
+    id: "HFRdyLzZSwyq4jtdGflS",
+    priceTier: {
+      default: "basic",
+      basic: { level: 0, price: 4000 },
+    },
     title: "Search Engine Optimization",
     inclusions: [
       { tier: "basic", name: "Keyword Research", id: 1 },

@@ -196,7 +196,11 @@ export default function Home() {
         inclusions: inclusions.map(({ id }) => id),
       }))
     );
-    if (error) return console.log(error);
+    if (error) {
+      return console.log(
+        error.code === "invalid-argument" ? error.details : error
+      );
+    }
 
     setSecret(data.secret);
   }
@@ -207,7 +211,11 @@ export default function Home() {
     const dto = Object.fromEntries(formData);
 
     const { error } = await sendContactEmail(dto);
-    if (error) return console.log(error);
+    if (error) {
+      return console.log(
+        error.code === "invalid-argument" ? error.details : error
+      );
+    }
   }
 
   return (

@@ -1,93 +1,26 @@
+import { FieldPath } from "firebase-admin/firestore";
 import { z } from "zod";
-import { OrderLine, Service } from "../interface";
+import { Order, OrderLine, Service } from "../interface";
 import { config, firebase } from "../providers";
 
 /**
- * The general data format of the data received from the client.
- */
-const orderSkeleton = z.object({
-  service: z.string().nonempty(),
-  inclusions: z
-    .number()
-    .min(1, "Invalid inclusion ID.")
-    .array()
-    .default([])
-    .optional(),
-});
-
-/**
- * Populates the skeleton which just contians string and number IDs,
- * to their actual values from the database.
+ * Calculates the pricing of a service based on the highest inclusion tier that it has.
  *
- * @param skeleton The order skeleton to be populated.
- * @param ctx      The validation execution context.
- */
-async function toPopulatedOrderSchema(
-  { inclusions = [], service }: z.infer<typeof orderSkeleton>,
-  ctx: z.RefinementCtx
-): Promise<Service & { quantity: number }> {
-  const snapshot = await firebase.db
-    .collection(config.firebase.collections.SERVICES)
-    .doc(service)
-    .get();
-
-  const data = snapshot.data() as Service;
-  if (!data) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Invalid service ID.",
-      path: ["service"],
-    });
-
-    return z.NEVER;
-  }
-
-  const uniqueIncl = new Set(inclusions);
-  const populatedIncl = data.inclusions.filter(({ id }) => uniqueIncl.has(id));
-
-  // If the mappedInclusions does not match the length of the non-mapped one
-  // Then there must be a non-existent ID passed in, and we should throw an error.
-  if (populatedIncl.length !== uniqueIncl.size) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Inclusions contain an invalid ID.",
-      path: ["inclusions"],
-    });
-
-    return z.NEVER;
-  }
-
-  return {
-    title: data.title,
-    priceTier: data.priceTier,
-    inclusions: populatedIncl,
-
-    // Placeholder property, leftover from previous implementations
-    // of a bulk order. I'm keeping this here, just in case business
-    // requirements change it would be easy to extend functionality
-    // to include quantity since all the logic is in place.
-    quantity: 1,
-  };
-}
-
-/**
- * Converts the populated service into a consumable service order
- * containing only the necessary data for storing and placing orders.
+ * Note:
+ * Pricing is based upon the price of the highest tier based on
+ * the inclusions' tier. If there are no inclusions selected,
+ * then it defaults to the price defaults.
  *
- * @param service  The populated service to be converted to a consumable service order.
+ * @param service The service whose price is to be calculated.
+ * @returns       The pricing of the service based on the highest inclusion tier.
  */
-async function toServiceOrder({
-  quantity,
+function calculateServicePrice({
   inclusions,
   priceTier,
-  title,
-}: Service & { quantity: number }): Promise<OrderLine> {
-  // Pricing is based upon the price of the highest tier based on
-  // the inclusions' tier. If there are no inclusions selected,
-  // then it defaults to the price defaults.
+}: Pick<Service, "inclusions" | "priceTier">): number {
+  const DEFAULT_TIER = { level: -1, price: 0 };
   const uniqueTiers = new Set(inclusions.map(({ tier }) => tier));
 
-  const DEFAULT_TIER = { level: -1, price: 0 };
   let highestTier = priceTier[priceTier.default] ?? DEFAULT_TIER;
   let currentTier = DEFAULT_TIER;
   for (const tier of uniqueTiers) {
@@ -98,55 +31,118 @@ async function toServiceOrder({
     }
   }
 
-  return {
-    title,
-    unitPrice: highestTier.price,
-    inclusions: inclusions.map(({ name }) => name),
-    quantity,
-  };
-}
-
-/**
- * Checks whether there are duplicate services in the transaction.
- *
- * @param services The array of services.
- * @return `True` if there are no duplicate services, otherwise `false`.
- */
-async function checkForDuplicateServices(services: OrderLine[]) {
-  const uniqueServices = new Set(services.map(({ title }) => title));
-
-  return uniqueServices.size === services.length;
+  return highestTier.price;
 }
 
 /**
  * Calculates the total price of the order.
  *
- * @param services The array of services.
- * @return An object containing the services and their total price.
+ * @param services The array of services part of the order.
+ * @return         The total price of the order.
  */
-async function calculateOrderTotal(services: OrderLine[]) {
-  const total = services.reduce(function (total, { quantity, unitPrice }) {
+function calculateOrderTotal(services: OrderLine[]): number {
+  return services.reduce(function (total, { quantity, unitPrice }) {
     return total + quantity * unitPrice;
   }, 0);
-
-  return {
-    services,
-    totalPrice: total,
-  };
 }
 
-/**
- * Validator and populator for an order schema.
- */
-export const orderSchema = orderSkeleton
+export const orderSchema = z
+  .object({
+    service: z.string().trim().nonempty(),
+    inclusions: z
+      .number()
+      .min(1, "Invalid inclusion ID.")
+      .array()
+      .default([])
+      .optional(),
+  })
   .strip()
-  .transform(toPopulatedOrderSchema)
-  .transform(toServiceOrder)
   .array()
   .nonempty("Order must contain at least 1 or more services.")
-  .refine(checkForDuplicateServices, {
-    message:
-      "There should be no duplicate services of the same type in a single order.",
-    path: ["order"],
-  })
-  .transform(calculateOrderTotal);
+  .refine(
+    (services) => {
+      const uniqueServices = new Set(services.map(({ service }) => service));
+      return uniqueServices.size === services.length;
+    },
+    {
+      message: "There should be no duplicate services in a single order.",
+      path: ["order"],
+    }
+  )
+  .transform(
+    async (services, ctx): Promise<Pick<Order, "services" | "totalPrice">> => {
+      const servicesQuery = firebase.db
+        .collection(config.firebase.collections.SERVICES)
+        .where(
+          FieldPath.documentId(),
+          "in",
+          services.map(({ service }) => service)
+        );
+
+      const query = await servicesQuery.count().get();
+      if (query.data().count !== services.length) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Services contain an invalid ID.",
+          path: ["order"],
+        });
+
+        return z.NEVER;
+      }
+
+      // Convert services into a hash-map for easier querying later on
+      const snapshot = await servicesQuery.get();
+      const dbServices: Record<string, Service> = snapshot.docs.reduce(
+        (acc, doc) => ({
+          ...acc,
+          [doc.id]: doc.data() as Service,
+        }),
+        {}
+      );
+
+      // Populate the services with the database data
+      const populatedServices = services.map(
+        ({ service, inclusions }, idx): OrderLine => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const data = dbServices[service]!;
+
+          const uniqueIncl = new Set(inclusions);
+          const populatedIncl = data.inclusions.filter(({ id }) =>
+            uniqueIncl.has(id)
+          );
+
+          // If the mappedInclusions does not match the length of the non-mapped one
+          // Then there must be a non-existent ID passed in, and we should throw an error.
+          if (populatedIncl.length !== uniqueIncl.size) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Inclusions contain an invalid ID.",
+              path: [idx, "inclusions"],
+            });
+
+            return z.NEVER;
+          }
+
+          return {
+            title: data.title,
+            unitPrice: calculateServicePrice({
+              priceTier: data.priceTier,
+              inclusions: populatedIncl,
+            }),
+            inclusions: populatedIncl.map(({ name }) => name),
+
+            // Placeholder property, leftover from previous implementations
+            // of a bulk order. I'm keeping this here, just in case business
+            // requirements change it would be easy to extend functionality
+            // to include quantity since all the logic is in place.
+            quantity: 1,
+          };
+        }
+      );
+
+      return {
+        services: populatedServices,
+        totalPrice: calculateOrderTotal(populatedServices),
+      };
+    }
+  );

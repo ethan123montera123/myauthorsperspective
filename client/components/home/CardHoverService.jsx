@@ -17,10 +17,18 @@ export default function CardHoverService({
     ? "card-gradient-overlay-hover"
     : "card-gradient-overlay";
 
+  const priceTag =
+    title !== "Author's Blog Site"
+      ? formatUsd(priceUsd, { showDecimals: false })
+      : [
+          <div key="basic">Basic: $1,500</div>,
+          <div key="premium">Premium: $2,000</div>,
+        ];
+
   const cardContent = isHovering ? (
     <div className="flex flex-col gap-6 lg:mb-5">
       <div>{title}</div>
-      <div>{formatUsd(priceUsd, { showDecimals: false })}</div>
+      <div>{priceTag}</div>
       <button className="uppercase text-black bg-neutral-400 rounded-[2rem] px-5 py-2 self-center hover:bg-[#00C1EB]">
         Book Now
       </button>

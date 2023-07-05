@@ -5,7 +5,7 @@ import { useContext } from "react";
 export default function InclusionCheckbox({
   serviceId,
   inclusionName,
-  inclusionIndex,
+  inclusionId,
   handleClick,
 }) {
   const cart = useContext(CartContext);
@@ -15,7 +15,7 @@ export default function InclusionCheckbox({
   const isChecked =
     cart
       .find((e) => e.service === serviceId)
-      ?.inclusions.find((i) => i === inclusionIndex) !== undefined;
+      ?.inclusions.find((i) => i === inclusionId) !== undefined;
 
   return (
     <button

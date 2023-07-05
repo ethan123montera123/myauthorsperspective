@@ -2,8 +2,12 @@ import Head from "next/head";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
+import { rawServices, getRandomServices } from "@/helpers/services.helper";
 
-export default function AuthorBlogSite() {
+export default function AuthorBlogSite({ otherServices }) {
+  const serviceName = "Author's Blog Site";
+  const { inclusions, id } = rawServices.find((e) => e.title === serviceName);
+
   return (
     <>
       <Head>
@@ -18,29 +22,30 @@ export default function AuthorBlogSite() {
           { name: "Home", url: "/" },
           { name: "Services", url: "/services" },
           {
-            name: "Author's Blog Site",
+            name: serviceName,
             url: "/services/author-blog-site",
           },
         ]}
       />
       <ServiceDetails
-        title="Author's Blog Site"
+        title={serviceName}
         imgSrc="/images/services/author-blog-site.webp"
-        priceUsd={1800}
-        inclusions={[
-          "Homepage",
-          "About Page",
-          "Blog Posts",
-          "Archives",
-          "Categories",
-          "Tags",
-          "Search Bar",
-          "Contact Page",
-          "Social Media Links",
-          "Comments Section",
-        ]}
+        priceUsd={1500}
+        serviceId={id}
+        inclusions={inclusions}
       />
-      <OtherServices excludeUrl="/services/author-blog-site" />
+      <OtherServices servicesData={otherServices} />
     </>
   );
+}
+
+export async function getStaticProps() {
+  const excludeUrl = "/services/author-blog-site";
+  const otherServices = getRandomServices(3, { excludeUrl });
+
+  return {
+    props: {
+      otherServices,
+    },
+  };
 }

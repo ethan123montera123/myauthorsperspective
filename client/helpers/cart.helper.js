@@ -1,39 +1,37 @@
 /**
  *
- * @param {Array} cart - the cart state handled by the cart index.js page
- * @param {Function} setCart - the setter function for the cart state
- * @returns a function with the signature: `(serviceId: string, inclusionIndex: number): void`
+ * @param {Array} cart the cart state handled by the cart index.js page
+ * @param {Function} setCart the setter function for the cart state
+ * @returns a function with the signature: `(serviceId: string, inclusionId: number): void`
  */
 export const inclusionFunctionThunk =
-  (cart, setCart) => (serviceId, inclusionIndex) => {
+  (cart, setCart) => (serviceId, inclusionId) => {
     const cartItemWithServiceId = cart.find(
       (cartItem) => cartItem.service === serviceId
     );
 
     // if there is no serviceId in the cart yet,
     if (cartItemWithServiceId === undefined) {
-      setCart(
-        cart.concat({ service: serviceId, inclusions: [inclusionIndex] })
-      );
+      setCart(cart.concat({ service: serviceId, inclusions: [inclusionId] }));
     }
     // if serviceId in the cart exists, but the length of inclusions is 0
     else if (cartItemWithServiceId.inclusions.length === 0) {
       setCart(
         cart.map((cartItem) =>
           cartItem.service === serviceId
-            ? { ...cartItemWithServiceId, inclusions: [inclusionIndex] }
+            ? { ...cartItemWithServiceId, inclusions: [inclusionId] }
             : cartItem
         )
       );
     } else if (
       // if the inclusion is already found, we remove the inclusion
-      cartItemWithServiceId.inclusions.find((i) => i === inclusionIndex) !==
+      cartItemWithServiceId.inclusions.find((i) => i === inclusionId) !==
       undefined
     ) {
       const newCartItem = {
         ...cartItemWithServiceId,
         inclusions: cartItemWithServiceId.inclusions.filter(
-          (i) => i !== inclusionIndex
+          (i) => i !== inclusionId
         ),
       };
 
@@ -46,10 +44,10 @@ export const inclusionFunctionThunk =
           .filter((cartItem) => cartItem.inclusions.length > 0)
       );
     } else {
-      // get the cartItem with the serviceId and add inclusionIndex to its inclusions property
+      // get the cartItem with the serviceId and add inclusionId to its inclusions property
       const newCartItem = {
         ...cartItemWithServiceId,
-        inclusions: cartItemWithServiceId.inclusions.concat(inclusionIndex),
+        inclusions: cartItemWithServiceId.inclusions.concat(inclusionId),
       };
 
       setCart(
@@ -62,8 +60,8 @@ export const inclusionFunctionThunk =
 
 /**
  *
- * @param {Object} services - the services returned by @/services/api/getServices
- * @param {Array} cart - the cart state with `cart.service: string` and `cart.inclusions: number[]`
+ * @param {Object} services the services returned by @/services/api/getServices
+ * @param {Array} cart the cart state with `cart.service: string` and `cart.inclusions: number[]`
  *
  * @returns a number representing the total price (in USD) of the `cart` based on the `services` data
  *
@@ -85,7 +83,7 @@ export const getTotalPrice = (services, cart) => {
       return serviceDetails.priceTier.basic.price;
     } else {
       // otherwise, we traverse the cart to see if the blog site service inclusions have the premium services
-      const isPremium = (inclusionIndex) => inclusionIndex >= 5; // 5-9 denote premium tier
+      const isPremium = (inclusionId) => inclusionId >= 6; // 6-10 denote premium tier
       return cart
         .find((cartItem) => cartItem.service === AUTHOR_BLOG_SITE_SERVICE_ID)
         ?.inclusions.filter(isPremium).length > 0
@@ -94,7 +92,92 @@ export const getTotalPrice = (services, cart) => {
     }
   };
 
-  return cart
+  const totalPriceOfCartItems = cart
     .map((cartItem) => getPriceOfService(cartItem.service))
     .reduce((total, currentItem) => total + currentItem, 0);
+
+  return totalPriceOfCartItems;
+};
+
+/**
+ * @returns true if window.localStorage API is usable, otherwise false
+ */
+function isLocalStorageAvailable() {
+  try {
+    const testKey = "__test__";
+    localStorage.setItem(testKey, testKey);
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+/**
+ * Sets the localStorage cart state whenever the cart changes.
+ * This should be used in a useEffect that triggers every cart state change, inside the @/pages/cart/index.js file.
+ *
+ * @param {Array} cart the cart array with the type {service: string, inclusions: number[]}[]
+ */
+export const setCartState = (cart) => {
+  if (isLocalStorageAvailable()) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  } else {
+    console.log(
+      "ERROR: Your cart data can't be saved in localStorage. Contact the developers or try another device."
+    );
+  }
+};
+
+/**
+ * Gets the cart state inside localStorage to be used in the @/pages/cart/index.js file on first render as the initial state of cart.
+ *
+ * @returns the cart array with the type {service: string, inclusions: number[]}[]
+ */
+export const getCartState = () => {
+  if (isLocalStorageAvailable()) {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  } else {
+    console.log(
+      "ERROR: Your cart data can't be saved in localStorage. Contact the developers or try another device."
+    );
+    return [];
+  }
+};
+
+/**
+ * Adds the arguments to the window.localStorage.cart to be reflected on the Cart page.
+ *
+ * @param {string} serviceId the string serviceId of the service to add
+ * @param {number[]} inclusionIdArray the array of inclusions (number[]) to add to the localStorage cart
+ *
+ * @returns true if successful, false otherwise
+ */
+export const addToLocalCart = (serviceId, inclusionIdArray) => {
+  if (isLocalStorageAvailable() === false) {
+    console.log(
+      "ERROR: Your cart data can't be saved in localStorage. Contact the developers or try another device."
+    );
+    return false;
+  }
+
+  const cartItemToAdd = { service: serviceId, inclusions: inclusionIdArray };
+  const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+  // console.log("currentCart", currentCart);
+  // console.log("To be added", cartItemToAdd);
+
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(
+      currentCart
+        .filter((cartItem) => cartItem.service !== cartItemToAdd.service)
+        .concat(cartItemToAdd)
+        .filter((cartItem) => cartItem.inclusions.length > 0) // removes any 0-inclusion cart items
+    )
+  );
+
+  // const newCart = JSON.parse(localStorage.getItem("cart")) || [];
+  // console.log("newCart", newCart);
+  return true;
 };

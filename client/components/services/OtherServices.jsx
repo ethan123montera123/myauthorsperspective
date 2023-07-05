@@ -1,10 +1,6 @@
-import propTypes from "prop-types";
 import CardService from "./CardService";
-import { getRandomServices } from "@/helpers/services.helper";
 
-export default function OtherServices({ excludeUrl }) {
-  const servicesData = getRandomServices(3, { excludeUrl });
-
+export default function OtherServices({ servicesData }) {
   return (
     <div className="OtherServices">
       <hr className="bg-neutral-300 h-[0.1rem] my-4" />
@@ -23,7 +19,3 @@ export default function OtherServices({ excludeUrl }) {
     </div>
   );
 }
-
-OtherServices.propTypes = {
-  excludeUrl: propTypes.string.isRequired,
-};

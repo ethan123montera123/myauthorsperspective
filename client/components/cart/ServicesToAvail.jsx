@@ -33,17 +33,14 @@ export default function ServicesToAvail({
       <h2 className="uppercase font-semibold text-lg md:text-xl mb-4 md:mb-6">
         Inclusions:
       </h2>
-      {selectedServiceData.inclusions.map((inclusion, inclusionIndex) => (
+      {selectedServiceData.inclusions.map((inclusion) => (
         <InclusionCheckbox
           key={inclusion.name}
           serviceId={selectedServiceData.id}
           inclusionName={inclusion.name}
-          inclusionIndex={inclusionIndex}
+          inclusionId={inclusion.id}
           handleClick={() => {
-            addServiceAndInclusionToCart(
-              selectedServiceData.id,
-              inclusionIndex
-            );
+            addServiceAndInclusionToCart(selectedServiceData.id, inclusion.id);
           }}
         />
       ))}

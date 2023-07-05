@@ -2,6 +2,8 @@ import CardHoverService from "./CardHoverService";
 import { services } from "@/helpers/services.helper";
 
 export default function SectionHomeServices() {
+  const authorsBlogSiteService = services[4];
+
   return (
     <section className="bg-white flex flex-col items-center md:text-left py-8 px-4 md:p-8 lg:px-32 lg:py-12">
       <h1 className="uppercase font-bold text-3xl md:text-5xl lg:text-6xl xl:text-8xl">
@@ -20,11 +22,11 @@ export default function SectionHomeServices() {
         {
           <CardHoverService
             className="col-span-1 xl:col-span-4"
-            title={services[4].title}
-            url={services[4].url}
-            imgSrc={services[4].imgSrc}
-            priceUsd={services[4].priceUsd}
-            key={services[4].title}
+            title={authorsBlogSiteService.title}
+            url={authorsBlogSiteService.url}
+            imgSrc={authorsBlogSiteService.imgSrc}
+            priceUsd={authorsBlogSiteService.priceUsd}
+            key={authorsBlogSiteService.title}
           />
         }
       </div>

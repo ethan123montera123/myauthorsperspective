@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export const DEFAULT_FRONTEND_URL = "http://localhost:3000";
-
 export const envSchema = z
   .object({
     STRIPE_API_KEY: z.string().trim(),
@@ -11,25 +9,14 @@ export const envSchema = z
     MAILER_EMAIL: z.string().trim(),
     MAILER_COMPANY_EMAIL: z.string().trim(),
 
-    BACKEND_ENV: z
-      .enum(["production", "development"])
-      .default("development")
-      .optional(),
     FRONTEND_DEPLOYMENT_URL: z
       .string()
       .trim()
       .optional()
-      .default(DEFAULT_FRONTEND_URL)
+      .default("http://localhost:3000")
       .transform((str) => {
         const urls = str.split(/\s+/);
         return urls.length > 1 ? urls : str;
       }),
   })
-  .required()
-  .transform(({ ...args }) => ({
-    CORS_ORIGIN:
-      args.BACKEND_ENV === "production"
-        ? args.FRONTEND_DEPLOYMENT_URL
-        : DEFAULT_FRONTEND_URL,
-    ...args,
-  }));
+  .required();

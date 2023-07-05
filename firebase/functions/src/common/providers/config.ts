@@ -24,13 +24,13 @@ export const firebase = {
     USERS: "users",
   },
   options: {
-    ENFORCE_APP_CHECK: env.BACKEND_ENV === "production",
+    ENFORCE_APP_CHECK: true,
     FUNCTION_REGION: "asia-southeast1",
   },
 } as const satisfies FirebaseConfig;
 
 export const cors = {
-  ORIGIN: env.CORS_ORIGIN,
+  ORIGIN: env.FRONTEND_DEPLOYMENT_URL,
 } as const satisfies CorsConfig;
 
 export const mailer = {

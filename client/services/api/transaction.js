@@ -26,7 +26,7 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  *
  * const { data, error } = await createTransaction(services);
  * if(error) {
- *  // handle error, if error.code === "invalid-argument",
+ *  // handle error, if error.code === "functions/invalid-argument",
  *  // you can access error.details to get validation errors
  * }
  *

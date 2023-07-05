@@ -198,7 +198,7 @@ export default function Home() {
     );
     if (error) {
       return console.log(
-        error.code === "invalid-argument" ? error.details : error
+        error.code === "functions/invalid-argument" ? error.details : error
       );
     }
 
@@ -213,7 +213,7 @@ export default function Home() {
     const { error } = await sendContactEmail(dto);
     if (error) {
       return console.log(
-        error.code === "invalid-argument" ? error.details : error
+        error.code === "functions/invalid-argument" ? error.details : error
       );
     }
   }

@@ -20,7 +20,10 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  * };
  *
  * const { data, error } = await sendContactEmail(contact);
- * if(error) // handle error
+ * if(error) {
+ *  // handle error, if error.code === "invalid-argument",
+ *  // you can access error.details to get validation errors
+ * }
  *
  * data.msg // The msg returned when execution is successful
  */

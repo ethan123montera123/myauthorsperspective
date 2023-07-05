@@ -25,7 +25,10 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  * ]
  *
  * const { data, error } = await createTransaction(services);
- * if(error) // handle error
+ * if(error) {
+ *  // handle error, if error.code === "invalid-argument",
+ *  // you can access error.details to get validation errors
+ * }
  *
  * // Using \@stripe/react-stripe-js
  * <Elements options={{ clientSecret: data.secret }} stripe={stripePromise}>

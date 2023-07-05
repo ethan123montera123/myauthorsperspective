@@ -7,7 +7,7 @@ import Stripe from "stripe";
 import { ReceiptEmail } from "../common/emails";
 import { Order, User } from "../common/interface";
 import { config, firebase, logger, mailer, stripe } from "../common/providers";
-import { orderSchema } from "../common/validator";
+import { orderSchema, parseErrors } from "../common/validator";
 
 const { USERS, ORDERS } = config.firebase.collections;
 const usersRef = firebase.db.collection(USERS);
@@ -29,7 +29,11 @@ export const createPaymentIntent = https.onCall(
 
     const result = await orderSchema.safeParseAsync(data);
     if (!result.success) {
-      throw new HttpsError("invalid-argument", result.error.message);
+      throw new HttpsError(
+        "invalid-argument",
+        "Cart contains invalid values.",
+        parseErrors(result.error.issues)
+      );
     }
 
     const snapshot = await usersRef.doc(auth.uid).get();

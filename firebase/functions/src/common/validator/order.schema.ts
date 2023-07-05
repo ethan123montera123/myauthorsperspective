@@ -147,5 +147,6 @@ export const orderSchema = orderSkeleton
   .refine(checkForDuplicateServices, {
     message:
       "There should be no duplicate services of the same type in a single order.",
+    path: ["order"],
   })
   .transform(calculateOrderTotal);

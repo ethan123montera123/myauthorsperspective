@@ -43,9 +43,9 @@ export default function ServiceDetails({
             {inclusions.map((i) => (
               <li
                 className="my-1 text-lg sm:text-base lg:text-lg lg:my-[0.5rem]"
-                key={i}
+                key={i.id}
               >
-                {i}
+                {i.name}
               </li>
             ))}
           </ul>
@@ -65,5 +65,11 @@ ServiceDetails.propTypes = {
   title: propTypes.string.isRequired,
   imgSrc: propTypes.string.isRequired,
   priceUsd: propTypes.number.isRequired,
-  inclusions: propTypes.arrayOf(propTypes.string).isRequired,
+  inclusions: propTypes.arrayOf(
+    propTypes.shape({
+      id: propTypes.number,
+      name: propTypes.string,
+      tier: propTypes.string,
+    })
+  ).isRequired,
 };

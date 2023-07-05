@@ -2,8 +2,12 @@ import Head from "next/head";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherServices from "@/components/services/OtherServices";
 import ServiceDetails from "@/components/services/ServiceDetails";
+import { rawServices } from "@/helpers/services.helper";
 
 export default function SocialMediaManagementProgram() {
+  const serviceName = "Social Media Management Program";
+  const { inclusions } = rawServices.find((e) => e.title === serviceName);
+
   return (
     <>
       <Head>
@@ -18,26 +22,16 @@ export default function SocialMediaManagementProgram() {
           { name: "Home", url: "/" },
           { name: "Services", url: "/services" },
           {
-            name: "Social Media Management Program",
+            name: serviceName,
             url: "/services/social-media-management-program",
           },
         ]}
       />
       <ServiceDetails
-        title="Social Media Management Program"
+        title={serviceName}
         imgSrc="/images/services/social-media-management-program.webp"
         priceUsd={1800}
-        inclusions={[
-          "Social Media Strategy",
-          "Content Creation",
-          "Account Management",
-          "Paid Social Advertising",
-          "Influencer Marketing",
-          "Analytics and Reporting",
-          "Social Listening",
-          "Community Management",
-          "Training and Consultation",
-        ]}
+        inclusions={inclusions}
       />
       <OtherServices excludeUrl="/services/social-media-management-program" />
     </>

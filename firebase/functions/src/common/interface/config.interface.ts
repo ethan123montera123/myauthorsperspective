@@ -17,7 +17,7 @@ export interface StripeConfig {
 }
 
 export interface CorsConfig {
-  ORIGIN: string;
+  ORIGIN: string | string[];
 }
 
 export interface MailerConfig {

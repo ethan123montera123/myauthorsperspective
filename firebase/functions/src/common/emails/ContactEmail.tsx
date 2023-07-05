@@ -15,7 +15,9 @@ import dotenv from "dotenv";
 import { InfoCell, Tailwind } from "./components";
 
 const { parsed: env } = dotenv.config();
-const BASE_URL = env?.FRONTEND_DEPLOYMENT_URL ?? "http://localhost:3000";
+const BASE_URL =
+  env?.FRONTEND_DEPLOYMENT_URL?.trim().split(/\s+/)[0] ||
+  "http://localhost:3000";
 
 interface ContactEmailProps {
   name: string;

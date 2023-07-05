@@ -26,7 +26,7 @@ export default function BookVideoCreation() {
       <ServiceDetails
         title="Book Video Creation"
         imgSrc="/images/services/book-video-creation.webp"
-        priceUsd={1000}
+        priceUsd={1800}
         inclusions={[
           "Book Title and Author",
           "Book Synopsis",

@@ -34,10 +34,11 @@ export const createUser = https.onCall(
       .collection(config.firebase.collections.USERS)
       .doc();
 
+    const context = { args: user };
     logger.log("Creating user account...");
 
     try {
-      logger.log("Generating stripe account...");
+      logger.log("Generating stripe account...", context);
 
       const customer = await stripe.customers.create({
         name: user.firstName + " " + user.lastName,
@@ -48,24 +49,24 @@ export const createUser = https.onCall(
 
       user.stripeId = customer.id;
     } catch (err) {
-      logger.error(USER_CREATION_FAILED, err, user);
+      logger.error("Stripe account creation failed.", err, context);
       throw new HttpsError("internal", USER_CREATION_FAILED);
     }
 
     try {
-      logger.log("Creating user profile...");
+      logger.log("Creating user profile...", context);
 
       await docRef.set(user);
     } catch (err) {
       // Rollback created stripe account if an error occured in profile creation
       await stripe.customers.del(user.stripeId);
 
-      logger.error(USER_CREATION_FAILED, err, user);
+      logger.error("User profile creation failed.", err, context);
       throw new HttpsError("internal", USER_CREATION_FAILED);
     }
 
     try {
-      logger.log("Creating auth account...");
+      logger.log("Creating auth account...", context);
 
       await auth().createUser({
         uid: docRef.id,
@@ -73,19 +74,20 @@ export const createUser = https.onCall(
         email: user.email,
         password,
       });
-
-      logger.log("User account created successfully.", user);
-
-      return user;
     } catch (err) {
       // Rollback created stripe account and user profile
       // if an error occured during auth creation
-      await stripe.customers.del(user.stripeId);
-      await docRef.delete({ exists: true });
+      await Promise.all([
+        stripe.customers.del(user.stripeId),
+        docRef.delete({ exists: true }),
+      ]);
 
-      logger.error(USER_CREATION_FAILED, err, user);
+      logger.error("Auth account creation failed.", err, context);
       throw new HttpsError("internal", USER_CREATION_FAILED);
     }
+
+    logger.log("User account created successfully.", user);
+    return user;
   }
 );
 

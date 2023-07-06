@@ -23,7 +23,7 @@
 4. Go into the functions directory by running the command `cd firebase/functions` from the root directory.
 5. Once logged in, run `firebase use --add my-authors-perspective-dev` in the console to add this project as
    the active project. This is assuming that you have already been added to the firebase project.
-6. Installed the required dependencies using `npm ci`.
+6. Installed the required dependencies using `npm ci`. (_Note: if this doesn't work use `npm i`_)
 7. Run `npm run serve` to run the firebase emulators. Configurations can be seen in `firebase.json`, and
    local dashboard can be seen at `localhost:4000`.
 8. To be able to use the emulators in javascript, you can create the following configuration in the

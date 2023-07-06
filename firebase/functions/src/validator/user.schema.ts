@@ -2,7 +2,7 @@ import { auth } from "firebase-admin";
 import { z } from "zod";
 import { config, firebase } from "../providers";
 
-export const getUpdateUserSchema = (uid: string = "") =>
+export const getUpdateUserSchema = (uid = "") =>
   z
     .object({
       email: z

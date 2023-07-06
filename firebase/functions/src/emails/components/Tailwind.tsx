@@ -1,9 +1,5 @@
 import { Tailwind as TailwindBase } from "@react-email/components";
-import React from "react";
-
-interface TailwindProps {
-  children: React.ReactNode;
-}
+import { PropsWithChildren } from "react";
 
 /**
  * Configuration component for Tailwind base styles.
@@ -11,7 +7,7 @@ interface TailwindProps {
  * @param props Tailwind props.
  * @returns A wrapper component for a configured Tailwind Component.
  */
-function Tailwind({ children }: TailwindProps) {
+function Tailwind({ children }: PropsWithChildren) {
   return (
     <TailwindBase
       config={{

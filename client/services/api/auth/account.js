@@ -63,7 +63,7 @@ export async function getAuthAccount() {
 /**
  * Update the account details of the currently authenticated user.
  *
- * @param   {import("../common/@types").UserAccountUpdateDto} details 
+ * @param   {import("../@types").UserAccountUpdateDto} details 
  * The new details of the user's account.
  * @returns {Promise<ObjectWithError<import("../@types").UserAccount | null, import("firebase/app").FirebaseError>>} 
  * A promise containing the authenticated user's updated account profile,

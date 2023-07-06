@@ -1,9 +1,9 @@
 import { Link } from "@react-email/components";
+import { PropsWithChildren } from "react";
 import Tailwind from "./Tailwind";
 
 interface SafeLinkProps {
   url?: string;
-  children?: React.ReactNode;
 }
 
 /**
@@ -13,7 +13,7 @@ interface SafeLinkProps {
  * @param props SafeLink props.
  * @return A JSX component that has a safe redirect url.
  */
-function SafeLink({ url = "", children }: SafeLinkProps) {
+function SafeLink({ url = "", children }: PropsWithChildren<SafeLinkProps>) {
   return (
     <Tailwind>
       <Link

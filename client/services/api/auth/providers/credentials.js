@@ -20,11 +20,14 @@ import {
  *
  * @param   {string}  email     The user's email address.
  * @param   {string}  password  The user's password.
- * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential>>}
+ * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential, import("firebase/app").FirebaseError>>}
  * A promise containing the user's credentials, and a possible error.
  * @example
  * const { data: credentials, error } = await signInWithCredentials(user);
- * if(error) // handle error
+ * if(error) {
+ *  if(error instanceof FirebaseError) // handle firebase errors
+ *  else // handle general errors
+ * }
  *
  * // handle credentials
  */
@@ -38,7 +41,7 @@ export async function signInWithCredentials(email, password) {
  * Reauthenticate the currently logged in user with their password.
  *
  * @param   {string}  password  The user's password.
- * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential>>}
+ * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential, import("firebase/app").FirebaseError>>}
  * A promise containing the user's reauthenticated credentials, and a possible error.
  *
  * @remarks
@@ -47,10 +50,16 @@ export async function signInWithCredentials(email, password) {
  *
  * @example
  * const { error: reauthError } = await reauthenticateWithCredentials(password);
- * if(reauthError) // handle reauthentication error
+ * if(reauthError) { // handle reauthentication errors
+ *  if(reauthError instanceof FirebaseError) // handle firebase errors
+ *  else // handle general errors
+ * }
  *
- * const { error: updateError } = await updateAuthAccount({ email, phone });
- * if(updateError) // handle update error
+ * const { error } = await updateAuthAccount({ email, phone });
+ * if(error) { // handle update errors
+ *  if (error instanceof FirebaseError) // handle other FirebaseError for update account
+ *  else // handle general errors
+ * }
  */
 export async function reauthenticateWithCredentials(password) {
   return parseThrowablesToObject(() => {
@@ -69,7 +78,7 @@ export async function reauthenticateWithCredentials(password) {
  * Signs up a user with email and password.
  *
  * @param   {import("../../@types").UserSignUpDto}  user  An object containing the user's information.
- * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential>>}
+ * @return  {Promise<ObjectWithError<import("firebase/auth").UserCredential, import("firebase/app").FirebaseError>>}
  * A promise containing the user's credentials, and a possible error.
  *
  * @example
@@ -82,7 +91,10 @@ export async function reauthenticateWithCredentials(password) {
  * };
  *
  * const { data: credentials, error } = await signUpWithCredentials(user);
- * if(error) // handle error
+ * if(error) {
+ *  if(error instanceof FirebaseError) // handle firebase errors
+ *  else // handle general errors
+ * }
  *
  * // handle credentials
  */

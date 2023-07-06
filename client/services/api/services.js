@@ -6,12 +6,15 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
 /**
  * Gets the offered services from the database.
  *
- * @returns {Promise<ObjectWithError<import("./@types").Service[]>>}
+ * @returns {Promise<ObjectWithError<import("./@types").Service[], import("firebase/app").FirebaseError>>}
  * A promise containing the services from the database, or a possible error.
  *
  * @example
  * const { data: services, error } = await getServices();
- * if(error) // handle error
+ * if(error) {
+ *  if(error instanceof FirebaseError) // handle Firebase errors
+ *  else // handle general errors
+ * }
  *
  * // handle services
  */

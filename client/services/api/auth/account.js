@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app";
 import { updateEmail } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -9,12 +10,11 @@ import {
   stripEmptyAndUnchanged,
   verifyAuthLogon,
 } from "@/services/utils";
-import { FirebaseError } from "firebase/app";
 
 /**
  * Signs out the currently logged in user.
  *
- * @returns {Promise<ObjectWithError<void>>}
+ * @returns {Promise<ObjectWithError<void, import("firebase/app").FirebaseError>>}
  * A promise containing a possible error.
  */
 export async function signOut() {
@@ -26,13 +26,16 @@ export async function signOut() {
 /**
  * Gets the account profile of the currently authenticated user.
  *
- * @returns {Promise<ObjectWithError<import("../@types").UserAccount>>}
+ * @returns {Promise<ObjectWithError<import("../@types").UserAccount, import("firebase/app").FirebaseError>>}
  * A promise containing the currently authenticated user's account, and
  * a possible error.
  *
  * @example
  * const { data: account, error } = await getAuthAccount();
- * if(error) // handle error
+ * if(error) {
+ *    if(error instanceof FirebaseError) // handle firebase errors
+ *    else // handle general errors
+ * }
  *
  * // handle account
  */
@@ -59,7 +62,7 @@ export async function getAuthAccount() {
  *
  * @param   {import("../common/@types").UserAccountUpdateDto} details 
  * The new details of the user's account.
- * @returns {Promise<ObjectWithError<import("../@types").UserAccount>>} 
+ * @returns {Promise<ObjectWithError<import("../@types").UserAccount, import("firebase/app").FirebaseError>>} 
  * A promise containing the authenticated user's updated account profile,
  * and a possible error. 
  
@@ -69,15 +72,21 @@ export async function getAuthAccount() {
  *
  * @example
  * const payload = {
- *   email: "abcd@abcd.com",
- *   phone: "091234567890"
+ *  email: "abcd@abcd.com",
+ *  phone: "091234567890"
  * };
  *
- * const { error: reauthError } = reauthenticateWithCredentials(password);
- * if(reauthError) // handle reauthentication error
- * 
- * const { data: updatedAccount, error: updateError } = await updateAuthAccount(payload);
- * if(updateError) // handle update error
+ * const { error: reauthError } = await reauthenticateWithCredentials(password);
+ * if(reauthError) { // handle reauthentication errors
+ *  if(reauthError instanceof FirebaseError) // handle firebase errors
+ *  else // handle general errors
+ * }
+ *
+ * const { data: updatedAccount, error: updateError } = await updateAuthAccount({ email, phone });
+ * if(updateError) { // handle update errors
+ *  if (updateErrror instanceof FirebaseError) // handle other FirebaseError for update account
+ *  else // handle general errors
+ * }
  * 
  * // handle updated account
  */

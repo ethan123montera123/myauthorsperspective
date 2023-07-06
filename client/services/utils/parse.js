@@ -1,17 +1,19 @@
 /**
  * @template T
+ * @template {Error} U
  * @typedef {object} ObjectWithError
  * @property {T extends void ? null : (T | null)} data
- * @property {Error | null} error
+ * @property {U | Error | null} error
  */
 
 /**
  * Utility function to parse functions that have `throwables` into a function that
  * returns the `throwables` instead along with the data.
  *
- * @template T
+ * @template P
+ * @template {Error} E 
  * @param {() => Promise<void> | () => void} fn The function to be parsed.
- * @return {Promise<ObjectWithError<T>>} An object containing the data, and parsed `throwables`.
+ * @return {Promise<ObjectWithError<P, E>>} An object containing the data, and parsed `throwables`.
  *
  * @example
  * async function foo() {

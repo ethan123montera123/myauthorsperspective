@@ -8,7 +8,7 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  *
  * @param   {import("./@types").ServiceOrder[]} services The services that are
  * being bought for the current transaction.
- * @returns {Promise<ObjectWithError<{ secret: string; }>>}
+ * @returns {Promise<ObjectWithError<{ secret: string; }, import("firebase/app").FirebaseError>>}
  * A promise containing the secret to be used to complete the payment, or a possible error.
  *
  * @example
@@ -26,8 +26,14 @@ import { ObjectWithError, parseThrowablesToObject } from "@/services/utils";
  *
  * const { data, error } = await createTransaction(services);
  * if(error) {
- *  // handle error, if error.code === "functions/invalid-argument",
- *  // you can access error.details to get validation errors
+ *  if(error instanceof FirebaseError && error.code === "functions/invalid-argument") {
+ *    // handle invalid argument errors
+ *    error.details; // <- holds the validation error details
+ *  } else if(error instanceof FirebaseError) {
+ *    // handle other Firebase Errors
+ *  } else {
+ *    // handle general errors
+ *  }
  * }
  *
  * // Using \@stripe/react-stripe-js

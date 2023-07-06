@@ -11,18 +11,24 @@ import {
  * Change the password of the currently authenticated user.
  *
  * @param   {string}  password  The new password to change to.
- * @returns {Promise<ObjectWithError<void>>}
+ * @returns {Promise<ObjectWithError<void, import("firebase/app").FirebaseError>>}
  * A promise containing a possible error.
  * @remarks
  * Note: This is a sensitive operation, thus it is necessary to reauthenticate the user
  * credentials before using this method, if the user has been logged on for too long.
  *
  * @example
- * const { error: reauthError } = reauthenticateWithCredentials(password);
- * if(reauthError) // handle reauthentication error
+ * const { error: reauthError } = await reauthenticateWithCredentials(password);
+ * if(reauthError) { // handle reauthentication errors
+ *  if(reauthError instanceof FirebaseError) // handle firebase errors
+ *  else // handle general errors
+ * }
  *
  * const { error: updateError } = await changePassword(newPassword);
- * if(updateError) // handle update error
+ * if(error) { // handle update errors
+ *  if (error instanceof FirebaseError) // handle other FirebaseError for update account
+ *  else // handle general errors
+ * }
  */
 export async function changePassword(password) {
   return parseThrowablesToObject(async () => {

@@ -21,6 +21,7 @@ import {
 import { sendContactEmail } from "@/services/api/contact";
 import { getServices } from "@/services/api/services";
 import { createServiceTransaction } from "@/services/api/transaction";
+import { FirebaseError } from "firebase/app";
 
 function Input({ type = "text", name, label }) {
   const id = useId();
@@ -198,7 +199,10 @@ export default function Home() {
     );
     if (error) {
       return console.log(
-        error.code === "functions/invalid-argument" ? error.details : error
+        error instanceof FirebaseError &&
+          error.code === "functions/invalid-argument"
+          ? error.details
+          : error
       );
     }
 
@@ -213,7 +217,10 @@ export default function Home() {
     const { error } = await sendContactEmail(dto);
     if (error) {
       return console.log(
-        error.code === "functions/invalid-argument" ? error.details : error
+        error instanceof FirebaseError &&
+          error.code === "functions/invalid-argument"
+          ? error.details
+          : error
       );
     }
   }

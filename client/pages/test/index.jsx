@@ -175,7 +175,13 @@ export default function Home() {
     if (reauthError) return console.log(reauthError);
 
     const { data, error: updateError } = await updateAuthAccount(dto);
-    if (updateError) return console.log(updateError);
+    if (updateError)
+      return console.log(
+        updateError instanceof FirebaseError &&
+          updateError.code === "functions/invalid-argument"
+          ? updateError.details
+          : updateError
+      );
 
     setUser(data);
   }

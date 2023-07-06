@@ -2,8 +2,66 @@ import { auth } from "firebase-admin";
 import { z } from "zod";
 import { config, firebase } from "../providers";
 
-export const getUserSchema = (uid: string = "") =>
-  z.object({
+export const getUpdateUserSchema = (uid: string = "") =>
+  z
+    .object({
+      email: z
+        .string()
+        .trim()
+        .nonempty()
+        .email()
+        .refine(
+          async (email) => {
+            let allowed = false;
+
+            try {
+              const user = await auth().getUserByEmail(email);
+              // Valid if uid matches, which means the user owns that email
+              allowed = user.uid === uid;
+            } catch (err) {
+              // Or if user does not exist which means email is unused,
+              allowed = true;
+            }
+
+            return allowed;
+          },
+          {
+            message: "Email is already in use.",
+          }
+        ),
+      phone: z
+        .string()
+        .trim()
+        .nonempty()
+        .regex(
+          /**
+           * @link https://uibakery.io/regex-library/phone-number
+           */
+          /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/,
+          "Invalid phone number format."
+        )
+        .refine(
+          async (phone) => {
+            const snap = await firebase.db
+              .collection(config.firebase.collections.USERS)
+              .where("phone", "==", phone)
+              .get();
+
+            // Valid if there are no matches which means phone is unused,
+            // Or if all docs in the snapshot matches the uid of the user
+            // which means the phone number passed is owned by the user
+            return snap.size === 0 || snap.docs.every((doc) => doc.id === uid);
+          },
+          {
+            message: "Phone number is already in use.",
+          }
+        ),
+    })
+    .partial()
+    .strip();
+
+export const userSchema = z
+  .object({
     firstName: z
       .string()
       .trim()
@@ -21,57 +79,6 @@ export const getUserSchema = (uid: string = "") =>
       .regex(
         /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
         "Must only contain alpha characters, whitespace, ., -, and _."
-      ),
-    email: z
-      .string()
-      .trim()
-      .nonempty()
-      .email()
-      .refine(
-        async (email) => {
-          let allowed = false;
-
-          try {
-            const user = await auth().getUserByEmail(email);
-            // Valid if uid matches, which means the user owns that email
-            allowed = user.uid === uid;
-          } catch (err) {
-            // Or if user does not exist which means email is unused,
-            allowed = true;
-          }
-
-          return allowed;
-        },
-        {
-          message: "Email is already in-use.",
-        }
-      ),
-    phone: z
-      .string()
-      .trim()
-      .nonempty()
-      .regex(
-        /**
-         * @link https://uibakery.io/regex-library/phone-number
-         */
-        /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/,
-        "Invalid phone number format."
-      )
-      .refine(
-        async (phone) => {
-          const snap = await firebase.db
-            .collection(config.firebase.collections.USERS)
-            .where("phone", "==", phone)
-            .get();
-
-          // Valid if there are no matches which means phone is unused,
-          // Or if all docs in the snapshot matches the uid of the user
-          // which means the phone number passed is owned by the user
-          return snap.size === 0 || snap.docs.every((doc) => doc.id === uid);
-        },
-        {
-          message: "Phone number is already in use.",
-        }
       ),
     password: z
       .string()
@@ -91,4 +98,7 @@ export const getUserSchema = (uid: string = "") =>
         /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$/,
         "Password must at least contain one uppercase letter, one lowercase letter, a digit, and a special character (!@#$&*)."
       ),
-  });
+  })
+  .merge(getUpdateUserSchema().required())
+  .required()
+  .strip();

@@ -142,7 +142,13 @@ export default function Home() {
     const dto = Object.fromEntries(formData);
 
     const { error } = await signUpWithCredentials(dto);
-    if (error) return console.log(error);
+    if (error)
+      return console.log(
+        error instanceof FirebaseError &&
+          error.code === "functions/invalid-argument"
+          ? error.details
+          : error
+      );
   }
 
   async function handleSignin(e) {
@@ -169,7 +175,13 @@ export default function Home() {
     if (reauthError) return console.log(reauthError);
 
     const { data, error: updateError } = await updateAuthAccount(dto);
-    if (updateError) return console.log(updateError);
+    if (updateError)
+      return console.log(
+        updateError instanceof FirebaseError &&
+          updateError.code === "functions/invalid-argument"
+          ? updateError.details
+          : updateError
+      );
 
     setUser(data);
   }

@@ -1,15 +1,18 @@
-import { FirebaseError } from "firebase/app";
-import { updateEmail } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
-import { auth, collections, db } from "@/services/firebase";
+import {
+  auth,
+  callables,
+  collections,
+  db,
+  functions,
+} from "@/services/firebase";
 import {
   ObjectWithError,
   parseThrowablesToObject,
-  pick,
-  stripEmptyAndUnchanged,
   verifyAuthLogon,
 } from "@/services/utils";
+import { httpsCallable } from "firebase/functions";
 
 /**
  * Signs out the currently logged in user.
@@ -52,7 +55,6 @@ export async function getAuthAccount() {
       lastName: data.lastName,
       email: data.email,
       phone: data.phone,
-      stripeId: data.stripeId,
     };
   });
 }
@@ -60,9 +62,9 @@ export async function getAuthAccount() {
 /**
  * Update the account details of the currently authenticated user.
  *
- * @param   {import("../common/@types").UserAccountUpdateDto} details 
+ * @param   {import("../@types").UserAccountUpdateDto} details 
  * The new details of the user's account.
- * @returns {Promise<ObjectWithError<import("../@types").UserAccount, import("firebase/app").FirebaseError>>} 
+ * @returns {Promise<ObjectWithError<import("../@types").UserAccount | null, import("firebase/app").FirebaseError>>} 
  * A promise containing the authenticated user's updated account profile,
  * and a possible error. 
  
@@ -84,56 +86,45 @@ export async function getAuthAccount() {
  *
  * const { data: updatedAccount, error: updateError } = await updateAuthAccount({ email, phone });
  * if(updateError) { // handle update errors
- *  if (updateErrror instanceof FirebaseError) // handle other FirebaseError for update account
- *  else // handle general errors
+ *  if(updateError instanceof FirebaseError && error.code === "functions/invalid-argument") {
+ *    // handle invalid argument errors
+ *    updateError.details; // <- holds the validation error details
+ *  } else if(updateError instanceof FirebaseError) {
+ *    // handle other Firebase Errors
+ *  } else {
+ *    // handle general errors
+ *  }
  * }
  * 
  * // handle updated account
  */
 export async function updateAuthAccount(details) {
   return parseThrowablesToObject(async () => {
-    verifyAuthLogon(auth);
+    const validFields = {
+      email: details.email,
+      phone: details.phone,
+    };
 
-    const accountRef = doc(db, collections.USERS, auth.currentUser.uid);
-    const snapshot = await getDoc(accountRef);
-    const data = snapshot.data();
+    const sanitized = Object.fromEntries(
+      Object.entries(validFields).filter(
+        ([_, v]) => ![undefined, null, ""].includes(v)
+      )
+    );
 
-    let account = {
+    const fn = httpsCallable(functions, callables.user.update);
+    const { data } = await fn(sanitized);
+
+    if (sanitized.email && sanitized.email !== auth.currentUser?.email) {
+      // Sign out if email has changed.
+      await auth.signOut();
+      return null;
+    }
+
+    return {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
       phone: data.phone,
-      stripeId: data.stripeId,
     };
-
-    const sanitizedDetails = stripEmptyAndUnchanged(
-      pick(details, "email", "phone"),
-      account
-    );
-
-    if (Object.entries(sanitizedDetails).length > 0) {
-      // Runs first for validation, update email can't run first
-      // since it sends an email to the user even if this one fails
-      // and it's not easy to roll back.
-      await setDoc(accountRef, sanitizedDetails, { merge: true });
-
-      if (sanitizedDetails.email) {
-        try {
-          // TODO: Add email verification
-          await updateEmail(auth.currentUser, sanitizedDetails.email);
-
-          // By this point everything is successful, so we update our
-          // local copy of account
-          account = { ...account, ...sanitizedDetails };
-        } catch (err) {
-          // If updateEmail throws possibly due to duplicate emails,
-          // we rollback the updated details
-          await setDoc(accountRef, account, { merge: true });
-          throw new FirebaseError(err.code, err.message, err.customData);
-        }
-      }
-    }
-
-    return account;
   });
 }

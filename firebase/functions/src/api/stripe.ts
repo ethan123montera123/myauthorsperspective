@@ -4,10 +4,10 @@ import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
-import { ReceiptEmail } from "../common/emails";
-import { Order, User } from "../common/interface";
-import { config, firebase, logger, mailer, stripe } from "../common/providers";
-import { orderSchema, parseErrors } from "../common/validator";
+import { ReceiptEmail } from "../emails";
+import { Order, User } from "../interface";
+import { config, firebase, logger, mailer, stripe } from "../providers";
+import { orderSchema, parseErrors } from "../validator";
 
 const { USERS, ORDERS } = config.firebase.collections;
 const usersRef = firebase.db.collection(USERS);
@@ -37,9 +37,9 @@ export const createPaymentIntent = https.onCall(
     }
 
     const snapshot = await usersRef.doc(auth.uid).get();
-    const user = snapshot.data();
-    if (!user?.stripeId) {
-      logger.warn("User does not have a profile or a stripe account.", {
+    const user = snapshot.data() as User;
+    if (!user) {
+      logger.warn("User does not have a profile.", {
         user: auth.uid,
         args: data,
       });

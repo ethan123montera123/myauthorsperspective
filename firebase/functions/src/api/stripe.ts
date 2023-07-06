@@ -4,10 +4,10 @@ import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
-import { ReceiptEmail } from "../common/emails";
-import { Order, User } from "../common/interface";
-import { config, firebase, logger, mailer, stripe } from "../common/providers";
-import { orderSchema, parseErrors } from "../common/validator";
+import { ReceiptEmail } from "../emails";
+import { Order, User } from "../interface";
+import { config, firebase, logger, mailer, stripe } from "../providers";
+import { orderSchema, parseErrors } from "../validator";
 
 const { USERS, ORDERS } = config.firebase.collections;
 const usersRef = firebase.db.collection(USERS);

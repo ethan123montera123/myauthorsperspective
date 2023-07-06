@@ -2,13 +2,9 @@ import { auth } from "firebase-admin";
 import { HttpsError } from "firebase-functions/v1/auth";
 import { https } from "firebase-functions/v2";
 
-import { User } from "../common/interface";
-import { config, firebase, logger, stripe } from "../common/providers";
-import {
-  getUpdateUserSchema,
-  parseErrors,
-  userSchema,
-} from "../common/validator";
+import { User } from "../interface";
+import { config, firebase, logger, stripe } from "../providers";
+import { getUpdateUserSchema, parseErrors, userSchema } from "../validator";
 
 const USER_CREATION_FAILED = "An error occured whilst creating account.";
 const USER_UPDATE_FAILED = "An error occured whilst updating account.";

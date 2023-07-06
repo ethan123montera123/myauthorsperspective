@@ -1,4 +1,4 @@
-import { seedFirestore } from "./common/providers/firebase/seeders";
+import { seedFirestore } from "./providers/firebase/seeders";
 
 seedFirestore();
 

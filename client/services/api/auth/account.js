@@ -59,7 +59,7 @@ export async function getAuthAccount() {
  *
  * @param   {import("../common/@types").UserAccountUpdateDto} details 
  * The new details of the user's account.
- * @returns {Promise<ObjectWithError<import("../@types").UserAccount, import("firebase/app").FirebaseError>>} 
+ * @returns {Promise<ObjectWithError<import("../@types").UserAccount | null, import("firebase/app").FirebaseError>>} 
  * A promise containing the authenticated user's updated account profile,
  * and a possible error. 
  
@@ -108,6 +108,12 @@ export async function updateAuthAccount(details) {
 
     const fn = httpsCallable(functions, "api-user-updateUser");
     const { data } = await fn(sanitized);
+
+    if (sanitized.email && sanitized.email !== auth.currentUser?.email) {
+      // Sign out if email has changed.
+      await auth.signOut();
+      return null;
+    }
 
     return data;
   });

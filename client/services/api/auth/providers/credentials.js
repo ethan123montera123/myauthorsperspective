@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import { auth, functions } from "@/services/firebase";
+import { auth, callables, functions } from "@/services/firebase";
 import {
   ObjectWithError,
   parseThrowablesToObject,
@@ -103,7 +103,7 @@ export async function reauthenticateWithCredentials(password) {
  */
 export async function signUpWithCredentials(user) {
   return parseThrowablesToObject(async () => {
-    const fn = httpsCallable(functions, "api-user-createUser");
+    const fn = httpsCallable(functions, callables.user.create);
     await fn(user);
 
     return signInWithEmailAndPassword(auth, user.email, user.password);

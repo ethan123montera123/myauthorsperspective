@@ -1,6 +1,12 @@
 import { doc, getDoc } from "firebase/firestore";
 
-import { auth, collections, db, functions } from "@/services/firebase";
+import {
+  auth,
+  callables,
+  collections,
+  db,
+  functions,
+} from "@/services/firebase";
 import {
   ObjectWithError,
   parseThrowablesToObject,
@@ -106,7 +112,7 @@ export async function updateAuthAccount(details) {
       )
     );
 
-    const fn = httpsCallable(functions, "api-user-updateUser");
+    const fn = httpsCallable(functions, callables.user.update);
     const { data } = await fn(sanitized);
 
     if (sanitized.email && sanitized.email !== auth.currentUser?.email) {

@@ -31,7 +31,7 @@ const formatter = new Intl.NumberFormat("en-US", {
 });
 
 interface ReceiptEmailProps {
-  customer: User;
+  customer: Pick<User, "uid" | "firstName" | "lastName" | "email">;
   order: Pick<Order, "services" | "totalPrice" | "id" | "paidAt">;
 }
 
@@ -47,7 +47,6 @@ function ReceiptEmail({
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
   },
   order = {
     id: "",

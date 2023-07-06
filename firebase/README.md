@@ -106,67 +106,84 @@ connectFirestoreEmulator(db, "127.0.0.1", 8080);
 
 ## Cloud Functions and Usage
 
-### User Events
+### User API
 
-- **events-users-createStripeAccount**: Creates a stripe account once a user document is created on `users`
-  collections, usually done in unison with `auth` creation.
+- **api-user-createUser**: Creates a user, with the following attributes:
+  - **Auth Account**: Created in `Firebase Authentication` to allow the user to sign in with an email and
+    password.
+  - **User Profile**: Created in `Firestore` to track user information such as name, phone, and stripe ID.
+  - **Stripe Account**: Created in `Stripe` to bind payment intents to the customer.
 
 ```js
 const app = initializeApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
+const functions = getFunctions(app);
 
-const usersRef = collection(db, "users");
+// Get the callable function on the front-end
+const createUser = httpsCallable(functions, "api-stripe-createUser");
 
-// Create an account
-const credentials = await createUserWithEmailAndPassword(auth, email, password);
+const user = {
+  firstName: "John",
+  lastName: "Smith",
+  email: "john@smith.com", // must be unique
+  phone: "091234567890", // must be unique
+  password: "Abcd1234!",
+};
 
-// From the created account, create a user document with additional context these are required.
-// Triggers the `createStripeAccount` event.
-await setDoc(doc(usersRef, credentials.uid), {
-  firstName,
-  lastName,
-  email,
-  phone,
-});
+try {
+  // Creates the user, along with their stripe account, and profile
+  // This also returns the data which contains the user record, with their password
+  // omitted from the returned value.
+  const { data } = await createUser(user);
+} catch (error) {
+  if (error instanceof FirebaseError) {
+    if (error.code === "functions/invalid-argument") {
+      // This error code is used for validation errors
+      error.details; // This contains the objet for the validation errors
+    } else {
+      // handle other Firebase Errors, like:
+      // - functions/internal
+    }
+  } else {
+    // handle general errors
+  }
+}
 ```
 
-- **events-users-syncAccountUpdateToStripe**: Updates stripe account with updated details from the
-  corresponding `user` document on the `users` collection.
+- **api-user-updateUser**: Updates the currently authenticated user, and syncs the changes to their profile,
+  auth account, and stripe account.
 
 ```js
 const app = initializeApp();
-const db = getFirestore(app);
+const functions = getFunctions(app);
 
-// Get the reference to a document with a given `uid` from the `users` collection.
-const userRef = doc(db, "users", uid);
+// Get the callable function on the front-end
+const updateUser = httpsCallable(functions, "api-stripe-updateUser");
 
-// Triggers the `syncAccountUpdateToStripe` and updates the account information in stripe.
-await updateDoc(userRef, {
-  firstName,
-  lastName,
-  email,
-  phone,
-});
-```
+// You don't have to include all the fields in the object below,
+// since this endpoint supports partial updates
+const details = {
+  email: "john@smith.com", // must be unique
+  phone: "091234567890", // must be unique
+};
 
-- **events-users-syncAccountDeleteToStripe**: Deletes corresponding stripe account of a deleted `user`
-  document from the `users` collection.
-
-```js
-const app = initializeApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// NOTE: Since users are usually created in unison with auth. You should also delete the corresponding auth account.
-const credentials = await signInWithEmailAndPassword(email, password);
-await credentials.user.delete();
-
-// Get the reference to the user's document from the `users` collection.
-const userRef = doc(db, "users", credentials.user.uid);
-
-// Triggers the `syncAccountDeleteToStripe` and deletes the correspong stripe account.
-await deleteDoc(userRef);
+try {
+  // Updates the user, along with their stripe account, and profile
+  // This returns the user data, which include their name, email, and phone
+  const { data } = await updateUser(details);
+} catch (error) {
+  if (error instanceof FirebaseError) {
+    if (error.code === "functions/invalid-argument") {
+      // This error code is used for validation errors
+      error.details; // This contains the objet for the validation errors
+    } else {
+      // handle other Firebase Errors, like:
+      // - functions/unauthenticated
+      // - functions/internal
+    }
+  } else {
+    // handle general errors
+  }
+}
 ```
 
 ### Stripe Payments
@@ -194,10 +211,24 @@ const services = [
   },
 ];
 
-// Creates a payment intent
-const { data } = await createPaymentIntent(services);
-
-data.secret; // Secret to be used to complete the payment intent
+try {
+  // Creates a payment intent
+  const { data } = await createPaymentIntent(services);
+  data.secret; // Secret to be used to complete the payment intent
+} catch (error) {
+  if (error instanceof FirebaseError) {
+    if (error.code === "functions/invalid-argument") {
+      // This error code is used for validation errors
+      error.details; // This contains the objet for the validation errors
+    } else {
+      // handle other Firebase Errors, like:
+      // - functions/unauthenticated
+      // - functions/internal
+    }
+  } else {
+    // handle general errors
+  }
+}
 ```
 
 - **api-stripe-webhook**: Endpoint that listens to [Stripe Events](https://stripe.com/docs/api/events). This
@@ -226,10 +257,24 @@ const data = {
   message: "Lorem ipsum sitar dolor.",
 };
 
-// Send the contact email to the company with the `ContactEmail` template
-const { data } = await sendContactEmail(data);
-
-data.msg; // Contains the success message
+try {
+  // Send the contact email to the company with the `ContactEmail` template
+  const { data } = await sendContactEmail(data);
+  data.msg; // Contains the success message
+} catch (error) {
+  if (error instanceof FirebaseError) {
+    if (error.code === "functions/invalid-argument") {
+      // This error code is used for validation errors
+      error.details; // This contains the objet for the validation errors
+    } else {
+      // handle other Firebase Errors, like:
+      // - functions/unauthenticated
+      // - functions/internal
+    }
+  } else {
+    // handle general errors
+  }
+}
 ```
 
 ## Access Required

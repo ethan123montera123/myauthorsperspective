@@ -37,9 +37,9 @@ export const createPaymentIntent = https.onCall(
     }
 
     const snapshot = await usersRef.doc(auth.uid).get();
-    const user = snapshot.data();
-    if (!user?.stripeId) {
-      logger.warn("User does not have a profile or a stripe account.", {
+    const user = snapshot.data() as User;
+    if (!user) {
+      logger.warn("User does not have a profile.", {
         user: auth.uid,
         args: data,
       });

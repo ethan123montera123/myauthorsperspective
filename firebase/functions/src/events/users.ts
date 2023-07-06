@@ -4,47 +4,6 @@ import { config, logger, stripe } from "../common/providers";
 
 const { USERS } = config.firebase.collections;
 
-export const createStripeAccount = firestore.onDocumentCreated(
-  {
-    document: `${USERS}/{uid}`,
-    region: config.firebase.options.FUNCTION_REGION,
-  },
-  async function ({ data: snapshot, params: { uid } }) {
-    if (!snapshot) {
-      logger.warn("Snapshot did not contain any data.", { user: uid });
-      return null;
-    }
-
-    const data = snapshot.data() as User;
-
-    try {
-      logger.log("Creating stripe account...", { user: uid });
-
-      const { id: stripeId } = await stripe.customers.create({
-        name: data.firstName + " " + data.lastName,
-        email: data.email,
-        phone: data.phone,
-        metadata: { firebaseUID: uid },
-      });
-
-      await snapshot.ref.set({ stripeId }, { merge: true });
-
-      logger.log("Stripe account successfully created.", {
-        user: uid,
-        stripe: stripeId,
-      });
-
-      return { ...data, stripeId };
-    } catch (error: unknown) {
-      logger.error("Stripe account creation failed.", error, {
-        user: uid,
-      });
-    }
-
-    return null;
-  }
-);
-
 export const syncAccountUpdateToStripe = firestore.onDocumentUpdated(
   {
     document: `${USERS}/{uid}`,

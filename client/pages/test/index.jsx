@@ -142,7 +142,13 @@ export default function Home() {
     const dto = Object.fromEntries(formData);
 
     const { error } = await signUpWithCredentials(dto);
-    if (error) return console.log(error);
+    if (error)
+      return console.log(
+        error instanceof FirebaseError &&
+          error.code === "functions/invalid-argument"
+          ? error.details
+          : error
+      );
   }
 
   async function handleSignin(e) {

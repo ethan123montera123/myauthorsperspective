@@ -1,19 +1,16 @@
-import { FirebaseError } from "firebase/app";
 import {
   EmailAuthProvider,
-  createUserWithEmailAndPassword,
   reauthenticateWithCredential,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 
-import { auth, collections, db } from "@/services/firebase";
+import { auth, functions } from "@/services/firebase";
 import {
   ObjectWithError,
   parseThrowablesToObject,
-  pick,
   verifyAuthLogon,
 } from "@/services/utils";
+import { httpsCallable } from "firebase/functions";
 
 /**
  * Signs in a user with an email and password.
@@ -92,34 +89,23 @@ export async function reauthenticateWithCredentials(password) {
  *
  * const { data: credentials, error } = await signUpWithCredentials(user);
  * if(error) {
- *  if(error instanceof FirebaseError) // handle firebase errors
- *  else // handle general errors
+ *  if(error instanceof FirebaseError && error.code === "functions/invalid-argument") {
+ *    // handle invalid argument errors
+ *    error.details; // <- holds the validation error details
+ *  } else if(error instanceof FirebaseError) {
+ *    // handle other Firebase Errors
+ *  } else {
+ *    // handle general errors
+ *  }
  * }
  *
  * // handle credentials
  */
 export async function signUpWithCredentials(user) {
   return parseThrowablesToObject(async () => {
-    const { password, ...dto } = user;
+    const fn = httpsCallable(functions, "api-user-createUser");
+    await fn(user);
 
-    const credential = await createUserWithEmailAndPassword(
-      auth,
-      dto.email,
-      password
-    );
-
-    try {
-      const payload = pick(user, "firstName", "lastName", "email", "phone");
-      const docRef = doc(db, collections.USERS, credential.user.uid);
-      await setDoc(docRef, payload);
-    } catch (err) {
-      // Roll back created auth account
-      // if a validation error occurs in setting document
-      await credential.user.delete();
-      throw new FirebaseError(err.code, err.message, err.customData);
-    }
-
-    // TODO: Send Email Verification
-    return credential;
+    return signInWithEmailAndPassword(auth, user.email, user.password);
   });
 }

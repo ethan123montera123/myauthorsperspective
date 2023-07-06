@@ -55,7 +55,6 @@ export async function getAuthAccount() {
       lastName: data.lastName,
       email: data.email,
       phone: data.phone,
-      stripeId: data.stripeId,
     };
   });
 }
@@ -121,6 +120,11 @@ export async function updateAuthAccount(details) {
       return null;
     }
 
-    return data;
+    return {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone,
+    };
   });
 }

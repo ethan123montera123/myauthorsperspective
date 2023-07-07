@@ -38,7 +38,7 @@ export const firebase = {
      * Returns a boolean value of `true` if the user
      * was recently logged in, otherwise `false`.
      */
-    isRecentLogin: (authTime: number = 0) => {
+    isRecentLogin: (authTime: number) => {
       const diff = Date.now() - authTime * 1000;
       const maxRecentLoginTime = 15 * 60 * 1000; // 15 mins in milliseconds
 

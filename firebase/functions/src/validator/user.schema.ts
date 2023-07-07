@@ -2,9 +2,41 @@ import { auth } from "firebase-admin";
 import { z } from "zod";
 import { config, firebase } from "../providers";
 
-export const getUpdateUserSchema = (uid = "") =>
+export const getUserSchema = (uid = "") =>
   z
     .object({
+      firstName: z
+        .string()
+        .trim()
+        .nonempty()
+        .max(256)
+        .regex(
+          /**
+           * ^                         Start anchor
+           * [a-zA-Z]                  Ensure string starts with an alpha character.
+           * [a-zA-Z\-._ ]+            Ensure string contains one or more alpha character, -, ., _, or space.
+           * [a-zA-Z]                  Ensure string ends with an alpha character.
+           * $                         End anchor.
+           */
+          /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
+          "Must only contain alpha characters, whitespace, ., -, and _."
+        ),
+      lastName: z
+        .string()
+        .trim()
+        .nonempty()
+        .max(256)
+        .regex(
+          /**
+           * ^                         Start anchor
+           * [a-zA-Z]                  Ensure string starts with an alpha character.
+           * [a-zA-Z\-._ ]+            Ensure string contains one or more alpha character, -, ., _, or space.
+           * [a-zA-Z]                  Ensure string ends with an alpha character.
+           * $                         End anchor.
+           */
+          /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
+          "Must only contain alpha characters, whitespace, ., -, and _."
+        ),
       email: z
         .string()
         .trim()
@@ -56,49 +88,23 @@ export const getUpdateUserSchema = (uid = "") =>
             message: "Phone number is already in use.",
           }
         ),
+      password: z
+        .string()
+        .nonempty()
+        .min(8, "Password must at least have 8 characters")
+        .regex(
+          /**
+           * ^                         Start anchor
+           * (?=.*[A-Z])               Ensure string has one uppercase letter.
+           * (?=.*[!@#$&*])            Ensure string has one special character.
+           * (?=.*[0-9])               Ensure string has one digit.
+           * (?=.*[a-z])               Ensure string has one lowercase letter.
+           * .{8,}                     Ensure string is at least a length of 8.
+           * $                         End anchor.
+           */
+          /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$/,
+          "Password must at least contain one uppercase letter, one lowercase letter, a digit, and a special character (!@#$&*)."
+        ),
     })
-    .partial()
+    .required()
     .strip();
-
-export const userSchema = z
-  .object({
-    firstName: z
-      .string()
-      .trim()
-      .nonempty()
-      .max(256)
-      .regex(
-        /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
-        "Must only contain alpha characters, whitespace, ., -, and _."
-      ),
-    lastName: z
-      .string()
-      .trim()
-      .nonempty()
-      .max(256)
-      .regex(
-        /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
-        "Must only contain alpha characters, whitespace, ., -, and _."
-      ),
-    password: z
-      .string()
-      .nonempty()
-      .min(8, "Password must at least have 8 characters")
-      .regex(
-        /**
-         * Explanation:
-         * ^                         Start anchor
-         * (?=.*[A-Z])        Ensure string has one uppercase letter.
-         * (?=.*[!@#$&*])            Ensure string has one special case letter.
-         * (?=.*[0-9])               Ensure string has one digit.
-         * (?=.*[a-z])               Ensure string has one lowercase letter.
-         * .{8,}                     Ensure string is at least a length of 8.
-         * $                         End anchor.
-         */
-        /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$/,
-        "Password must at least contain one uppercase letter, one lowercase letter, a digit, and a special character (!@#$&*)."
-      ),
-  })
-  .merge(getUpdateUserSchema().required())
-  .required()
-  .strip();

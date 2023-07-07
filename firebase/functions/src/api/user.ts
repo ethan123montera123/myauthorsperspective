@@ -5,7 +5,7 @@ import { https } from "firebase-functions/v2";
 import { User } from "../interface";
 import { config, firebase, logger, stripe, transaction } from "../providers";
 import { Action } from "../providers/transaction";
-import { getUpdateUserSchema, parseErrors, userSchema } from "../validator";
+import { getUserSchema, parseErrors } from "../validator";
 
 export const createUser = https.onCall(
   {
@@ -14,7 +14,7 @@ export const createUser = https.onCall(
     region: config.firebase.options.FUNCTION_REGION,
   },
   async (req) => {
-    const result = await userSchema.safeParseAsync(req.data);
+    const result = await getUserSchema().safeParseAsync(req.data);
     if (!result.success) {
       throw new HttpsError(
         "invalid-argument",
@@ -23,7 +23,7 @@ export const createUser = https.onCall(
       );
     }
 
-    const { password, ...user } = req.data as User & { password: string };
+    const { password, ...user } = result.data as User & { password: string };
     const docRef = firebase.db
       .collection(config.firebase.collections.USERS)
       .doc();
@@ -110,9 +110,10 @@ export const updateUser = https.onCall(
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
 
-    const result = await getUpdateUserSchema(req.auth.uid).safeParseAsync(
-      req.data
-    );
+    const result = await getUserSchema(req.auth.uid)
+      .pick({ email: true, phone: true })
+      .partial()
+      .safeParseAsync(req.data);
     if (!result.success) {
       throw new HttpsError(
         "invalid-argument",
@@ -144,7 +145,7 @@ export const updateUser = https.onCall(
     }
 
     details = Object.fromEntries(diff);
-    const context = { uid: snapshot.id, args: req.data };
+    const context = { uid: snapshot.id, args: result.data };
     const beforeChange = { email: user.email, phone: user.phone };
 
     const updateStripeAccount: Action = {

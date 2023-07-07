@@ -25,6 +25,13 @@ export const contactSchema = z
       .nonempty()
       .max(256)
       .regex(
+        /**
+         * ^                         Start anchor
+         * [a-zA-Z]                  Ensure string starts with an alpha character.
+         * [a-zA-Z\-._ ]+            Ensure string contains one or more alpha character, -, ., _, or space.
+         * [a-zA-Z]                  Ensure string ends with an alpha character.
+         * $                         End anchor.
+         */
         /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
         "Must only contain alpha characters, whitespace, ., -, and _."
       ),
@@ -34,6 +41,13 @@ export const contactSchema = z
       .nonempty()
       .max(256)
       .regex(
+        /**
+         * ^                         Start anchor
+         * [a-zA-Z]                  Ensure string starts with an alpha character.
+         * [a-zA-Z\-._ ]+            Ensure string contains one or more alpha character, -, ., _, or space.
+         * [a-zA-Z]                  Ensure string ends with an alpha character.
+         * $                         End anchor.
+         */
         /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
         "Must only contain alpha characters, whitespace, ., -, and _."
       ),

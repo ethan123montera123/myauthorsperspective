@@ -108,6 +108,13 @@ export const updateUser = https.onCall(
   async (req) => {
     if (!req.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
+    } else if (
+      !config.firebase.methods.isRecentLogin(req.auth.token.auth_time)
+    ) {
+      throw new HttpsError(
+        "failed-precondition",
+        "You have been logged in for too long. Please sign in again."
+      );
     }
 
     const result = await getUserSchema(req.auth.uid)

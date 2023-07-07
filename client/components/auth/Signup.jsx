@@ -33,16 +33,6 @@ export default function SignUp({ setCurrentComponent }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!/^[A-Za-z\s]*$/.test(firstName)) {
-      return notifyError("First Name must only contain letters and spaces.");
-    } else if (!/^[A-Za-z\s]*$/.test(lastName)) {
-      return notifyError("Last Name must only contain letters and spaces.");
-    } else if (!/^(?!.*\s).{6,}$/.test(password)) {
-      return notifyError(
-        "Password must contain at least 6 characters with no whitespace."
-      );
-    }
-
     const accountPayload = {
       firstName,
       lastName,
@@ -56,9 +46,10 @@ export default function SignUp({ setCurrentComponent }) {
 
     const { error } = await signUpWithCredentials(accountPayload);
     if (error) {
-      // handle errors gracefully and reflect it in UI
-      // console.log("error.code", error.code, "error", error);
-      return notifyError(prettyPrintFirebaseError(error.code));
+      // handle errors gracefully and reflect it in UI based on user.schema.ts
+      const errors = error.details;
+      const firstErrorInArray = Object.values(errors)[0][0];
+      return notifyError(firstErrorInArray);
     } else {
       setFirstName("");
       setLastName("");
@@ -186,7 +177,7 @@ export default function SignUp({ setCurrentComponent }) {
               id="password"
               type="password"
               title="Password must contain at least 6 characters minimum and 20 characters maximum."
-              minLength="6"
+              minLength="8"
               maxLength="20"
               required
             />

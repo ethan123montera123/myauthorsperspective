@@ -3,11 +3,9 @@ import { HttpsError } from "firebase-functions/v1/auth";
 import { https } from "firebase-functions/v2";
 
 import { User } from "../interface";
-import { config, firebase, logger, stripe } from "../providers";
+import { config, firebase, logger, stripe, transaction } from "../providers";
+import { Action } from "../providers/transaction";
 import { getUpdateUserSchema, parseErrors, userSchema } from "../validator";
-
-const USER_CREATION_FAILED = "An error occured whilst creating account.";
-const USER_UPDATE_FAILED = "An error occured whilst updating account.";
 
 export const createUser = https.onCall(
   {
@@ -31,58 +29,72 @@ export const createUser = https.onCall(
       .doc();
 
     const context = { args: user };
+
+    const createStripeAccount: Action = {
+      name: "Stripe Account Creation",
+      execute: async () => {
+        logger.log("Generating stripe account...", context);
+
+        const customer = await stripe.customers.create({
+          name: user.firstName + " " + user.lastName,
+          email: user.email,
+          phone: user.phone,
+          metadata: { firebaseUID: docRef.id },
+        });
+
+        user.stripeId = customer.id;
+
+        return () => stripe.customers.del(customer.id);
+      },
+      catch: (err) => {
+        logger.error("Stripe account creation failed.", err, context);
+      },
+    };
+
+    const createAuthAccount: Action = {
+      name: "Auth Account Creation",
+      execute: async () => {
+        logger.log("Creating auth account...", context);
+
+        await auth().createUser({
+          uid: docRef.id,
+          displayName: user.firstName + " " + user.lastName,
+          email: user.email,
+          password,
+        });
+
+        return () => auth().deleteUser(docRef.id);
+      },
+      catch: (err) => {
+        logger.error("Auth account creation failed.", err, context);
+      },
+    };
+
+    const createUserProfile: Action = {
+      name: "User Profile Creation",
+      execute: async () => {
+        logger.log("Creating user profile...", context);
+
+        await docRef.set(user);
+
+        return () => docRef.delete({ exists: true });
+      },
+      catch: (err) => {
+        logger.error("User profile creation failed.", err, context);
+      },
+    };
+
     logger.log("Creating user account...");
-
-    try {
-      logger.log("Generating stripe account...", context);
-
-      const customer = await stripe.customers.create({
-        name: user.firstName + " " + user.lastName,
-        email: user.email,
-        phone: user.phone,
-        metadata: { firebaseUID: docRef.id },
-      });
-
-      user.stripeId = customer.id;
-    } catch (err) {
-      logger.error("Stripe account creation failed.", err, context);
-      throw new HttpsError("internal", USER_CREATION_FAILED);
+    const error = await transaction.commit(
+      createStripeAccount,
+      createAuthAccount,
+      createUserProfile
+    );
+    if (error) {
+      throw new HttpsError("internal", "User account creation failed.");
     }
-
-    try {
-      logger.log("Creating user profile...", context);
-
-      await docRef.set(user);
-    } catch (err) {
-      // Rollback created stripe account if an error occured in profile creation
-      await stripe.customers.del(user.stripeId);
-
-      logger.error("User profile creation failed.", err, context);
-      throw new HttpsError("internal", USER_CREATION_FAILED);
-    }
-
-    try {
-      logger.log("Creating auth account...", context);
-
-      await auth().createUser({
-        uid: docRef.id,
-        displayName: user.firstName + " " + user.lastName,
-        email: user.email,
-        password,
-      });
-    } catch (err) {
-      // Rollback created stripe account and user profile
-      // if an error occured during auth creation
-      await Promise.all([
-        stripe.customers.del(user.stripeId),
-        docRef.delete({ exists: true }),
-      ]);
-
-      logger.error("Auth account creation failed.", err, context);
-      throw new HttpsError("internal", USER_CREATION_FAILED);
-    }
-
     logger.log("User account created successfully.", user);
+
     return user;
   }
 );
@@ -117,14 +129,15 @@ export const updateUser = https.onCall(
     const user = snapshot.data() as Omit<User, "id">;
     if (!user) {
       logger.error("User profile does not exist.", null, { uid: snapshot.id });
-      throw new HttpsError("internal", USER_UPDATE_FAILED);
+      throw new HttpsError("internal", "User account update failed.");
     }
 
     let details = result.data as Partial<Pick<User, "email" | "phone">>;
     const diff = Object.entries(details).filter(
       ([k, v]) => user[k as keyof typeof details] !== v
     );
-    // If there are no changes
+
+    // If there are no changes, we can opt for an early return.
     if (diff.length === 0) {
       logger.log("User account successfully updated.", user);
       return user;
@@ -132,52 +145,65 @@ export const updateUser = https.onCall(
 
     details = Object.fromEntries(diff);
     const context = { uid: snapshot.id, args: req.data };
-    const rollbackData = { email: user.email, phone: user.phone };
+    const beforeChange = { email: user.email, phone: user.phone };
+
+    const updateStripeAccount: Action = {
+      name: "Update Stripe Account",
+      execute: async () => {
+        logger.log("Updating stripe account...", context);
+        await stripe.customers.update(user.stripeId, details);
+
+        return () => stripe.customers.update(user.stripeId, beforeChange);
+      },
+      catch: (err) => {
+        logger.error("Stripe account update failed.", err, context);
+      },
+    };
+
+    const updateAuthAccount: Action = {
+      name: "Update Auth Account",
+      execute: async () => {
+        if (details.email) {
+          logger.log("Updating auth account...", context);
+          await auth().updateUser(snapshot.id, { email: details.email });
+
+          return () =>
+            auth().updateUser(snapshot.id, { email: beforeChange.email });
+        }
+
+        return;
+      },
+      catch: (err) => {
+        logger.error("Auth account update failed.", err, context);
+      },
+    };
+
+    const updateUserProfile: Action = {
+      name: "Update User Profile",
+      execute: async () => {
+        logger.log("Updating user profile...", context);
+        await snapshot.ref.update(details);
+
+        return () => snapshot.ref.update(beforeChange);
+      },
+      catch: (err) => {
+        logger.error("Auth account update failed.", err, context);
+      },
+    };
 
     logger.log("Updating user account...");
-
-    try {
-      logger.log("Updating stripe account...", context);
-      await stripe.customers.update(user.stripeId, details);
-    } catch (err) {
-      logger.error("Stripe account update failed.", err, context);
-      throw new HttpsError("internal", USER_UPDATE_FAILED);
-    }
-
-    try {
-      logger.log("Updating user profile...", context);
-
-      await snapshot.ref.update(details);
-    } catch (err) {
-      // Rollback changes to stripe if an error occurs
-      await stripe.customers.update(user.stripeId, rollbackData);
-
-      logger.error("User profile update failed.", err, context);
-      throw new HttpsError("internal", USER_UPDATE_FAILED);
-    }
-
-    try {
-      if (details.email) {
-        logger.log("Updating auth account...", context);
-        await Promise.all([
-          auth().updateUser(snapshot.id, { email: details.email }),
-          auth().revokeRefreshTokens(snapshot.id),
-        ]);
-      }
-    } catch (err) {
-      // Rollback changes to stripe and profile if an error occurs
-      await Promise.all([
-        stripe.customers.update(user.stripeId, rollbackData),
-        snapshot.ref.update(rollbackData),
-      ]);
-
-      logger.error("Auth account update failed.", err, context);
-      throw new HttpsError("internal", USER_UPDATE_FAILED);
+    const error = await transaction.commit(
+      updateStripeAccount,
+      updateAuthAccount,
+      updateUserProfile
+    );
+    if (error) {
+      throw new HttpsError("internal", "User account update failed.");
     }
 
     const updatedUser = { ...user, ...details };
-
     logger.log("User account successfully updated.", updateUser);
+
     return updatedUser;
   }
 );

@@ -1,3 +1,5 @@
+import { notifyError } from "./notification.helper.";
+
 /**
  *
  * @param {Array} cart the cart state handled by the cart index.js page
@@ -78,9 +80,10 @@ export const getTotalPrice = (services, cart) => {
 
   const getPriceOfService = (id) => {
     const serviceDetails = services.find((s) => s.id === id);
+
     // if it's not the Author's Blog Site
     if (AUTHOR_BLOG_SITE_SERVICE_ID && id !== AUTHOR_BLOG_SITE_SERVICE_ID) {
-      return serviceDetails.priceTier.basic.price;
+      return serviceDetails?.priceTier?.basic?.price;
     } else {
       // otherwise, we traverse the cart to see if the blog site service inclusions have the premium services
       const isPremium = (inclusionId) => inclusionId >= 6; // 6-10 denote premium tier

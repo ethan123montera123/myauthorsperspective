@@ -6,6 +6,9 @@ export interface FirebaseConfig {
     ENFORCE_APP_CHECK: boolean;
     FUNCTION_REGION: string;
   };
+  methods: {
+    isRecentLogin: (authTime: number) => boolean;
+  };
 }
 
 export interface StripeConfig {

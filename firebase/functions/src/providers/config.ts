@@ -27,6 +27,24 @@ export const firebase = {
     ENFORCE_APP_CHECK: true,
     FUNCTION_REGION: "asia-southeast1",
   },
+  methods: {
+    /**
+     * Checks whether the auth time is within the range of
+     * what is considered a recent login. (By default a login
+     * is recent if it's below or equal to `15 mins`).
+     *
+     * @param authTime The time the user was authenticated.
+     * @return
+     * Returns a boolean value of `true` if the user
+     * was recently logged in, otherwise `false`.
+     */
+    isRecentLogin: (authTime: number = 0) => {
+      const diff = Date.now() - authTime * 1000;
+      const maxRecentLoginTime = 15 * 60 * 1000; // 15 mins in milliseconds
+
+      return diff <= maxRecentLoginTime;
+    },
+  },
 } as const satisfies FirebaseConfig;
 
 export const cors = {

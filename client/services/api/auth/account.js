@@ -86,7 +86,7 @@ export async function getAuthAccount() {
  *
  * const { data: updatedAccount, error: updateError } = await updateAuthAccount({ email, phone });
  * if(updateError) { // handle update errors
- *  if(updateError instanceof FirebaseError && error.code === "functions/invalid-argument") {
+ *  if(updateError instanceof FirebaseError && updateError.code === "functions/invalid-argument") {
  *    // handle invalid argument errors
  *    updateError.details; // <- holds the validation error details
  *  } else if(updateError instanceof FirebaseError) {

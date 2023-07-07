@@ -178,6 +178,7 @@ try {
     } else {
       // handle other Firebase Errors, like:
       // - functions/unauthenticated
+      // - functions/failed-precondition
       // - functions/internal
     }
   } else {

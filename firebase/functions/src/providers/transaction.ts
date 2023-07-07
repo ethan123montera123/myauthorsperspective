@@ -71,7 +71,7 @@ export async function commit(...actions: Action[]) {
         success: success.length,
       });
     } else {
-      logger.error("Rolling back failed.", execError, {
+      logger.warn("Rolling back complete with issues.", {
         rollbacks: rbNames,
         success: success.length,
         failed: {

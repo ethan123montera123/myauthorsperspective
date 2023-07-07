@@ -7,6 +7,7 @@ export default function ServicesToAvail({
   selectedService,
   selectService,
   addServiceAndInclusionToCart,
+  disabled,
 }) {
   const selectedServiceData = services.find((e) => e.title === selectedService);
 
@@ -35,6 +36,7 @@ export default function ServicesToAvail({
       </h2>
       {selectedServiceData.inclusions.map((inclusion) => (
         <InclusionCheckbox
+          disabled={disabled}
           key={inclusion.name}
           serviceId={selectedServiceData.id}
           inclusionName={inclusion.name}

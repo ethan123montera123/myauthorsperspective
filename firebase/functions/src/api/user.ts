@@ -36,7 +36,7 @@ export const createUser = https.onCall(
         logger.log("Generating stripe account...", context);
 
         const customer = await stripe.customers.create({
-          name: user.firstName + " " + user.lastName,
+          name: (user.firstName + " " + user.lastName).trim(),
           email: user.email,
           phone: user.phone,
           metadata: { firebaseUID: docRef.id },
@@ -58,7 +58,7 @@ export const createUser = https.onCall(
 
         await auth().createUser({
           uid: docRef.id,
-          displayName: user.firstName + " " + user.lastName,
+          displayName: (user.firstName + " " + user.lastName).trim(),
           email: user.email,
           password,
         });

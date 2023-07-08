@@ -2,6 +2,23 @@ import { auth } from "firebase-admin";
 import { z } from "zod";
 import { config, firebase } from "../providers";
 
+/**
+ * Formats a name field by putting text in propercase case,
+ * and stripping whitespaces to one spaces.
+ *
+ * @param s The string to be formatted.
+ * @return The formatted string.
+ */
+function formatName(s: string) {
+  const trimmedAndSpaced = s.trim().replace(/\s+/g, " ");
+  const properCase = trimmedAndSpaced
+    .split(" ")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+    .join(" ");
+
+  return properCase;
+}
+
 export const getUserSchema = (uid = "") =>
   z
     .object({
@@ -12,31 +29,39 @@ export const getUserSchema = (uid = "") =>
         .max(256)
         .regex(
           /**
-           * ^                         Start anchor
-           * [a-zA-Z]                  Ensure string starts with an alpha character.
-           * [a-zA-Z\-._ ]+            Ensure string contains one or more alpha character, -, ., _, or space.
-           * [a-zA-Z]                  Ensure string ends with an alpha character.
-           * $                         End anchor.
+           * ^                                            Start anchor
+           * [a-zA-Z]                                     Ensure string starts with an alpha character.
+           * (\s*[^!@#$%^&*|:<>,.?~`_={};+()[\]\-\\]+)*  Ensure string does not contain invalid characters, but can contain spaces.
+           * $                                            End anchor.
            */
-          /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
-          "Must only contain alpha characters, whitespace, ., -, and _."
-        ),
+          /^[a-zA-Z](\s*[^!@#$%^&*|:<>,.?~`_={};+()[\]\-\\]+)*$/,
+          "First name contains invalid characters."
+        )
+        .transform(formatName),
       lastName: z
         .string()
         .trim()
-        .nonempty()
         .max(256)
-        .regex(
-          /**
-           * ^                         Start anchor
-           * [a-zA-Z]                  Ensure string starts with an alpha character.
-           * [a-zA-Z\-._ ]+            Ensure string contains one or more alpha character, -, ., _, or space.
-           * [a-zA-Z]                  Ensure string ends with an alpha character.
-           * $                         End anchor.
-           */
-          /^[a-zA-Z][a-zA-Z\-._ ]+[a-zA-Z]$/,
-          "Must only contain alpha characters, whitespace, ., -, and _."
-        ),
+        .refine(
+          (val) => {
+            /**
+             * ^                                            Start anchor
+             * [a-zA-Z]                                     Ensure string starts with an alpha character.
+             * (\s*[^!@#$%^&*|:<>,.?~`_={};+()[\]\-\\]+)*  Ensure string does not contain invalid characters, but can contain spaces.
+             * $                                            End anchor.
+             */
+            const regex =
+              /^[a-zA-Z](\s*[^!@#$%^&*|:<>,.?~`_={};+()[\]\-\\]+)*$/;
+
+            return !val || regex.test(val);
+          },
+          {
+            message: "Last name contains invalid characters.",
+          }
+        )
+        .transform(formatName)
+        .optional()
+        .default(""),
       email: z
         .string()
         .trim()

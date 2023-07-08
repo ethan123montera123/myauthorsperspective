@@ -14,7 +14,7 @@ export default function SignUp({ setCurrentComponent }) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [fetching, isFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const handleSwapAuth = () => {
     setCurrentComponent("Login");
@@ -45,13 +45,13 @@ export default function SignUp({ setCurrentComponent }) {
       phone,
     };
 
-    isFetching(true);
+    setIsFetching(true);
     const { error } = await signUpWithCredentials(accountPayload);
     if (error) {
       // handle errors gracefully and reflect it in UI based on user.schema.ts
       const errors = error.details;
       const firstErrorInArray = Object.values(errors)[0][0];
-      isFetching(false);
+      setIsFetching(false);
       return notifyError(firstErrorInArray);
     } else {
       setFirstName("");
@@ -60,7 +60,7 @@ export default function SignUp({ setCurrentComponent }) {
       setPhone("");
       setPassword("");
       notifySuccess("Account successfully created.");
-      isFetching(false);
+      setIsFetching(false);
       router.push("/");
     }
   };
@@ -73,7 +73,7 @@ export default function SignUp({ setCurrentComponent }) {
           Sign Up
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col">
-          <fieldset className="relative" disabled={isFetching}>
+          <fieldset className="relative" disabled={setIsFetching}>
             <div className="relative">
               <label
                 className="text-xs font-semibold text-neutral-700"
@@ -207,7 +207,7 @@ export default function SignUp({ setCurrentComponent }) {
             </div>
           </fieldset>
           <button
-            disabled={fetching}
+            disabled={isFetching}
             type="submit"
             className="rounded-xl mt-8 font-bold uppercase tracking-wider bg-[#00C1EB] hover:bg-[#239db9] px-8 py-[0.5rem]"
           >

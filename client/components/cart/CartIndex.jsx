@@ -36,9 +36,6 @@ export default function CartIndex({ services }) {
       notifyError("Services have not loaded yet! Cannot check out.");
     }
 
-    // console.log("Handling cart checkout... Cart payload:");
-    // console.log(cart);
-
     /* code to make stripe payment intent */
     const { data, error } = await createServiceTransaction(cart);
     if (error) {

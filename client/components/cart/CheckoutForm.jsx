@@ -3,11 +3,13 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import { useState } from "react";
+import { notifyError } from "@/helpers/notification.helper.";
 
-function Button({ className, children, ...props }) {
+function Button({ className, children, disabled, ...props }) {
   return (
     <button
-      {...props}
+      disabled={disabled}
       className="tracking-wider hover:shadow-lg active:shadow-lg transition-shadow shadow uppercase px-4 py-2 bg-gradient-to-bl from-[#00C1EB] to-[#008fb0] text-white rounded-2xl w-full text-center"
     >
       {children}
@@ -18,6 +20,7 @@ function Button({ className, children, ...props }) {
 export default function CheckoutForm({ handleEditCart }) {
   const stripe = useStripe();
   const elements = useElements();
+  const [isFetching, setIsFetching] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +34,7 @@ export default function CheckoutForm({ handleEditCart }) {
     // TODO: Change this during production.
     const RETURN_URL = "localhost:3000/cart/result";
 
+    setIsFetching(true);
     const result = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
       elements,
@@ -42,8 +46,10 @@ export default function CheckoutForm({ handleEditCart }) {
 
     if (result.error) {
       // Show error to customer (for example, payment details incomplete)
-      console.log(result.error.message);
+      notifyError(result.error.message);
+      setIsFetching(false);
     } else {
+      setIsFetching(false);
       // Customer will be redirected to `return_url`
     }
   };
@@ -54,10 +60,11 @@ export default function CheckoutForm({ handleEditCart }) {
       className="w-full px-4 m-auto flex flex-col my-4 gap-4"
     >
       <PaymentElement />
-      <Button type="submit" disabled={!stripe}>
+      <Button type="submit" disabled={!stripe || isFetching}>
         Check Out
       </Button>
       <button
+        disabled={isFetching}
         onClick={handleEditCart}
         className="tracking-wider hover:shadow-lg active:shadow-lg transition-shadow shadow uppercase px-4 py-2 bg-gradient-to-bl from-neutral-500 to-neutral-700 text-white rounded-2xl w-full text-center"
         type="button"

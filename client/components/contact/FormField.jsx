@@ -16,7 +16,7 @@ export default function FormField({
         {label}
       </label>
       <input
-        className="border-[1.5px] border-black rounded-xl px-2 py-1"
+        className="border-[1.5px] border-black rounded-xl px-3 py-1"
         type={type}
         name={name}
         id={id}

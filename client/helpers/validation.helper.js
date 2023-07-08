@@ -43,11 +43,25 @@ const password = (str) => {
   return isValid;
 };
 
+const subject = (str) => {
+  const isValid = str.length <= 256;
+  if (!isValid) notifyError("Subject must contain at most 256 characters.");
+  return isValid;
+};
+
+const message = (str) => {
+  const isValid = str.length > 0;
+  if (!isValid) notifyError("Message cannot be empty.");
+  return isValid;
+};
+
 const exports = {
   firstName,
   lastName,
   email,
   phone,
   password,
+  subject,
+  message,
 };
 export default exports;

@@ -16,6 +16,7 @@ export default function ContactForm() {
     e.preventDefault();
 
     if (
+      isFetching ||
       !isValid.firstName(fName) ||
       !isValid.lastName(lName) ||
       !isValid.email(email) ||

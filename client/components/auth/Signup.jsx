@@ -28,6 +28,7 @@ export default function SignUp({ setCurrentComponent }) {
     e.preventDefault();
 
     if (
+      isFetching ||
       !isValid.firstName(firstName) ||
       !isValid.lastName(lastName) ||
       !isValid.email(email) ||

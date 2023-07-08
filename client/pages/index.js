@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>My Author's Perspective</title>
+        <title>My Author&apos;s Perspective</title>
         <meta
           name="description"
           content="My Author's Perspective offers services for content writers and business owners alike. Increase your marketability with us!"

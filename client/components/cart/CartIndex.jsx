@@ -35,8 +35,10 @@ export default function CartIndex({ services }) {
   const handleCheckOut = async () => {
     if (isLoadingCheckoutForm) {
       return;
-    } else if (!services) {
-      return notifyError("Services have not loaded yet! Cannot check out.");
+    } else if (!services || Number.isNaN(getTotalPrice(services, cart))) {
+      return notifyError(
+        "Services cannot sync with price. Contact the developers."
+      );
     } else if (cart.length === 0) {
       return notifyWarning("Can't check out with an empty cart.");
     }

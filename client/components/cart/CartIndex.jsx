@@ -9,7 +9,7 @@ import {
   inclusionFunctionThunk,
   getTotalPrice,
 } from "@/helpers/cart.helper";
-import { notifyError } from "@/helpers/notification.helper.";
+import { notifyError, notifyWarning } from "@/helpers/notification.helper.";
 import { createServiceTransaction } from "@/services/api/transaction";
 import CheckoutForm from "./CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
@@ -23,6 +23,7 @@ export default function CartIndex({ services }) {
 
   /* stripe state */
   const [secret, setSecret] = useState(null);
+  const [isLoadingCheckoutForm, setIsLoadingCheckoutForm] = useState(false);
 
   useEffect(() => {
     setCartState(cart);
@@ -32,14 +33,21 @@ export default function CartIndex({ services }) {
   const addServiceAndInclusionToCart = inclusionFunctionThunk(cart, setCart);
 
   const handleCheckOut = async () => {
-    if (!services) {
-      notifyError("Services have not loaded yet! Cannot check out.");
+    if (isLoadingCheckoutForm) {
+      return;
+    } else if (!services) {
+      return notifyError("Services have not loaded yet! Cannot check out.");
+    } else if (cart.length === 0) {
+      return notifyWarning("Can't check out with an empty cart.");
     }
 
     /* code to make stripe payment intent */
+    setIsLoadingCheckoutForm(true);
     const { data, error } = await createServiceTransaction(cart);
     if (error) {
-      if (error.status === "INVALID_ARGUMENT") {
+      setIsLoadingCheckoutForm(false);
+
+      if (error.code === "functions/invalid-argument") {
         return notifyError(
           "Add items to your cart after clearing your browser cache then try again."
         );
@@ -47,6 +55,8 @@ export default function CartIndex({ services }) {
         return notifyError(error.message);
       }
     }
+
+    setIsLoadingCheckoutForm(false);
     setSecret(data.secret);
   };
 
@@ -91,6 +101,7 @@ export default function CartIndex({ services }) {
             </Elements>
           ) : (
             <button
+              disabled={isLoadingCheckoutForm}
               onClick={handleCheckOut}
               aria-label="Check out"
               className="pb-4 rounded-xl border-2 w-full border-[rgb(230,230,230)] bg-neutral-200 grid place-items-center shadow-md hover:shadow-lg transition-shadow"

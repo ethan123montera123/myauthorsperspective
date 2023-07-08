@@ -27,7 +27,6 @@ export default function CheckoutForm({ handleEditCart }) {
 
     if (isFetching || !stripe || !elements) {
       // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
@@ -60,11 +59,11 @@ export default function CheckoutForm({ handleEditCart }) {
       className="w-full px-4 m-auto flex flex-col my-4 gap-4"
     >
       <PaymentElement />
-      <Button type="submit" disabled={!stripe || isFetching}>
+      <Button type="submit" disabled={isFetching || !stripe || !elements}>
         Check Out
       </Button>
       <button
-        disabled={isFetching}
+        disabled={isFetching || !stripe || !elements}
         onClick={handleEditCart}
         className="tracking-wider hover:shadow-lg active:shadow-lg transition-shadow shadow uppercase px-4 py-2 bg-gradient-to-bl from-neutral-500 to-neutral-700 text-white rounded-2xl w-full text-center"
         type="button"

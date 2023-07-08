@@ -37,6 +37,7 @@ export default function Login({ setCurrentComponent }) {
     const { error } = await signInWithCredentials(email, password);
     if (error) {
       // handle errors gracefully and reflect it in UI
+      setIsFetching(false);
       return notifyError(prettyPrintFirebaseError(error.code));
     } else {
       setEmail("");

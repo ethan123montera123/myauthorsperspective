@@ -21,6 +21,11 @@
     @apply absolute bg-black left-2 bottom-4 h-[1.75px];
     width: calc(100% - 1rem);
   }
+
+  button:disabled {
+    cursor: wait;
+    opacity: 0.75;
+  }
 }
 
 @layer utilities {

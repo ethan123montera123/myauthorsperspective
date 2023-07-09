@@ -4,7 +4,6 @@ import { Service } from "../providers/firebase/seeders/services";
 type ArrayBaseType<T> = T extends (infer R)[] ? R : never;
 
 export interface Order {
-  id?: string;
   services: OrderLine[];
   totalPrice: number;
   customerId: string;

@@ -31,8 +31,8 @@ const formatter = new Intl.NumberFormat("en-US", {
 });
 
 interface ReceiptEmailProps {
-  customer: Pick<User, "uid" | "firstName" | "lastName" | "email">;
-  order: Pick<Order, "services" | "totalPrice" | "id" | "paidAt">;
+  customer: { uid: string } & Pick<User, "firstName" | "lastName" | "email">;
+  order: { id: string } & Pick<Order, "services" | "totalPrice" | "paidAt">;
 }
 
 /**

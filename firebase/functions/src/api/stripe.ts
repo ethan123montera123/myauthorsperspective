@@ -9,7 +9,7 @@ import { Order, User } from "../interface";
 import { config, firebase, logger, mailer, stripe } from "../providers";
 import { orderSchema, parseErrors } from "../validator";
 
-const { USERS, ORDERS } = config.firebase.collections;
+const { USERS, ORDERS } = config.firebase.firestore.collections;
 const usersRef = firebase.db.collection(USERS);
 const ordersRef = firebase.db.collection(ORDERS);
 
@@ -17,11 +17,7 @@ const PAYMENT_INTENT_CREATION_FAILED = "Payment intent creation failed.";
 const CENTS_IN_A_DOLLAR = 100;
 
 export const createPaymentIntent = https.onCall(
-  {
-    cors: config.cors.ORIGIN,
-    enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
-    region: config.firebase.options.FUNCTION_REGION,
-  },
+  config.firebase.functions.options,
   async function ({ auth, data }) {
     if (!auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
@@ -91,7 +87,7 @@ export const createPaymentIntent = https.onCall(
 
 export const webhook = https.onRequest(
   {
-    region: config.firebase.options.FUNCTION_REGION,
+    region: config.firebase.functions.options.region,
   },
   async (req, res) => {
     let event = null;

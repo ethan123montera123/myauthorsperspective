@@ -1,14 +1,25 @@
+import { https } from "firebase-functions/v2";
+
 export type FirestoreCollections = "orders" | "services" | "users";
 
-export interface FirebaseConfig {
+export interface FirestoreConfig {
   collections: Record<Uppercase<FirestoreCollections>, string>;
-  options: {
-    ENFORCE_APP_CHECK: boolean;
-    FUNCTION_REGION: string;
-  };
+}
+
+export interface FunctionsConfig {
+  options: https.CallableOptions | https.HttpsOptions;
+}
+
+export interface AuthConfig {
   methods: {
     isRecentLogin: (authTime: number) => boolean;
   };
+}
+
+export interface FirebaseConfig {
+  firestore: FirestoreConfig;
+  functions: FunctionsConfig;
+  auth: AuthConfig;
 }
 
 export interface StripeConfig {
@@ -17,10 +28,6 @@ export interface StripeConfig {
   API_VERSION: string;
   CURRENCY: string;
   AUTOMATIC_PAYMENT_METHOD: boolean;
-}
-
-export interface CorsConfig {
-  ORIGIN: string | string[];
 }
 
 export interface MailerConfig {

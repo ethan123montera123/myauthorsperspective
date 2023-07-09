@@ -7,11 +7,7 @@ import { config, logger, mailer } from "../providers";
 import { contactSchema, parseErrors } from "../validator";
 
 export const sendContactEmail = https.onCall(
-  {
-    cors: config.cors.ORIGIN,
-    enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
-    region: config.firebase.options.FUNCTION_REGION,
-  },
+  config.firebase.functions.options,
   async (req) => {
     const result = contactSchema.safeParse(req.data);
     if (!result.success) {

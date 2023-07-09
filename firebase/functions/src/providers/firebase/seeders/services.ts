@@ -13,7 +13,7 @@ function applyIds<T extends string>(
   return arr.map((v, idx) => ({ id: idx + 1, ...v }));
 }
 
-export const collection = config.firebase.collections.SERVICES;
+export const collection = config.firebase.firestore.collections.SERVICES;
 
 export const data = [
   {

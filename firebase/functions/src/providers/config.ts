@@ -1,10 +1,5 @@
 import dotenv from "dotenv";
-import {
-  CorsConfig,
-  FirebaseConfig,
-  MailerConfig,
-  StripeConfig,
-} from "../interface";
+import { FirebaseConfig, MailerConfig, StripeConfig } from "../interface";
 import { envSchema } from "../validator";
 
 const env = envSchema.parse(dotenv.config().parsed);
@@ -18,38 +13,41 @@ export const stripe = {
 } as const satisfies StripeConfig;
 
 export const firebase = {
-  collections: {
-    SERVICES: "services",
-    ORDERS: "orders",
-    USERS: "users",
+  firestore: {
+    collections: {
+      SERVICES: "services",
+      ORDERS: "orders",
+      USERS: "users",
+    },
   },
-  options: {
-    ENFORCE_APP_CHECK: true,
-    FUNCTION_REGION: "asia-southeast1",
+  functions: {
+    options: {
+      cors: env.FRONTEND_DEPLOYMENT_URL,
+      enforceAppCheck: true,
+      region: "asia-southeast1",
+    },
   },
-  methods: {
-    /**
-     * Checks whether the auth time is within the range of
-     * what is considered a recent login. (By default a login
-     * is recent if it's below or equal to `15 mins`).
-     *
-     * @param authTime The time the user was authenticated.
-     * @return
-     * Returns a boolean value of `true` if the user
-     * was recently logged in, otherwise `false`.
-     */
-    isRecentLogin: (authTime: number) => {
-      const diff = Date.now() - authTime * 1000;
-      const maxRecentLoginTime = 15 * 60 * 1000; // 15 mins in milliseconds
+  auth: {
+    methods: {
+      /**
+       * Checks whether the auth time is within the range of
+       * what is considered a recent login. (By default a login
+       * is recent if it's below or equal to `15 mins`).
+       *
+       * @param authTime The time the user was authenticated.
+       * @return
+       * Returns a boolean value of `true` if the user
+       * was recently logged in, otherwise `false`.
+       */
+      isRecentLogin: (authTime: number) => {
+        const diff = Date.now() - authTime * 1000;
+        const maxRecentLoginTime = 15 * 60 * 1000; // 15 mins in milliseconds
 
-      return diff <= maxRecentLoginTime;
+        return diff <= maxRecentLoginTime;
+      },
     },
   },
 } as const satisfies FirebaseConfig;
-
-export const cors = {
-  ORIGIN: env.FRONTEND_DEPLOYMENT_URL,
-} as const satisfies CorsConfig;
 
 export const mailer = {
   MAILER_EMAIL: `My Author's Perspective <${env.MAILER_EMAIL}>`,

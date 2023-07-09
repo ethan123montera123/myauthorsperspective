@@ -72,7 +72,7 @@ export const orderSchema = z
   .transform(
     async (services, ctx): Promise<Pick<Order, "services" | "totalPrice">> => {
       const servicesQuery = firebase.db
-        .collection(config.firebase.collections.SERVICES)
+        .collection(config.firebase.firestore.collections.SERVICES)
         .where(
           FieldPath.documentId(),
           "in",

@@ -8,11 +8,7 @@ import { Action } from "../providers/transaction";
 import { getUserSchema, parseErrors } from "../validator";
 
 export const createUser = https.onCall(
-  {
-    cors: config.cors.ORIGIN,
-    enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
-    region: config.firebase.options.FUNCTION_REGION,
-  },
+  config.firebase.functions.options,
   async (req) => {
     const result = await getUserSchema().safeParseAsync(req.data);
     if (!result.success) {
@@ -25,7 +21,7 @@ export const createUser = https.onCall(
 
     const { password, ...user } = result.data as User & { password: string };
     const docRef = firebase.db
-      .collection(config.firebase.collections.USERS)
+      .collection(config.firebase.firestore.collections.USERS)
       .doc();
 
     const context = { args: user };
@@ -100,16 +96,12 @@ export const createUser = https.onCall(
 );
 
 export const updateUser = https.onCall(
-  {
-    cors: config.cors.ORIGIN,
-    enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
-    region: config.firebase.options.FUNCTION_REGION,
-  },
+  config.firebase.functions.options,
   async (req) => {
     if (!req.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     } else if (
-      !config.firebase.methods.isRecentLogin(req.auth.token.auth_time)
+      !config.firebase.auth.methods.isRecentLogin(req.auth.token.auth_time)
     ) {
       throw new HttpsError(
         "failed-precondition",
@@ -130,7 +122,7 @@ export const updateUser = https.onCall(
     }
 
     const docRef = firebase.db
-      .collection(config.firebase.collections.USERS)
+      .collection(config.firebase.firestore.collections.USERS)
       .doc(req.auth.uid);
 
     const snapshot = await docRef.get();

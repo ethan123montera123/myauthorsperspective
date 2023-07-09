@@ -4,8 +4,8 @@ import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
+import { Order, User } from "../@types";
 import { ReceiptEmail } from "../emails";
-import { Order, User } from "../interface";
 import {
   config,
   firebase,

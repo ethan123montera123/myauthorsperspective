@@ -1,21 +1,4 @@
-type PriceTier = "basic" | "premium";
-
-type ServiceTierInfo = {
-  level: number;
-  price: number;
-};
-
-type ServiceInclusion<T extends string> = {
-  id: number;
-  tier: T;
-  name: string;
-};
-
-export type Service<T extends string = PriceTier> = {
-  title: string;
-  priceTier: { default: T } & Partial<Record<T, ServiceTierInfo>>;
-  inclusions: ServiceInclusion<T>[];
-};
+import { Service, ServiceInclusion } from "../../../@types";
 
 /**
  * Apply IDs to an array of values based on their indices.

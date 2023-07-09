@@ -2,7 +2,7 @@ import { auth } from "firebase-admin";
 import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 
-import { User } from "../interface";
+import { User } from "../@types";
 import { config, firebase, logger, stripe, transaction } from "../providers";
 import { Action } from "../providers/transaction";
 import { getUserSchema, parseErrors } from "../schemas";

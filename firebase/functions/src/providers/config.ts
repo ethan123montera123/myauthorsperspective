@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { FirebaseConfig, MailerConfig, StripeConfig } from "../interface";
+import { FirebaseConfig, MailerConfig, StripeConfig } from "../@types";
 import { envSchema } from "../schemas";
 
 const env = envSchema.parse(dotenv.config().parsed);

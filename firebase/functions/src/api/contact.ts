@@ -4,7 +4,7 @@ import { https } from "firebase-functions/v2";
 
 import { ContactEmail } from "../emails";
 import { config, logger, mailer } from "../providers";
-import { contactSchema, parseErrors } from "../validator";
+import { contactSchema, parseErrors } from "../schemas";
 
 export const sendContactEmail = https.onCall(
   config.firebase.functions.options,

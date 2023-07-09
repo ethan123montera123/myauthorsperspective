@@ -7,7 +7,7 @@ import Stripe from "stripe";
 import { ReceiptEmail } from "../emails";
 import { Order, User } from "../interface";
 import { config, firebase, logger, mailer, stripe } from "../providers";
-import { orderSchema, parseErrors } from "../validator";
+import { orderSchema, parseErrors } from "../schemas";
 
 const { USERS, ORDERS } = config.firebase.firestore.collections;
 const usersRef = firebase.db.collection(USERS);

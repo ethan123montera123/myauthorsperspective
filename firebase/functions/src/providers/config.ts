@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { FirebaseConfig, MailerConfig, StripeConfig } from "../interface";
-import { envSchema } from "../validator";
+import { envSchema } from "../schemas";
 
 const env = envSchema.parse(dotenv.config().parsed);
 

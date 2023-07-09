@@ -5,7 +5,7 @@ import { https } from "firebase-functions/v2";
 import { User } from "../interface";
 import { config, firebase, logger, stripe, transaction } from "../providers";
 import { Action } from "../providers/transaction";
-import { getUserSchema, parseErrors } from "../validator";
+import { getUserSchema, parseErrors } from "../schemas";
 
 export const createUser = https.onCall(
   config.firebase.functions.options,

@@ -1,5 +1,21 @@
-import { Service, ServiceInclusion } from "../../../interface";
-import { config } from "../../../providers";
+type PriceTier = "basic" | "premium";
+
+type ServiceTierInfo = {
+  level: number;
+  price: number;
+};
+
+type ServiceInclusion<T extends string> = {
+  id: number;
+  tier: T;
+  name: string;
+};
+
+export type Service<T extends string = PriceTier> = {
+  title: string;
+  priceTier: { default: T } & Partial<Record<T, ServiceTierInfo>>;
+  inclusions: ServiceInclusion<T>[];
+};
 
 /**
  * Apply IDs to an array of values based on their indices.
@@ -13,9 +29,7 @@ function applyIds<T extends string>(
   return arr.map((v, idx) => ({ id: idx + 1, ...v }));
 }
 
-export const collection = config.firebase.firestore.collections.SERVICES;
-
-export const data = [
+export default [
   {
     title: "Social Media Management Program",
     priceTier: {

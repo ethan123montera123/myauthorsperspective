@@ -1,9 +1,19 @@
-import { FirebaseSeedData } from "../../../interface";
+import { config } from "../..";
 import { db } from "../firebase";
 
-import * as services from "./services";
+import services from "./services";
 
-const seedData: FirebaseSeedData[] = [services];
+type FirebaseSeedData = {
+  collection: string;
+  data: object[];
+};
+
+const seedData: FirebaseSeedData[] = [
+  {
+    collection: config.firebase.firestore.collections.SERVICES,
+    data: services,
+  },
+];
 
 /**
  * Populates the Firestore with necessary data.

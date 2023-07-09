@@ -1,7 +1,8 @@
 import { FieldPath } from "firebase-admin/firestore";
 import { z } from "zod";
-import { Order, OrderLine, Service } from "../interface";
+import { Order, OrderLine } from "../interface";
 import { config, firebase } from "../providers";
+import { Service } from "../providers/firebase/seeders/services";
 
 /**
  * Calculates the pricing of a service based on the highest inclusion tier that it has.

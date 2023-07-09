@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase-admin/firestore";
-import { Service } from "./service.interface";
+import { Service } from "../providers/firebase/seeders/services";
 
 type ArrayBaseType<T> = T extends (infer R)[] ? R : never;
 

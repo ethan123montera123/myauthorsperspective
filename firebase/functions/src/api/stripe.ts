@@ -6,14 +6,20 @@ import Stripe from "stripe";
 
 import { ReceiptEmail } from "../emails";
 import { Order, User } from "../interface";
-import { config, firebase, logger, mailer, stripe } from "../providers";
+import {
+  config,
+  firebase,
+  logger,
+  mailer,
+  stripe,
+  transaction,
+} from "../providers";
+import { Action } from "../providers/transaction";
 import { orderSchema, parseErrors } from "../schemas";
 
 export const createPaymentIntent = https.onCall(
   config.firebase.functions.options,
   async function ({ auth, data }) {
-    const PAYMENT_INTENT_CREATION_FAILED = "Payment intent creation failed.";
-
     if (!auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
@@ -36,45 +42,75 @@ export const createPaymentIntent = https.onCall(
     const user = snapshot.data() as User;
     if (!user) {
       logger.warn("User does not have a profile.", context);
-      throw new HttpsError("internal", PAYMENT_INTENT_CREATION_FAILED);
+      throw new HttpsError("internal", "Payment intent creation failed.");
     }
 
-    try {
-      logger.log("Creating payment intent...", context);
+    let paymentIntent: Stripe.Response<Stripe.PaymentIntent>;
+    const orderRef = firebase.db
+      .collection(config.firebase.firestore.collections.ORDERS)
+      .doc();
 
-      const orderRef = firebase.db
-        .collection(config.firebase.firestore.collections.ORDERS)
-        .doc();
+    const createOrderPaymentIntent: Action = {
+      name: "Create Order Payment Intent",
+      execute: async () => {
+        logger.log("Creating order payment intent...", context);
+        paymentIntent = await stripe.paymentIntents.create({
+          // Multiply by 100 to convert the dollar price to cents
+          amount: result.data.totalPrice * 100,
+          customer: user.stripeId,
+          currency: config.stripe.CURRENCY,
+          metadata: { firebaseOrderId: orderRef.id },
+          automatic_payment_methods: {
+            enabled: config.stripe.AUTOMATIC_PAYMENT_METHOD,
+          },
+        });
 
-      const paymentIntent = await stripe.paymentIntents.create({
-        // Multiply by 100 to convert the dollar price to cents
-        amount: result.data.totalPrice * 100,
-        customer: user.stripeId,
-        currency: config.stripe.CURRENCY,
-        metadata: { firebaseOrderId: orderRef.id },
-        automatic_payment_methods: {
-          enabled: config.stripe.AUTOMATIC_PAYMENT_METHOD,
-        },
-      });
+        return () => stripe.paymentIntents.cancel(paymentIntent.id);
+      },
+      catch: (err) => {
+        logger.error("Order payment intent creation failed.", err, context);
+      },
+    };
 
-      await orderRef.set({
-        ...result.data,
-        customerId: auth.uid,
-        placedAt: Timestamp.now(),
-        paidAt: null,
-        stripePaymentId: paymentIntent.id,
-      } satisfies Order);
+    const createOrderRecord: Action = {
+      name: "Create Order Record",
+      execute: async () => {
+        logger.log("Creating order record...", context);
+        if (!paymentIntent) {
+          throw new Error("Order payment intent creation failed.");
+        }
 
-      logger.log("Payment intent created.", {
-        ...context,
-        payment_intent: paymentIntent.id,
-      });
+        await orderRef.set({
+          ...result.data,
+          customerId: auth.uid,
+          placedAt: Timestamp.now(),
+          paidAt: null,
+          stripePaymentId: paymentIntent.id,
+        } satisfies Order);
 
-      return { secret: paymentIntent.client_secret };
-    } catch (error) {
-      logger.error(PAYMENT_INTENT_CREATION_FAILED, error, context);
-      throw new HttpsError("internal", PAYMENT_INTENT_CREATION_FAILED);
+        return () => orderRef.delete({ exists: true });
+      },
+      catch: (err) => {
+        logger.error("Order record creation failed.", err, context);
+      },
+    };
+
+    logger.log("Creating payment intent...", context);
+    const error = await transaction.commit(
+      createOrderPaymentIntent,
+      createOrderRecord
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (error || !paymentIntent!) {
+      throw new HttpsError("internal", "Payment intent creation failed.");
     }
+    logger.log("Payment intent created.", {
+      ...context,
+      orderId: orderRef.id,
+      stripePaymentId: paymentIntent.id,
+    });
+
+    return { secret: paymentIntent.client_secret };
   }
 );
 

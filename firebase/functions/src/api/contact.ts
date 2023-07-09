@@ -1,17 +1,13 @@
 import { render } from "@react-email/components";
-import { HttpsError } from "firebase-functions/v1/auth";
 import { https } from "firebase-functions/v2";
+import { HttpsError } from "firebase-functions/v2/https";
 
 import { ContactEmail } from "../emails";
 import { config, logger, mailer } from "../providers";
-import { contactSchema, parseErrors } from "../validator";
+import { contactSchema, parseErrors } from "../schemas";
 
 export const sendContactEmail = https.onCall(
-  {
-    cors: config.cors.ORIGIN,
-    enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
-    region: config.firebase.options.FUNCTION_REGION,
-  },
+  config.firebase.functions.options,
   async (req) => {
     const result = contactSchema.safeParse(req.data);
     if (!result.success) {

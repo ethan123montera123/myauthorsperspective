@@ -1,5 +1,4 @@
-import { Service, ServiceInclusion } from "../../../interface";
-import { config } from "../../../providers";
+import { Service, ServiceInclusion } from "../../../@types";
 
 /**
  * Apply IDs to an array of values based on their indices.
@@ -13,9 +12,7 @@ function applyIds<T extends string>(
   return arr.map((v, idx) => ({ id: idx + 1, ...v }));
 }
 
-export const collection = config.firebase.collections.SERVICES;
-
-export const data = [
+export default [
   {
     title: "Social Media Management Program",
     priceTier: {

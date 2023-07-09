@@ -4,24 +4,21 @@ import { https } from "firebase-functions/v2";
 import { HttpsError } from "firebase-functions/v2/https";
 import Stripe from "stripe";
 
+import { Order, User } from "../@types";
 import { ReceiptEmail } from "../emails";
-import { Order, User } from "../interface";
-import { config, firebase, logger, mailer, stripe } from "../providers";
-import { orderSchema, parseErrors } from "../validator";
-
-const { USERS, ORDERS } = config.firebase.collections;
-const usersRef = firebase.db.collection(USERS);
-const ordersRef = firebase.db.collection(ORDERS);
-
-const PAYMENT_INTENT_CREATION_FAILED = "Payment intent creation failed.";
-const CENTS_IN_A_DOLLAR = 100;
+import {
+  config,
+  firebase,
+  logger,
+  mailer,
+  stripe,
+  transaction,
+} from "../providers";
+import { Action } from "../providers/transaction";
+import { orderSchema, parseErrors } from "../schemas";
 
 export const createPaymentIntent = https.onCall(
-  {
-    cors: config.cors.ORIGIN,
-    enforceAppCheck: config.firebase.options.ENFORCE_APP_CHECK,
-    region: config.firebase.options.FUNCTION_REGION,
-  },
+  config.firebase.functions.options,
   async function ({ auth, data }) {
     if (!auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
@@ -36,62 +33,90 @@ export const createPaymentIntent = https.onCall(
       );
     }
 
-    const snapshot = await usersRef.doc(auth.uid).get();
+    const context = { user: auth.uid, args: data };
+
+    const snapshot = await firebase.db
+      .collection(config.firebase.firestore.collections.USERS)
+      .doc(auth.uid)
+      .get();
     const user = snapshot.data() as User;
     if (!user) {
-      logger.warn("User does not have a profile.", {
-        user: auth.uid,
-        args: data,
-      });
-
-      throw new HttpsError("internal", PAYMENT_INTENT_CREATION_FAILED);
+      logger.warn("User does not have a profile.", context);
+      throw new HttpsError("internal", "Payment intent creation failed.");
     }
 
-    try {
-      logger.log("Creating payment intent...", { user: auth.uid, args: data });
+    let paymentIntent: Stripe.Response<Stripe.PaymentIntent>;
+    const orderRef = firebase.db
+      .collection(config.firebase.firestore.collections.ORDERS)
+      .doc();
 
-      const paymentIntent = await stripe.paymentIntents.create({
-        customer: user.stripeId,
-        amount: result.data.totalPrice * CENTS_IN_A_DOLLAR,
-        currency: config.stripe.CURRENCY,
-        automatic_payment_methods: {
-          enabled: config.stripe.AUTOMATIC_PAYMENT_METHOD,
-        },
-      });
+    const createOrderPaymentIntent: Action = {
+      name: "Create Order Payment Intent",
+      execute: async () => {
+        logger.log("Creating order payment intent...", context);
+        paymentIntent = await stripe.paymentIntents.create({
+          // Multiply by 100 to convert the dollar price to cents
+          amount: result.data.totalPrice * 100,
+          customer: user.stripeId,
+          currency: config.stripe.CURRENCY,
+          metadata: { firebaseOrderId: orderRef.id },
+          automatic_payment_methods: {
+            enabled: config.stripe.AUTOMATIC_PAYMENT_METHOD,
+          },
+        });
 
-      const orderRecord = await ordersRef.add({
-        ...result.data,
-        customerId: auth.uid,
-        placedAt: Timestamp.now(),
-        paidAt: null,
-        stripePaymentId: paymentIntent.id,
-      } satisfies Order);
+        return () => stripe.paymentIntents.cancel(paymentIntent.id);
+      },
+      catch: (err) => {
+        logger.error("Order payment intent creation failed.", err, context);
+      },
+    };
 
-      await stripe.paymentIntents.update(paymentIntent.id, {
-        metadata: { firebaseOrderId: orderRecord.id },
-      });
+    const createOrderRecord: Action = {
+      name: "Create Order Record",
+      execute: async () => {
+        logger.log("Creating order record...", context);
+        if (!paymentIntent) {
+          throw new Error("Order payment intent creation failed.");
+        }
 
-      logger.log("Payment intent created.", {
-        user: auth.uid,
-        args: data,
-        payment_intent: paymentIntent.id,
-      });
+        await orderRef.set({
+          ...result.data,
+          customerId: auth.uid,
+          placedAt: Timestamp.now(),
+          paidAt: null,
+          stripePaymentId: paymentIntent.id,
+        } satisfies Order);
 
-      return { secret: paymentIntent.client_secret };
-    } catch (error) {
-      logger.error(PAYMENT_INTENT_CREATION_FAILED, error, {
-        user: auth.uid,
-        args: data,
-      });
+        return () => orderRef.delete({ exists: true });
+      },
+      catch: (err) => {
+        logger.error("Order record creation failed.", err, context);
+      },
+    };
 
-      throw new HttpsError("internal", PAYMENT_INTENT_CREATION_FAILED);
+    logger.log("Creating payment intent...", context);
+    const error = await transaction.commit(
+      createOrderPaymentIntent,
+      createOrderRecord
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (error || !paymentIntent!) {
+      throw new HttpsError("internal", "Payment intent creation failed.");
     }
+    logger.log("Payment intent created.", {
+      ...context,
+      orderId: orderRef.id,
+      stripePaymentId: paymentIntent.id,
+    });
+
+    return { secret: paymentIntent.client_secret };
   }
 );
 
 export const webhook = https.onRequest(
   {
-    region: config.firebase.options.FUNCTION_REGION,
+    region: config.firebase.functions.options.region,
   },
   async (req, res) => {
     let event = null;
@@ -119,46 +144,46 @@ export const webhook = https.onRequest(
       if (event.type === "payment_intent.succeeded") {
         logger.log("Sending email receipt upon successful payment...");
 
-        const { id: stripePaymentId, metadata } = event.data
-          .object as Stripe.Response<Stripe.PaymentIntent>;
+        const {
+          id: stripePaymentId,
+          metadata: { firebaseOrderId },
+        } = event.data.object as Stripe.Response<Stripe.PaymentIntent>;
 
-        const { firebaseOrderId } = metadata;
-
-        context = { firebaseOrderId, stripePaymentId }; // For error logging
+        context = { firebaseOrderId, stripePaymentId };
         if (!firebaseOrderId) {
           msg = "Missing firebase order ID from Stripe payment payload.";
           throw new Error(msg);
         }
 
-        const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
+        const orderSnapshot = await firebase.db
+          .collection(config.firebase.firestore.collections.ORDERS)
+          .doc(firebaseOrderId)
+          .get();
         const orderData = orderSnapshot.data() as Order;
         if (!orderData) {
           msg = "Payment's corresponding firebase order does not exist. ";
           throw new Error(msg);
         }
 
-        const customerSnapshot = await usersRef.doc(orderData.customerId).get();
-        const customerData = customerSnapshot.data() as User;
-
         context = { ...context, customer: orderData.customerId };
+
+        const customerSnapshot = await firebase.db
+          .collection(config.firebase.firestore.collections.USERS)
+          .doc(orderData.customerId)
+          .get();
+        const customerData = customerSnapshot.data() as User;
         if (!customerData) {
           msg = "Order data has an invalid or missing customer ID.";
           throw new Error(msg);
         }
 
         const paidAt = Timestamp.now();
-        await orderSnapshot.ref.set({ paidAt }, { merge: true });
+        await orderSnapshot.ref.update({ paidAt });
 
         // eslint-disable-next-line new-cap
         const email = ReceiptEmail({
-          customer: {
-            uid: customerSnapshot.id,
-            ...customerData,
-          },
-          order: {
-            id: orderSnapshot.id,
-            ...orderData,
-          },
+          customer: { ...customerData, uid: customerSnapshot.id },
+          order: { ...orderData, id: orderSnapshot.id, paidAt },
         });
 
         await mailer.send({

@@ -1,8 +1,7 @@
-export interface User {
-  uid?: string;
+export type User = {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   stripeId: string;
-}
+};

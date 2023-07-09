@@ -1,7 +1,7 @@
 import { Column, Text } from "@react-email/components";
 import Tailwind from "./Tailwind";
 
-interface IncoCellProps {
+interface InfoCellProps {
   label: string;
   value: string;
   isAccented?: boolean;
@@ -18,7 +18,7 @@ function InfoCell({
   label = "",
   value = "",
   isAccented = false,
-}: IncoCellProps) {
+}: InfoCellProps) {
   return (
     <Tailwind>
       <Column className="w-1/2 pl-5 border-r border-b border-white h-11">

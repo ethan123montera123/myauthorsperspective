@@ -1,6 +1,6 @@
 import { FieldPath } from "firebase-admin/firestore";
 import { z } from "zod";
-import { Order, OrderLine, Service } from "../interface";
+import { Order, OrderLine, Service } from "../@types";
 import { config, firebase } from "../providers";
 
 /**
@@ -72,7 +72,7 @@ export const orderSchema = z
   .transform(
     async (services, ctx): Promise<Pick<Order, "services" | "totalPrice">> => {
       const servicesQuery = firebase.db
-        .collection(config.firebase.collections.SERVICES)
+        .collection(config.firebase.firestore.collections.SERVICES)
         .where(
           FieldPath.documentId(),
           "in",

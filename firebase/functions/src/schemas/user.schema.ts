@@ -100,7 +100,7 @@ export const getUserSchema = (uid = "") =>
         .refine(
           async (phone) => {
             const snap = await firebase.db
-              .collection(config.firebase.collections.USERS)
+              .collection(config.firebase.firestore.collections.USERS)
               .where("phone", "==", phone)
               .get();
 

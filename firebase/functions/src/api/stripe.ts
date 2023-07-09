@@ -9,16 +9,11 @@ import { Order, User } from "../interface";
 import { config, firebase, logger, mailer, stripe } from "../providers";
 import { orderSchema, parseErrors } from "../schemas";
 
-const { USERS, ORDERS } = config.firebase.firestore.collections;
-const usersRef = firebase.db.collection(USERS);
-const ordersRef = firebase.db.collection(ORDERS);
-
-const PAYMENT_INTENT_CREATION_FAILED = "Payment intent creation failed.";
-const CENTS_IN_A_DOLLAR = 100;
-
 export const createPaymentIntent = https.onCall(
   config.firebase.functions.options,
   async function ({ auth, data }) {
+    const PAYMENT_INTENT_CREATION_FAILED = "Payment intent creation failed.";
+
     if (!auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
@@ -32,30 +27,37 @@ export const createPaymentIntent = https.onCall(
       );
     }
 
-    const snapshot = await usersRef.doc(auth.uid).get();
+    const context = { user: auth.uid, args: data };
+
+    const snapshot = await firebase.db
+      .collection(config.firebase.firestore.collections.USERS)
+      .doc(auth.uid)
+      .get();
     const user = snapshot.data() as User;
     if (!user) {
-      logger.warn("User does not have a profile.", {
-        user: auth.uid,
-        args: data,
-      });
-
+      logger.warn("User does not have a profile.", context);
       throw new HttpsError("internal", PAYMENT_INTENT_CREATION_FAILED);
     }
 
     try {
-      logger.log("Creating payment intent...", { user: auth.uid, args: data });
+      logger.log("Creating payment intent...", context);
+
+      const orderRef = firebase.db
+        .collection(config.firebase.firestore.collections.ORDERS)
+        .doc();
 
       const paymentIntent = await stripe.paymentIntents.create({
+        // Multiply by 100 to convert the dollar price to cents
+        amount: result.data.totalPrice * 100,
         customer: user.stripeId,
-        amount: result.data.totalPrice * CENTS_IN_A_DOLLAR,
         currency: config.stripe.CURRENCY,
+        metadata: { firebaseOrderId: orderRef.id },
         automatic_payment_methods: {
           enabled: config.stripe.AUTOMATIC_PAYMENT_METHOD,
         },
       });
 
-      const orderRecord = await ordersRef.add({
+      await orderRef.set({
         ...result.data,
         customerId: auth.uid,
         placedAt: Timestamp.now(),
@@ -63,23 +65,14 @@ export const createPaymentIntent = https.onCall(
         stripePaymentId: paymentIntent.id,
       } satisfies Order);
 
-      await stripe.paymentIntents.update(paymentIntent.id, {
-        metadata: { firebaseOrderId: orderRecord.id },
-      });
-
       logger.log("Payment intent created.", {
-        user: auth.uid,
-        args: data,
+        ...context,
         payment_intent: paymentIntent.id,
       });
 
       return { secret: paymentIntent.client_secret };
     } catch (error) {
-      logger.error(PAYMENT_INTENT_CREATION_FAILED, error, {
-        user: auth.uid,
-        args: data,
-      });
-
+      logger.error(PAYMENT_INTENT_CREATION_FAILED, error, context);
       throw new HttpsError("internal", PAYMENT_INTENT_CREATION_FAILED);
     }
   }
@@ -115,46 +108,46 @@ export const webhook = https.onRequest(
       if (event.type === "payment_intent.succeeded") {
         logger.log("Sending email receipt upon successful payment...");
 
-        const { id: stripePaymentId, metadata } = event.data
-          .object as Stripe.Response<Stripe.PaymentIntent>;
+        const {
+          id: stripePaymentId,
+          metadata: { firebaseOrderId },
+        } = event.data.object as Stripe.Response<Stripe.PaymentIntent>;
 
-        const { firebaseOrderId } = metadata;
-
-        context = { firebaseOrderId, stripePaymentId }; // For error logging
+        context = { firebaseOrderId, stripePaymentId };
         if (!firebaseOrderId) {
           msg = "Missing firebase order ID from Stripe payment payload.";
           throw new Error(msg);
         }
 
-        const orderSnapshot = await ordersRef.doc(firebaseOrderId).get();
+        const orderSnapshot = await firebase.db
+          .collection(config.firebase.firestore.collections.ORDERS)
+          .doc(firebaseOrderId)
+          .get();
         const orderData = orderSnapshot.data() as Order;
         if (!orderData) {
           msg = "Payment's corresponding firebase order does not exist. ";
           throw new Error(msg);
         }
 
-        const customerSnapshot = await usersRef.doc(orderData.customerId).get();
-        const customerData = customerSnapshot.data() as User;
-
         context = { ...context, customer: orderData.customerId };
+
+        const customerSnapshot = await firebase.db
+          .collection(config.firebase.firestore.collections.USERS)
+          .doc(orderData.customerId)
+          .get();
+        const customerData = customerSnapshot.data() as User;
         if (!customerData) {
           msg = "Order data has an invalid or missing customer ID.";
           throw new Error(msg);
         }
 
         const paidAt = Timestamp.now();
-        await orderSnapshot.ref.set({ paidAt }, { merge: true });
+        await orderSnapshot.ref.update({ paidAt });
 
         // eslint-disable-next-line new-cap
         const email = ReceiptEmail({
-          customer: {
-            uid: customerSnapshot.id,
-            ...customerData,
-          },
-          order: {
-            id: orderSnapshot.id,
-            ...orderData,
-          },
+          customer: { ...customerData, uid: customerSnapshot.id },
+          order: { ...orderData, id: orderSnapshot.id, paidAt },
         });
 
         await mailer.send({

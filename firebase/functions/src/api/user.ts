@@ -1,6 +1,6 @@
 import { auth } from "firebase-admin";
-import { HttpsError } from "firebase-functions/v1/auth";
 import { https } from "firebase-functions/v2";
+import { HttpsError } from "firebase-functions/v2/https";
 
 import { User } from "../interface";
 import { config, firebase, logger, stripe, transaction } from "../providers";

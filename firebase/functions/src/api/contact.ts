@@ -1,6 +1,6 @@
 import { render } from "@react-email/components";
-import { HttpsError } from "firebase-functions/v1/auth";
 import { https } from "firebase-functions/v2";
+import { HttpsError } from "firebase-functions/v2/https";
 
 import { ContactEmail } from "../emails";
 import { config, logger, mailer } from "../providers";
